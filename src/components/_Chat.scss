@@ -1,3 +1,20 @@
-body {
-    background-color: red;
+
+.container { 
+    display: flex;
+    flex-direction: column;
+
+    .module {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        .box {
+            flex: 0 0 calc(33.33% - .5rem);
+            background-color: #3f51b5;
+            h2 {
+                padding: .5rem;
+                color: white;
+            }
+        }
+    }
 }

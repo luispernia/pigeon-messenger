@@ -1,77 +1,79 @@
-import { useAuth, ProvideAuth } from "../services/context/UserContext";
+import { useContext, useEffect } from "react";
+import { ProvideAuth } from "../services/context/UserState";
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    Redirect,
-    useHistory,
-    useLocation
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useHistory,
+  useLocation
 } from "react-router-dom";
 import Register from "./Register";
 import Landing from "./Landing";
 import Chat from "./Chat";
-
-
+import Success from "./Success";
+import Login from "./Login";
+import userContext from "../services/context/UserContext";
 
 
 function Routes() {
-    return (
-        <>
-            <Router>
-                <Switch>
 
-                    <Route exact path="/">
-                        <Landing/>
-                    </Route>
+  const {user} = useContext(userContext);
 
-                    <Route path="/login">
+  return (
+    <>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Landing />
+          </Route>
 
-                    </Route>
+          <PrivateRoute path="/success">
+            <Success />
+          </PrivateRoute> 
 
-                    <Route path="/register">
-                        <Register/>
-                    </Route>
+          <Route path="/login">
+            <Login/>
+          </Route>
 
-                    <Route path="/chat">
-                        <Chat />    
-                    </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
 
+          <PrivateRoute path="/chat">
+            <Chat />
+          </PrivateRoute>
 
-                    <PrivateRoute path="/protected">
-
-                    </PrivateRoute>
-
-                </Switch>
-            </Router>
-        </>
-    )
+        </Switch>
+      </Router>
+    </>
+  )
 }
 
 function PrivateRoute({ children, ...rest }) {
-    let { user }  = useAuth();
+  let { user } = useContext(userContext);
 
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          user.email ? (
-            <>
-              {children}
-              {user.email}
-            </>
-  
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        user ? (
+          <>
+            {children}
+          </>
+
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
 
 export default Routes;

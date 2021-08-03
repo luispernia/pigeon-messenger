@@ -1,17 +1,18 @@
 // import logo from './logo.svg';
 import './App.scss';
 import Routes from "./components/Routes";
-import { ProvideAuth } from './services/context/UserContext';
-import { useEffect } from 'react';
+import { ProvideUser } from './services/context/UserState';
 
+import Docs from "./components/Docs";
 
 function App() {
 
+
   return (
     <div className="App">
-      <ProvideAuth>
+      <ProvideUser>
         <Routes />
-      </ProvideAuth>
+      </ProvideUser>
     </div>
   );
 }
