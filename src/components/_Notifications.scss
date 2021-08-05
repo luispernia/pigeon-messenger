@@ -1,0 +1,27 @@
+.notifications {
+    padding: 1rem;
+    .bell {
+        color: black;
+        padding: 1rem;
+        background-color: white;
+        margin: 1rem 0rem;
+        border-radius: 10px;
+        img {
+            width: 50px;
+            border-radius: 100%;
+        }
+    }
+
+    .request {
+        border-bottom: .3rem solid cornflowerblue;
+    }
+
+    .accepted {
+    }
+
+    .declined {
+    }
+
+    .announce {
+    }
+}

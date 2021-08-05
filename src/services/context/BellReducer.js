@@ -1,4 +1,4 @@
-import { ADD_BELL } from "../actions";
+import { ADD_BELL, UPDATE_BELL } from "../actions";
 
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -10,7 +10,11 @@ export default (state, action) => {
                 ...state,
                 bells: [...state.bells, ...[payload]]
             }
-    
+        case UPDATE_BELL: 
+            return {
+                ...state,
+                bells: payload
+            }
         default:
             break;
     }

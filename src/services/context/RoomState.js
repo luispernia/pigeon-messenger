@@ -9,6 +9,9 @@ function ProviderRoom ({children}) {
         rooms: [],
         selectedRoom: null
     }
+
+    const [state, dispatch] = useReducer();
+
 }
 
 

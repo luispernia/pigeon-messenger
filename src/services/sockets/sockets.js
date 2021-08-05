@@ -4,9 +4,6 @@ socket.on("createMessage", (arg) => {
     console.log(arg);
 })
 
-
-
-
 socket.on("listUsers", (res) => {
     console.log(res);   
 })
@@ -41,8 +38,8 @@ function privateMessage(message, to) {
     });
 }
 
-function sendContact(username, description, name) {
-    socket.emit("contact-request", { username, description, name }, (res) => {
+function sendContact(requester, text, to, img) {
+    socket.emit("contact-request", { requester, text, to, img }, (res) => {
         console.log(res);
     })
 }

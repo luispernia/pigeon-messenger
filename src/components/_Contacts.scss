@@ -1,0 +1,17 @@
+.contacts {
+    .input {
+        
+    }
+    .control-plug {
+        display: flex;
+        align-items: center;
+        p {
+            padding: .5rem;
+            font-weight: bold;
+            background-color: rebeccapurple;
+        }
+    }
+    .button {
+        margin: .5rem 0rem;
+    }
+}

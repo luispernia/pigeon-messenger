@@ -1,18 +1,24 @@
 
 .container { 
     display: flex;
-    flex-direction: column;
-
+    justify-content: space-between;
+    width: 100%;
     .module {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         background: rgba(0, 0, 0, 0.747);
         margin-bottom: 1rem;
+        flex-direction: column;
 
         .box {
             color: rgb(255, 255, 255);
-            flex: 0 0 calc(33.33% - .5rem);
         }
+    }
+    .button {
+        border: none;
+        padding: .5rem 1rem;
+        background-color: cornflowerblue;
+        color: white;
     }
 }

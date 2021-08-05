@@ -1,24 +1,27 @@
 import "./_Chat.scss"
 import React, { useContext, useEffect } from 'react'
-import { useState } from 'react';
-import userContext from '../services/context/UserContext';
 import { useHistory } from "react-router";
+import { handleClientId } from "../services/sockets/sockets";
+
+import userContext from '../services/context/UserContext';
+import bellsContext from '../services/context/BellContext';
+
+import Docs from '../components/Docs';
+import socket from "../services/sockets/socketConfig";
+import ChatView from "../components/ChatView";
 import Profile from "../components/Profile";
 import Rooms from "../components/Rooms";
 import Contacts from "../components/Contacts";
 import Notifications from "../components/Notifications";
+
 import axios from "axios";
-import Docs from '../components/Docs';
-import {handleClientId} from "../services/sockets/sockets";
-import socket from "../services/sockets/socketConfig";
-import bellsContext from '../services/context/BellContext';
 
 
 function Chat() {
 
-    const { user, token, signOut } = useContext(userContext);
     const history = useHistory();
-    const { addBell } = useContext(bellsContext);
+    const { user, token, signOut } = useContext(userContext);
+    const { addBell, refresh_bell } = useContext(bellsContext);
 
 
 
@@ -37,36 +40,37 @@ function Chat() {
     }
 
     useEffect(() => {
-        handleClientId(user); 
+        handleClientId(user);
+
         socket.on("notify", (args) => {
             addBell(args, () => {
                 console.log(args);
             });
         })
+
+        refresh_bell();
+
     }, [])
 
     return (
         <>
-            
+
             <div className="container">
                 <div className="module">
-                    <Rooms />
                     <Profile user={user} logout={logout} token={token} />
-                    <Contacts/>                
+                    <Rooms />
+                    <Contacts />
                 </div>
+                  <ChatView />
                 <div className="module">
-                    <div className="box">
-                        <h2>Selected Room</h2>
-                    </div>
-
-                <Notifications />
-
-                    <div className="box">
-                        <h2>Selected Contact</h2>
-                    </div>
+                    <Notifications />
                 </div>
-
             </div>
+
+            <footer>
+                <p>Pigeon Messenger <b>Technical View</b> </p>
+            </footer>
+
             {/* <input type="text" value={user.username} readOnly placeholder="User" />
             <input type="text" value={message} onChange={($event) => setMessage($event.target.value)} placeholder="Message" />
             <input type="text" value={room} onChange={($event) => setRoom($event.target.value)} placeholder="Room" />
@@ -82,6 +86,7 @@ function Chat() {
             <button onClick={privateMessage}>To</button>
             <button onClick={sendContact}>Notify Contact</button>
             <Docs /> */}
+
         </>
     )
 }
