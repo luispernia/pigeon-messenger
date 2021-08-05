@@ -1,0 +1,14 @@
+.rooms {
+    .control {
+        display: flex;
+        flex-direction: column;
+    }
+    .list {
+        padding: 1rem;
+        .list-element {
+            padding: 1rem;
+            background-color: blueviolet;
+            border-bottom: 1px solid white;
+         }
+    }
+}

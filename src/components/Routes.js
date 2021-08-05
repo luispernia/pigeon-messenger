@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ProvideAuth } from "../services/context/UserState";
 import {
   BrowserRouter as Router,
@@ -9,17 +9,17 @@ import {
   useHistory,
   useLocation
 } from "react-router-dom";
-import Register from "./Register";
-import Landing from "./Landing";
-import Chat from "./Chat";
+import Register from "../pages/Register";
+import Landing from "../pages/Landing";
+import Chat from "../pages/Chat";
 import Success from "./Success";
-import Login from "./Login";
+import Login from "../pages/Login";
 import userContext from "../services/context/UserContext";
+import ProvideBell from "../services/context/BellState";
+import axios from "axios";
 
 
 function Routes() {
-
-  const {user} = useContext(userContext);
 
   return (
     <>
@@ -31,19 +31,21 @@ function Routes() {
 
           <PrivateRoute path="/success">
             <Success />
-          </PrivateRoute> 
+          </PrivateRoute>
 
           <Route path="/login">
-            <Login/>
+            <Login />
           </Route>
 
           <Route path="/register">
             <Register />
           </Route>
 
-          <PrivateRoute path="/chat">
-            <Chat />
-          </PrivateRoute>
+          <PrivateRoutePlus path="/chat">
+            <ProvideBell>
+              <Chat />
+            </ProvideBell>
+          </PrivateRoutePlus>
 
         </Switch>
       </Router>
@@ -51,10 +53,58 @@ function Routes() {
   )
 }
 
+function PrivateRoutePlus({ children, ...rest }) {
+  let { user, updateUser } = useContext(userContext);
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true })
+      .then(res => {
+        if (res.data.ok) {
+          console.log(res.data);
+          updateUser(res.data, (user) => {
+            history.replace("/chat");
+            setLoading(true);
+          })
+        } else {
+          history.replace("/login");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  }, [])
+
+  return (<>
+    {loading ? (<Route
+      {...rest}
+      render={({ location }) =>
+        loading ? (
+          <>
+            {children}
+          </>
+
+        ) : (
+          <>
+            <h1>Loading</h1>
+          </>
+        )
+      }
+    />) : (<>
+      <h1>LOADING</h1>
+    </>)}
+  </>
+  );
+}
+
+
 function PrivateRoute({ children, ...rest }) {
   let { user } = useContext(userContext);
 
-  return (
+
+  return (<>
     <Route
       {...rest}
       render={({ location }) =>
@@ -64,15 +114,11 @@ function PrivateRoute({ children, ...rest }) {
           </>
 
         ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location }
-            }}
-          />
+          <Redirect to={{ pathname: "/", state: { from: location } }} />
         )
       }
     />
+  </>
   );
 }
 

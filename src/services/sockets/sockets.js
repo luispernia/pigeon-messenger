@@ -1,52 +1,50 @@
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:8080");
-
-socket.on("notify", (args, cb) => {
-    console.log(args);
-})
-
-socket.emit("ide", { dumb: "dummy" }, (res) => {
-    console.log(res);
-});
+import socket from "./socketConfig";
 
 socket.on("createMessage", (arg) => {
     console.log(arg);
 })
 
+
+
+
 socket.on("listUsers", (res) => {
-    console.log(res);
+    console.log(res);   
 })
 
 socket.on("privateMessage", (message) => {
     console.log(message);
 })
 
-function handleChat() {
+function handleClientId (user) {
+    socket.emit("start", {user}, (res) => {
+        console.log(res);
+    })
+}
+
+function handleChat(user, setRooms, room) {
     socket.emit("joinChat", { name: user.username, room }, ({ roomUsers, myRooms }) => {
         console.log("Room Users", roomUsers);
         setRooms(myRooms);
     })
 }
 
-function handleMessage() {
+function handleMessage(message, room) {
 
     socket.emit("sendMessage", { message, room }, (res) => {
         console.log(res);
     });
 }
 
-function privateMessage() {
+function privateMessage(message, to) {
     socket.emit("privateMessage", { message, to }, (res) => {
         console.log(res);
     });
 }
 
-function sendContact() {
-    socket.emit("contact-request", { username: to }, cb => {
-        console.log("contact");
-        console.log(cb);
+function sendContact(username, description, name) {
+    socket.emit("contact-request", { username, description, name }, (res) => {
+        console.log(res);
     })
 }
 
-export {socket, handleChat, handleMessage, privateMessage, sendContact};
+export { handleChat, handleMessage, privateMessage, sendContact, handleClientId};

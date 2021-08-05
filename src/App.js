@@ -1,20 +1,17 @@
 // import logo from './logo.svg';
 import './App.scss';
+import { useContext, useEffect } from 'react';
 import Routes from "./components/Routes";
-import { ProvideUser } from './services/context/UserState';
-
-import Docs from "./components/Docs";
+import userContext from './services/context/UserContext';
+import axios from "axios";
 
 function App() {
 
+  // const { refresh_token, user } = useContext(userContext);
 
-  return (
-    <div className="App">
-      <ProvideUser>
-        <Routes />
-      </ProvideUser>
-    </div>
-  );
+  
+
+  return <Routes />;
 }
 
 

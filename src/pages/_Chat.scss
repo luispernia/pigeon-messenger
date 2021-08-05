@@ -7,14 +7,12 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+        background: rgba(0, 0, 0, 0.747);
+        margin-bottom: 1rem;
 
         .box {
+            color: rgb(255, 255, 255);
             flex: 0 0 calc(33.33% - .5rem);
-            background-color: #3f51b5;
-            h2 {
-                padding: .5rem;
-                color: white;
-            }
         }
     }
 }

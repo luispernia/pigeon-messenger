@@ -2,10 +2,10 @@ import "./_Register.scss";
 import React, { useContext, useState } from 'react'
 import { useHistory, Link } from "react-router-dom";
 import userContext from "../services/context/UserContext";
-import Child from "./Child";
+import Child from "../components/Child";
 
 function Register() {
-    const { user, signInEmail } = useContext(userContext);
+    const { user, signUpEmail } = useContext(userContext);
     const history = useHistory();
 
     const [loading, setLoading] = useState("");
@@ -18,7 +18,7 @@ function Register() {
     const handleSubmit = async ($event) => {
         $event.preventDefault();
         setLoading("loading");
-        signInEmail({ name, email, password, username }, () => {
+        signUpEmail({ name, email, password, username }, () => {
             setLoading("Done")
             history.replace("/success");
         });
