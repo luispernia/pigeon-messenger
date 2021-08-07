@@ -5,7 +5,7 @@ import "./_Contacts.scss";
 
 function Contacts() {
 
-    const { user } = useContext(userContext);
+    const { user, token } = useContext(userContext);
     const [username, setUsername] = useState("");
     const [reqMessage, setReqMessage] = useState("");
 
@@ -24,7 +24,7 @@ function Contacts() {
                 <label> Request Message </label>
                 <input className="input" type="text" value={reqMessage} onChange={($event) => setReqMessage($event.target.value)} placeholder="Hey it's me!" />
             </div>
-            <button className="button" onClick={() => sendContact(user.username, reqMessage, username, user.img)}>Send</button>
+            <button className="button" onClick={() => sendContact(user.username, reqMessage, username, user.img, token )}>Send</button>
         </div>
     )
 }

@@ -44,7 +44,8 @@ function Chat() {
 
         socket.on("notify", (args) => {
             addBell(args, () => {
-                console.log(args);
+                let bell = new Audio("bell.wav");
+                bell.play();
             });
         })
 
@@ -62,7 +63,7 @@ function Chat() {
                     <Contacts />
                 </div>
                   <ChatView />
-                <div className="module">
+                <div className="module" style={{flex: "0 0 calc(30%)"}}>
                     <Notifications />
                 </div>
             </div>

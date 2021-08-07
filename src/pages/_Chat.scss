@@ -20,5 +20,10 @@
         padding: .5rem 1rem;
         background-color: cornflowerblue;
         color: white;
+        transition: .3s all ease-in-out;
+    }
+    .button:hover {
+        cursor: pointer;
+        opacity: 80%;
     }
 }

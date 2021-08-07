@@ -10,8 +10,14 @@ function ProviderRoom ({children}) {
         selectedRoom: null
     }
 
-    const [state, dispatch] = useReducer();
+    const [state, dispatch] = useReducer(RoomReducer, initialState);
 
+
+
+
+    return <roomsContext.Provider> {children} </roomsContext.Provider>
 }
+
+export default ProviderRoom;
 
 

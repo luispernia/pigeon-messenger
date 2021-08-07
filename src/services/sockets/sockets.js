@@ -5,18 +5,13 @@ socket.on("createMessage", (arg) => {
 })
 
 socket.on("listUsers", (res) => {
-    console.log(res);   
+    console.log(res);
 })
 
 socket.on("privateMessage", (message) => {
     console.log(message);
 })
 
-function handleClientId (user) {
-    socket.emit("start", {user}, (res) => {
-        console.log(res);
-    })
-}
 
 function handleChat(user, setRooms, room) {
     socket.emit("joinChat", { name: user.username, room }, ({ roomUsers, myRooms }) => {
@@ -26,7 +21,6 @@ function handleChat(user, setRooms, room) {
 }
 
 function handleMessage(message, room) {
-
     socket.emit("sendMessage", { message, room }, (res) => {
         console.log(res);
     });
@@ -38,10 +32,39 @@ function privateMessage(message, to) {
     });
 }
 
-function sendContact(requester, text, to, img) {
-    socket.emit("contact-request", { requester, text, to, img }, (res) => {
+function handleClientId(user) {
+    socket.emit("start", { user }, (res) => {
         console.log(res);
     })
 }
 
-export { handleChat, handleMessage, privateMessage, sendContact, handleClientId};
+function sendContact(requester, text, to, img, token) {
+    socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
+        if (!res.ok) {
+            alert(res.err);
+        }
+    })
+}
+
+function acceptContact(data) {
+    socket.emit("contact-accepted", data, (res) => {
+        if(!res.ok) {
+            console.log(res);
+            alert(res);
+        }
+    })
+}
+
+function rejectContact() {
+
+}
+
+export {
+    handleChat,
+    handleMessage,
+    privateMessage,
+    sendContact,
+    handleClientId,
+    acceptContact,
+    rejectContact
+};
