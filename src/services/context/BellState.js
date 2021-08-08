@@ -15,46 +15,46 @@ function ProvideBell({children}) {
 
     const refresh_bell = async () => {
         try {
+
             let res = await axios.get("http://localhost:8080/bell", {withCredentials: true});
-            dispatch({type: "UPDATE_BELL", payload: res.data.bells})
+
+            
+
+            dispatch({type: "UPDATE_BELL", payload: res.data.bells});
+
         } catch(err) {
             alert(err)
         }
-    
     }
 
-    const addBell = async ({bell}, cb) => {
+    const addBell = async ({bell, ring}, cb) => {
         try{
             
             const {request} = bell;
 
             switch(request) {
                 case "REQUEST":
-                    dispatch({type: "ADD_BELL", payload: bell});
-                    cb();
+                    refresh_bell();
+                    cb({ring});
                     break;
 
                 case "ANNOUNCEMENT":
-                    dispatch({type: "ADD_BELL", payload: bell});
-                    cb();
-                    break;
+                    refresh_bell();
+                    cb({ring});
+                    break;  
 
                 case "REQUEST_DECLINED":
-                    dispatch({type: "ADD_BELL", payload: bell});
-                    cb();
+                    refresh_bell();
+                    cb({ring});
                     break;
                 case "CONTACT_ADDED": 
                     refresh_bell();
-                    dispatch({type: "ADD_BELL", payload: bell})
-                    cb();
+                    cb({ring});
                     break;
                 case "REQUEST_ACCEPTED":
-                    dispatch({type: "ADD_BELL", payload: bell});
+                    refresh_bell();
                     // here update the rooms or contacts state
-
-
-
-                    cb();
+                    cb({ring});
                     break;
     
                 default: 

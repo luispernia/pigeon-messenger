@@ -1,4 +1,5 @@
 import socket from "./socketConfig";
+import axios from "axios";
 
 socket.on("createMessage", (arg) => {
     console.log(arg);
@@ -39,24 +40,38 @@ function handleClientId(user) {
 }
 
 function sendContact(requester, text, to, img, token) {
-    socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
-        if (!res.ok) {
-            alert(res.err);
-        }
-    })
+
+    axios.post("http://localhost:8080/contact/on", { to }, { withCredentials: true })
+        .then(res => {
+            console.log(res.data.contact);
+            if (!res.data.contact.length > 0) {
+                socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
+                    if (!res.ok) {
+                        alert(res.err);
+                    }
+                })
+            } else {
+                alert("You already have this contact");
+            }
+        }).catch(err => console.log(err))
 }
 
 function acceptContact(data) {
     socket.emit("contact-accepted", data, (res) => {
-        if(!res.ok) {
+        if (!res.ok) {
             console.log(res);
             alert(res);
         }
     })
 }
 
-function rejectContact() {
-
+function rejectContact(data) {
+    socket.emit("reject-contact", data, (res) => {
+        if (!res.ok) {
+            console.log(res);
+            alert(res);
+        }
+    })
 }
 
 export {

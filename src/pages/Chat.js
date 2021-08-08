@@ -5,6 +5,7 @@ import { handleClientId } from "../services/sockets/sockets";
 
 import userContext from '../services/context/UserContext';
 import bellsContext from '../services/context/BellContext';
+import roomsContext from "../services/context/RoomContext";
 
 import Docs from '../components/Docs';
 import socket from "../services/sockets/socketConfig";
@@ -22,9 +23,7 @@ function Chat() {
     const history = useHistory();
     const { user, token, signOut } = useContext(userContext);
     const { addBell, refresh_bell } = useContext(bellsContext);
-
-
-
+    const {refresh_rooms} = useContext(roomsContext);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -43,14 +42,16 @@ function Chat() {
         handleClientId(user);
 
         socket.on("notify", (args) => {
-            addBell(args, () => {
-                let bell = new Audio("bell.wav");
-                bell.play();
+            addBell(args, ({ring}) => {
+                if(ring) {
+                    let bell = new Audio("bell.wav");
+                    bell.play();
+                }
             });
         })
-
+        
         refresh_bell();
-
+        refresh_rooms();
     }, [])
 
     return (
