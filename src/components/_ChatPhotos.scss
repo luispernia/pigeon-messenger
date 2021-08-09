@@ -1,0 +1,12 @@
+.photos {
+    color: black;
+    display: flex;  
+    flex-direction: column;
+    overflow: scroll;
+    height: 30rem;
+    .photo {
+        img {
+            width: 80%;
+        }
+    }
+}

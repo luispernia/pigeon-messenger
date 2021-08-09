@@ -6,3 +6,6 @@ export const ADD_BELL = "ADD_BELL";
 export const UPDATE_BELL = "UPDATE_BELL";
 export const CONTACT_ADDED = "CONTACT_ADDED";
 export const UPDATE_ROOMS = "UPDATE_ROOMS";
+export const SELECT_CHAT = "SELECT_CHAT";
+export const UPDATE_PHOTOS = "UPDATE_PHOTOS";
+export const UPDATE_MESSAGES = "UPDATE_MESSAGES";

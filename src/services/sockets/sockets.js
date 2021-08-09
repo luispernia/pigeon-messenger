@@ -34,13 +34,18 @@ function privateMessage(message, to) {
 }
 
 function handleClientId(user) {
-    socket.emit("start", { user }, (res) => {
+    socket.emit("start", { user, rooms: null }, (res) => {
+        console.log(res);
+    })
+}
+
+function handleRoomConnections(rooms) {
+    socket.emit("start", { user: null, rooms }, (res) => {
         console.log(res);
     })
 }
 
 function sendContact(requester, text, to, img, token) {
-
     axios.post("http://localhost:8080/contact/on", { to }, { withCredentials: true })
         .then(res => {
             console.log(res.data.contact);
@@ -68,11 +73,21 @@ function acceptContact(data) {
 function rejectContact(data) {
     socket.emit("reject-contact", data, (res) => {
         if (!res.ok) {
-            console.log(res);
-            alert(res);
+            alert(res.err);
         }
     })
 }
+
+const sendMessage = ({user, message , room, files, type}) => {
+    socket.emit("sendMessage", {user, message , room, files, type}, (res) => {
+        if(!res.ok) {
+            alert(res.err)
+        }
+
+        console.log(res);
+    })
+}   
+
 
 export {
     handleChat,
@@ -81,5 +96,7 @@ export {
     sendContact,
     handleClientId,
     acceptContact,
-    rejectContact
+    rejectContact,
+    sendMessage,
+    handleRoomConnections
 };

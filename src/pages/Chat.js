@@ -15,15 +15,13 @@ import Rooms from "../components/Rooms";
 import Contacts from "../components/Contacts";
 import Notifications from "../components/Notifications";
 
-import axios from "axios";
-
 
 function Chat() {
 
     const history = useHistory();
     const { user, token, signOut } = useContext(userContext);
     const { addBell, refresh_bell } = useContext(bellsContext);
-    const {refresh_rooms} = useContext(roomsContext);
+    const { refresh_rooms, roomMessages, selected } = useContext(roomsContext);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -40,18 +38,22 @@ function Chat() {
 
     useEffect(() => {
         handleClientId(user);
+        refresh_bell();
+        refresh_rooms();
 
         socket.on("notify", (args) => {
-            addBell(args, ({ring}) => {
-                if(ring) {
+            addBell(args, ({ ring }) => {
+                if (ring) {
                     let bell = new Audio("bell.wav");
                     bell.play();
                 }
             });
         })
-        
-        refresh_bell();
-        refresh_rooms();
+
+        socket.on("onMessage", (args) => {
+            roomMessages({ room_id: args.room });
+        })
+
     }, [])
 
     return (
@@ -63,8 +65,8 @@ function Chat() {
                     <Rooms />
                     <Contacts />
                 </div>
-                  <ChatView />
-                <div className="module" style={{flex: "0 0 calc(30%)"}}>
+                <ChatView />
+                <div className="module" style={{ flex: "0 0 calc(30%)" }}>
                     <Notifications />
                 </div>
             </div>

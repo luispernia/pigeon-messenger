@@ -1,8 +1,9 @@
-import { useContext, useReducer } from "react";
+import { useContext, useReducer, useState } from "react";
 import userContext from "./UserContext";
 import axios from "axios";
 import bellsContext from "./BellContext";
 import BellReducer from "./BellReducer";
+import roomsContext from "./RoomContext";
 axios.defaults.withCredentials = true;
 
 function ProvideBell({children}) {
@@ -12,14 +13,12 @@ function ProvideBell({children}) {
     }
 
     const [state, dispatch] = useReducer(BellReducer, initialState);
+    const {refresh_rooms} = useContext(roomsContext);
 
     const refresh_bell = async () => {
         try {
 
             let res = await axios.get("http://localhost:8080/bell", {withCredentials: true});
-
-            
-
             dispatch({type: "UPDATE_BELL", payload: res.data.bells});
 
         } catch(err) {
@@ -48,10 +47,12 @@ function ProvideBell({children}) {
                     cb({ring});
                     break;
                 case "CONTACT_ADDED": 
+                    refresh_rooms();
                     refresh_bell();
                     cb({ring});
                     break;
                 case "REQUEST_ACCEPTED":
+                    refresh_rooms();
                     refresh_bell();
                     // here update the rooms or contacts state
                     cb({ring});
