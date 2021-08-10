@@ -36,6 +36,7 @@ function Chat() {
         })
     }
 
+    
     useEffect(() => {
         handleClientId(user);
         refresh_bell();
@@ -55,6 +56,7 @@ function Chat() {
         })
 
     }, [])
+
 
     return (
         <>
