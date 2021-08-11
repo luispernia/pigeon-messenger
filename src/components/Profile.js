@@ -1,16 +1,34 @@
-import React from 'react'
-import "./_Profile.scss";
+import React, { useContext } from 'react'
+import userContext from '../services/context/UserContext'
+import { useHistory } from "react-router-dom";
+import Notifications from './Notifications';
 
-function Profile({ user, logout, token }) {
+function Profile() {
+
+    const history = useHistory();
+    const {user, token, signOut} = useContext(userContext);
+
+    
+    const logout = async (user) => {
+        signOut(() => {
+            alert("Bye");
+            history.replace("/");
+        })
+    }
+
     return (
-        <div className="box profile">
-            <h2>Profile</h2>
-            <div className="profile-box">
-            <img src={`http://localhost:8080/upload/user/${user.img}?token=${token}`} alt="Nothing" />
-            <p>@{user.username}</p>
+        <div className="profile">
+            <div className="profile-opts">
+                <img src={`http://localhost:8080/upload/user/${user.img}?token=${token}`} alt="" />
+                <div>
+                    <h3><span><i class="bi bi-at"></i></span>{user.username}</h3>
+                    <p><span><i class="bi bi-box"></i></span> Settings</p>
+                </div>
             </div>
-        
-            <button className="button" onClick={logout}>Logout</button>
+
+            <div className="notifications-panel">
+                <Notifications />
+            </div>
         </div>
     )
 }

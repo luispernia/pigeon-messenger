@@ -1,4 +1,3 @@
-import "./_Register.scss";
 import React, { useContext, useState } from 'react'
 import { useHistory, Link } from "react-router-dom";
 import userContext from "../services/context/UserContext";

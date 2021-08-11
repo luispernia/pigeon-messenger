@@ -1,0 +1,102 @@
+.messages {
+    max-height: 30rem;
+    overflow-y: scroll;
+    .message {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start; 
+        .user {
+            margin: 0 .5rem .5rem 1rem;
+            display: flex;
+            align-items: center;
+            p {
+                color: var(--light-primary);
+                font-size: .9rem;
+            }
+            img {
+                border-radius: 100%;
+                width: 2.5rem;
+                margin-right: .5rem;
+            }
+            
+        }
+        .message-content {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: end;
+            align-items: center;
+            .date {
+                .pdate {
+                    color: var(--dark-gray);
+                    span {
+                        color: var(--pigeon-primary);
+                    }
+                }
+
+            }
+        }
+        .text {
+
+            img {
+                width: 50%;
+            }
+
+            text-align: start;
+            padding: .5rem 1rem;
+            backdrop-filter: blur(.2rem);
+            width: auto;
+            background-color: var(--blue-submarine);
+            color: var(--light-marker);
+            border-radius: 1rem;
+            margin: 0px 1rem 0px 1rem;
+        }
+        .image {
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            margin-left: 1rem;
+            align-items: flex-start;
+            p {
+                text-align: start;
+                padding: .5rem 1rem;
+                backdrop-filter: blur(.2rem);
+                width: fit-content;
+                background-color: var(--blue-submarine);
+                color: var(--light-marker);
+                border-radius: 1rem;
+                margin-top: 1rem;
+            }
+            img {
+                width: 50%;
+            }
+            
+        }
+    }
+    .right {
+        align-items: flex-end;    
+        .user {
+            flex-direction: row-reverse;
+            img {
+                margin-left: .5rem;
+            }
+        } 
+        .message-content {
+            flex-direction: row;
+        }
+        .text {
+            color: var(--light-marker);
+            background-color: var(--pigeon-primary);
+        }
+        .image {
+            align-items: flex-end;
+            margin-right: 1rem;
+            p {
+                color: var(--light-marker);
+                background-color: var(--pigeon-primary);
+            }
+        }
+            
+    }
+}

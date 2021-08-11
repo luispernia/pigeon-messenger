@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import userContext from '../services/context/UserContext';
 import { sendContact } from '../services/sockets/sockets';
-import "./_Contacts.scss";
 
 function Contacts() {
 

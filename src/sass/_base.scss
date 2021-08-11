@@ -1,0 +1,28 @@
+
+:root {
+    --dark-primary: #0A192B;
+    --dark-secondary: #112D4E;
+    --light-primary: #F5CCF6;
+    --light-secondary: #DBC3FA;
+    --pigeon-primary: #FC5185;
+    --dark-gray: #597493;
+    --light-gray: #596879;
+    --blue-submarine: #1D4676;
+    --light-marker: #f5e1f5;
+}
+
+body {
+    margin: 0;
+    font-family: 'Lato';
+    text-align: center;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+  
+  h1,h2,h3,h4,h5,h6,p {
+    margin: 0;
+  }
+  

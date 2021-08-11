@@ -1,5 +1,4 @@
-import "./_Chat.scss"
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { useHistory } from "react-router";
 import { handleClientId } from "../services/sockets/sockets";
 
@@ -14,14 +13,15 @@ import Profile from "../components/Profile";
 import Rooms from "../components/Rooms";
 import Contacts from "../components/Contacts";
 import Notifications from "../components/Notifications";
+import ChatHeader from '../components/ChatHeader';
 
 
 function Chat() {
 
-    const history = useHistory();
-    const { user, token, signOut } = useContext(userContext);
+    const { user } = useContext(userContext);
     const { addBell, refresh_bell } = useContext(bellsContext);
-    const { refresh_rooms, roomMessages, selected } = useContext(roomsContext);
+    const { refresh_rooms, roomMessages } = useContext(roomsContext);
+    const chatRef = useRef(null);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -29,12 +29,6 @@ function Chat() {
     // const [room, setRoom] = useState("");
     // const [to, setTo] = useState("");
 
-    const logout = async (user) => {
-        signOut(() => {
-            alert("Bye");
-            history.replace("/");
-        })
-    }
 
     
     useEffect(() => {
@@ -62,7 +56,27 @@ function Chat() {
         <>
 
             <div className="container">
-                <div className="module">
+
+                <div className="primary-column">
+                    <Rooms />
+                </div>
+
+                <div className="principal-view">
+
+                    <div className="principal-bar">
+                        <Profile />
+                        <ChatHeader />
+                    </div>
+
+                    <div ref={chatRef} className="chat-view">
+                        <ChatView chat={chatRef} />    
+                    </div>
+
+                </div>
+
+
+
+                {/* <div className="module">
                     <Profile user={user} logout={logout} token={token} />
                     <Rooms />
                     <Contacts />
@@ -70,12 +84,8 @@ function Chat() {
                 <ChatView />
                 <div className="module" style={{ flex: "0 0 calc(30%)" }}>
                     <Notifications />
-                </div>
+                </div> */}
             </div>
-
-            <footer>
-                <p>Pigeon Messenger <b>Technical View</b> </p>
-            </footer>
 
             {/* <input type="text" value={user.username} readOnly placeholder="User" />
             <input type="text" value={message} onChange={($event) => setMessage($event.target.value)} placeholder="Message" />

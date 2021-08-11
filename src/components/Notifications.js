@@ -1,4 +1,3 @@
-import "./_Notifications.scss"
 import React, { useContext } from 'react';
 import bellsContext from '../services/context/BellContext';
 import userContext from "../services/context/UserContext";
@@ -9,16 +8,12 @@ import { acceptContact, rejectContact } from "../services/sockets/sockets";
 function Notifications() {
 
     const { bells } = useContext(bellsContext);
-
+    const lastElement = bells[bells.length - 1];
 
     return (
-        <div className="box notifications">
-            {bells.map(e => {
-                return <Bell key={e._id} data={e} />
-            })}
-            <div>
-                <h2>Notifications <span className="bells-count"> {bells.length} </span></h2>
-            </div>
+        <div className="notifications">
+            <p className="bells-count">{bells.length}</p>
+            {lastElement ? <Bell data={lastElement} /> : "not found"}
         </div>
     )
 }
@@ -58,9 +53,7 @@ function BellComponent({ data, request, opts }) {
         <div className={`bell ${request.toLowerCase()}`}>
             <img src={`http://localhost:8080/upload/user/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
             <div className="bell-body">
-                <div className="bell-profile">
-                    <p>@{`${requesterFormatted}`}</p>
-                </div>
+                <h4>{`${requesterFormatted}`}</h4>
                 <div className="bell-content">
                     <p>{`${title}`}</p>
                     {opts ? (
@@ -72,7 +65,9 @@ function BellComponent({ data, request, opts }) {
 
                 </div>
             </div>
-            <p>{`${hour}:${minutes.toString().length > 1 ? minutes : "0" + minutes}`}</p>
+            <div className="bell-icon">
+                <i class="bi bi-bell-fill"></i>
+            </div>
         </div>
     )
 }

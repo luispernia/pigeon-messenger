@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
-import "./_ChatPhotos.scss"
 
 function ChatPhotos({photos}) {
 

@@ -1,0 +1,36 @@
+.profile {
+    flex: 0 0 calc(55%);
+    border-radius: 1rem 0rem 0rem 1rem;
+    background-color: var(--dark-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .profile-opts {
+        display: flex;
+        margin-left: 1rem;
+        color: var(--light-primary);
+        div {
+            margin-left: .5rem;
+            text-align: left;
+        }
+        p { 
+            margin-left: .4rem;
+            font-size: .9rem;
+        }
+        h3 {
+            display: flex;
+            margin-bottom: .3rem;
+            span {
+                font-size: 1.3rem;
+            }
+        }
+        span {
+            color: var(--pigeon-primary);
+        }
+        img {
+            width: 4rem;
+            height: fit-content;
+            border-radius: 100%;    
+        }
+    }
+}
