@@ -2,7 +2,7 @@
     max-height: 30rem;
     overflow-y: scroll;
     .message {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -58,21 +58,15 @@
             flex-direction: column;
             margin-left: 1rem;
             align-items: flex-start;
-            p {
-                text-align: start;
-                padding: .5rem 1rem;
-                backdrop-filter: blur(.2rem);
-                width: fit-content;
-                background-color: var(--blue-submarine);
-                color: var(--light-marker);
-                border-radius: 1rem;
-                margin-top: 1rem;
-            }
+            margin-bottom: 1rem;
             img {
                 width: 50%;
             }
             
         }
+    }
+    .message:last-of-type {
+        margin-bottom: 5.5rem;
     }
     .right {
         align-items: flex-end;    

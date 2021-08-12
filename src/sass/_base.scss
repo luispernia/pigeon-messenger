@@ -9,6 +9,7 @@
     --light-gray: #596879;
     --blue-submarine: #1D4676;
     --light-marker: #f5e1f5;
+    --dark-transparent: #0a192ba9;
 }
 
 body {
@@ -26,3 +27,10 @@ body {
     margin: 0;
   }
   
+  input:focus {
+    outline: none;
+  }
+
+  textarea:focus {
+    outline: none;
+  }

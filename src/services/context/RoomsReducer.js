@@ -1,4 +1,4 @@
-import { UPDATE_ROOMS, SELECT_CHAT, UPDATE_PHOTOS, UPDATE_MESSAGES } from "../actions";
+import { UPDATE_ROOMS, SELECT_CHAT, UPDATE_PHOTOS, UPDATE_MESSAGES, FOCUS } from "../actions";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
@@ -23,6 +23,11 @@ export default (state, action) => {
             return  {
                 ...state,
                 messages: payload
+            }
+        case FOCUS: 
+            return  {
+                ...state,
+                focus: payload
             }
         default:
             return state

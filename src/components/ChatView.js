@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from '../services/context/UserContext';
 import ChatPhotos from "./ChatPhotos";
 import ChatBar from './ChatBar';
 import Message from "./Message";
 
-function ChatView({chat}) {
+function ChatView({ chat }) {
 
     const { selected } = useContext(roomsContext);
 
 
-    return selected ? (selected.user_id ? <ContactView data={selected} /> : <RoomView data={selected} chat={chat} />) : <NotSelectedView />
+    return selected ? (selected.user_id ? <ContactView data={selected} /> : <RoomView data={selected} chat={chat} />) : <NotSelectedView chat={chat}/>
 }
 
 const ContactView = ({ data }) => {
@@ -32,10 +32,11 @@ const ContactView = ({ data }) => {
     );
 }
 
-const RoomView = ({ data , chat }) => {
+const RoomView = ({ data, chat }) => {
 
     const { token } = useContext(userContext);
     const { chatPhotos, clearPhotos, photos, roomMessages, selected, messages } = useContext(roomsContext);
+    const messagesRef = useRef(null);
 
     const setPhotos = () => {
         if (photos.length === 0) {
@@ -47,24 +48,26 @@ const RoomView = ({ data , chat }) => {
 
     useEffect(() => {
         roomMessages({ room_id: data.room_id });
+        (() => {
+            messagesRef.current.scroll(0, 1000000000);
+        })();
     }, [selected])
-    
+
     return (
         <div className="chat-glass">
-            <div style={{maxHeight: chat.current.offsetHeight}} className="messages">
+            <div ref={messagesRef} style={{ maxHeight: chat.current.offsetHeight }} className="messages">
                 {messages.map(e => {
                     return <Message data={e} />
                 })}
-                <ChatBar room_id={data.room_id} />
             </div>
         </div>
     );
 }
 
-const NotSelectedView = () => {
+const NotSelectedView = ({chat}) => {
     return (
-        <div className="no-selected-chat">
-            <p>Not selected 😓</p>
+        <div style={{height: "100%"}} className="chat-glass">
+            <h2 className="empty">Chat empty</h2>
         </div>
     )
 }

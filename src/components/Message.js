@@ -15,10 +15,12 @@ function Message({ data }) {
             </div>
 
             {data.files.length > 0 ? (
-                <div className="image">
-                    {data.files.map(e => {
-                        return <img src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
-                    })}
+                <>
+                    <div className="image">
+                        {data.files.map(e => {
+                            return <img src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
+                        })}
+                    </div>
                     <div className="message-content">
                         <div className="date">
                             {(() => {
@@ -26,13 +28,15 @@ function Message({ data }) {
                                     let date = new Date(data.msgDate);
                                     let formatted = `${date.getHours()}:${date.getMinutes()}`;
 
-                                    return <p style={{ background: "transparent", color: "var(--dark-gray)" }}><span><i class="bi bi-clock-history"></i></span> {formatted}</p>;
+                                    return <p className="pdate">{formatted}</p>;
                                 }
                             })()}
                         </div>
-                        <p>{data.text}</p>
+                        <div className="text">
+                            <p>{data.text}</p>
+                        </div>
                     </div>
-                </div>
+                </>
 
             ) : (
                 <div className="message-content">
@@ -40,15 +44,18 @@ function Message({ data }) {
                         {(() => {
                             if (new Date(data.msgDate).getDate() === new Date().getDate()) {
                                 let date = new Date(data.msgDate);
-                                let formatted = `${date.getHours()}:${date.getMinutes().toString().length > 1? date.getMinutes().toString() : "0"+date.getMinutes().toString()}`;
+                                let formatted = `${date.getHours()}:${date.getMinutes().toString().length > 1 ? date.getMinutes().toString() : "0" + date.getMinutes().toString()}`;
 
                                 return <p className="pdate">{formatted}</p>;
                             }
                         })()}
                     </div>
-                    <div className="text">
-                        <p>{data.text}</p>
-                    </div>
+                    {data.text.length > 0 ? (
+                        <div className="text">
+                            <p>{data.text}</p>
+                        </div>
+                    ) : ""}
+
                 </div>
             )}
         </div>

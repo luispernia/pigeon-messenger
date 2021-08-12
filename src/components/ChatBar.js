@@ -1,14 +1,18 @@
-import React, {useState, useContext} from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
 import axios from "axios";
+import roomsContext from '../services/context/RoomContext';
 
-const ChatBar = ({ room_id }) => {
+const ChatBar = () => {
 
     const [message, setMessage] = useState("");
     const [doc, setFile] = useState({ docs: [] });
     const { user } = useContext(userContext);
-
+    const {selected} = useContext(roomsContext);
+    const {room_id} = selected? selected : {room_id: ""};
+    const fileRef = useRef(null);
+        
     const handleSubmit = async ($event) => {
         $event.preventDefault();
         console.log(doc.docs.length);
@@ -38,11 +42,16 @@ const ChatBar = ({ room_id }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="send-bar">
-            <input onChange={($event) => setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })} type="file" name="docs" multiple />
-            <input value={message} onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
-            <button type="submit">Send</button>
-        </form>
+        <div className="bar-container">
+            <form onSubmit={handleSubmit} className="send-bar">
+                <div className="fileInput">
+                    <i onClick={() => fileRef.current.click()} class="bi bi-images"></i>
+                    <input ref={fileRef} onChange={($event) => setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })} type="file" name="docs" multiple />
+                </div>
+                <input value={message} onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
+                <button type="submit"><i class="bi bi-arrow-right-circle"></i></button>
+            </form>
+        </div>
     )
 }
 

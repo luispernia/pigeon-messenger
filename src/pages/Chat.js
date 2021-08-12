@@ -14,6 +14,8 @@ import Rooms from "../components/Rooms";
 import Contacts from "../components/Contacts";
 import Notifications from "../components/Notifications";
 import ChatHeader from '../components/ChatHeader';
+import ChatBar from '../components/ChatBar';
+import FocusUI from '../components/FocusUI';
 
 
 function Chat() {
@@ -46,6 +48,7 @@ function Chat() {
         })
 
         socket.on("onMessage", (args) => {
+            refresh_rooms();
             roomMessages({ room_id: args.room });
         })
 
@@ -56,7 +59,7 @@ function Chat() {
         <>
 
             <div className="container">
-
+                <FocusUI />
                 <div className="primary-column">
                     <Rooms />
                 </div>
@@ -70,6 +73,7 @@ function Chat() {
 
                     <div ref={chatRef} className="chat-view">
                         <ChatView chat={chatRef} />    
+                        <ChatBar  />
                     </div>
 
                 </div>

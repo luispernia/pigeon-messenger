@@ -79,6 +79,7 @@ function rejectContact(data) {
 }
 
 const sendMessage = ({user, message , room, files, type}) => {
+    
     socket.emit("sendMessage", {user, message , room, files, type}, (res) => {
         if(!res.ok) {
             alert(res.err)

@@ -31,7 +31,7 @@
         .principal-bar {
             background-color: var(--dark-primary);
             flex: 0 0 calc(17%);
-            display: flex;
+            display: flex;      
             flex-direction: row-reverse;
             justify-content: space-between;
         }
@@ -112,7 +112,7 @@
 }
 
 .chat-icons {
-    max-height: 30rem;
+    max-height: 69vh;
     display: flex;
     flex-direction: column;
     -ms-overflow-style: none; /* for Internet Explorer, Edge */

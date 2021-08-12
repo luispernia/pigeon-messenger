@@ -9,3 +9,4 @@ export const UPDATE_ROOMS = "UPDATE_ROOMS";
 export const SELECT_CHAT = "SELECT_CHAT";
 export const UPDATE_PHOTOS = "UPDATE_PHOTOS";
 export const UPDATE_MESSAGES = "UPDATE_MESSAGES";
+export const FOCUS = "FOCUS";
