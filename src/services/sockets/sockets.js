@@ -13,6 +13,9 @@ socket.on("privateMessage", (message) => {
     console.log(message);
 })
 
+socket.on("userConnect", (res) => {
+    console.log(res);
+})
 
 function handleChat(user, setRooms, room) {
     socket.emit("joinChat", { name: user.username, room }, ({ roomUsers, myRooms }) => {
@@ -33,14 +36,14 @@ function privateMessage(message, to) {
     });
 }
 
-function handleClientId(user) {
-    socket.emit("start", { user, rooms: null }, (res) => {
+function handleClientId(token) {
+    socket.emit("start", { token, rooms: null }, (res) => {
         console.log(res);
     })
 }
 
-function handleRoomConnections(rooms) {
-    socket.emit("start", { user: null, rooms }, (res) => {
+function handleRoomConnections(rooms, token) {
+    socket.emit("start", { token, rooms, type: null }, (res) => {
         console.log(res);
     })
 }

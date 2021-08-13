@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from "../services/context/UserContext";
 import { useSpring, animated } from "react-spring"
+import axios from 'axios';
 
 function FocusUI() {
 
@@ -20,7 +21,7 @@ function FocusUI() {
                     <div className="glass">
                         {focus.type === "room" ? (
                             <CreateRoom chats={chats} />
-                        ) : ("")}
+                        ) : (<RequestContact />)}
                     </div>
                 </div>
 
@@ -34,6 +35,7 @@ const CreateRoom = ({ chats }) => {
     const imageRef = useRef(null);
     const { token } = useContext(userContext);
     const [members, setMembers] = useState([]);
+    const [membersView, setMembersView] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [state, setState] = useState(false);
 
@@ -46,11 +48,19 @@ const CreateRoom = ({ chats }) => {
 
     const addMember = (e) => {
         let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
+
         if (index < 0) {
             setMembers([...members, ...[{ ...e, clicked: state }]]);
+            if (members.length < 5) {
+                setMembersView([...members, ...[{ ...e, clicked: state }]]);
+            }
+
         } else {
             let deleteMember = members.filter(r => r.contact_id.username !== e.contact_id.username);
             setMembers(deleteMember);
+            if (members.length < 5) {
+                setMembersView(deleteMember)
+            }
         }
     }
 
@@ -80,15 +90,17 @@ const CreateRoom = ({ chats }) => {
                     <animated.div style={show} className="create-room-footer">
                         <p className="min">Members</p>
                         <ul>
-                            {members.map(e => {
+                            {membersView.map(e => {
                                 return (
-                                    <animated.div className="members-list" >
-                                        <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt={`${e.contact_id.username} img`} />
-                                        {e.contact_id.username}
-                                    </animated.div>
+                                    <>
+                                        <animated.div className="members-list" >
+                                            <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt={`${e.contact_id.username} img`} />
+                                        </animated.div>
+                                    </>
                                 )
                             })}
                         </ul>
+                        <p>{members.length > 6 ? `And others ${members.length - 6} members` : ""} </p>
                     </animated.div>
                 </animated.form>
                 <div className="contact-list">
@@ -102,27 +114,131 @@ const CreateRoom = ({ chats }) => {
                             }).map(e => {
                                 return (
                                     <li>
-                                        <div style={{background: "transparent"}}>
+                                        <div style={{ background: "transparent" }}>
                                             <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
-                                            <div style={{background: "transparent"}}  className="add-info">
+                                            <div style={{ background: "transparent" }} className="add-info">
                                                 <p>{e.contact_id.username}</p>
                                                 <small>Online</small>
                                             </div>
                                         </div>
-                                        <i onClick={() => addMember(e)} class="bi bi-plus-square"></i>                                        
+                                        <i onClick={() => addMember(e)} class="bi bi-plus-square"></i>
                                     </li>
                                 )
                             })}
                         </animated.ul>
                     </animated.div>
-                <animated.button style={showButton} className="submit-room">
-                    <span>GO</span>
-                </animated.button>
+                    <animated.button style={showButton} className="submit-room">
+                        <span>GO</span>
+                    </animated.button>
                 </div>
             </div>
         </>
     )
 }
 
+const RequestContact = () => {
+
+    const imageRef = useRef(null);
+    const { token } = useContext(userContext);
+    const [username, setUsername] = useState("");
+    const [message, setMessage] = useState("");
+    const [userFounded, setUserFounded] = useState(false);
+
+
+    const opac = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 200 });
+    const opacDeep = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 });
+    const height = useSpring({ to: { height: 400 }, from: { height: 0 }, delay: 500 });
+    const userInput = useSpring({ to: { width: "100%" }, from: { width: "0%" }, delay: 1000 });
+    const width = useSpring({ to: { width: "100%", opacity: 1 }, from: { opacity: 0, width: "0%" }, delay: 500 });
+
+
+
+    return (
+        <>
+            <animated.h1 style={opac}>Add Contact</animated.h1>
+            <div className="contact-add">
+                <animated.div style={height} className="contact-request-search">
+                    <animated.div style={width} className="input-search">
+                        <i class="bi bi-at"></i>
+                        <animated.input
+                            value={username}
+                            onChange={($event) => setUsername($event.target.value)}
+                            style={userInput}
+                            type="text"
+                            placeholder="Contact username" />
+                    </animated.div>
+                    <div className="contact-results">
+                        <Result username={username} state={setUserFounded} />
+                    </div>
+                </animated.div>
+                <animated.div style={opacDeep} className="request">
+                    <animated.input
+                        value={message}
+                        onChange={($event) => setMessage($event.target.value)}
+                        style={userInput}
+                        maxLength="80"
+                        disabled={!userFounded}
+                        type="text"
+                        placeholder="Message" />
+                    <button disabled={!userFounded}>Request</button>
+                </animated.div>
+            </div>
+        </>
+    )
+}
+
+const Result = ({ username, state }) => {
+
+    const [loaded, setLoaded] = useState(false);
+    const [userData, setUserData] = useState({});
+    const {token} = useContext(userContext);
+
+    const circleLoad = useSpring({ to: { rotate: 190, borderRadius: 5 }, from: { rotate: 0, borderRadius: 10 }, loop: true })
+    const opacDeep = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 });
+
+    useEffect(() => {
+        setLoaded(false);
+        axios.get(`http://localhost:8080/user/search/${username ? username : "xd"}`, { withCredentials: true })
+            .then((res) => {
+                if (res.data.user) {
+                    state(true);
+                } else {
+                    state(false);
+                }  
+
+                if(!username) {
+                    setLoaded(true);
+                    setUserData(null);   
+                }
+
+                if(res.data.user) {
+                    setLoaded(true);
+                    setUserData(res.data.user);
+                }
+            })
+            .catch(err => {
+                alert(err);
+            })
+
+    }, [username])
+
+    return <p>{loaded ? (
+        (userData ? (<div className="userResume">
+            <div className="image-resume">
+                <img src={`http://localhost:8080/upload/user/${userData.img}?token=${token}`} alt="" />
+            </div>
+            <div className="resume-body">
+                <p>{userData.username}</p>
+                <p>{userData.online? "Online" : "Offline"}</p>
+            </div>
+        </div>) : (<animated.p style={opacDeep}>User not defined</animated.p>)
+        )
+    ) : (
+        <animated.div className="loading-circle">
+            <animated.div style={circleLoad} className="circle"></animated.div>
+            <p>Searching...</p>
+        </animated.div>
+    )}</p>
+}
 
 export default FocusUI

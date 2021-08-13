@@ -15,7 +15,6 @@ const ChatBar = () => {
         
     const handleSubmit = async ($event) => {
         $event.preventDefault();
-        console.log(doc.docs.length);
         if (doc.docs.length > 0) {
             let formData = new FormData();
             for (let file of doc.docs) {

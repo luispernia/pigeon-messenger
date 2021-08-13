@@ -31,7 +31,8 @@
     margin-top: 1rem;
     display: flex;
     align-items: flex-start;
-    width: 100%;
+    width: auto;
+    max-width: 70rem;
     .room-form {
         border-radius: 1rem;
         width: auto;
@@ -105,14 +106,26 @@
         }
         .create-room-footer {
             ul {
-                .members-list {
+                display: flex;
+                max-height: 7rem;
+                margin-block: 0;
+                margin-inline: 0;
+                padding-inline: 0;
+                margin-top: 1rem;
+                justify-content: center;
+                .members-list {         
                     display: flex;
+                    margin-bottom: 1rem;
+                    align-items: center;
                     img {
                         width: 3rem;
                         height: 100%;
-                        margin-right: .5rem;
+                        margin-right: 1rem;
                         border-radius: 5rem;
                     }
+                }
+                .members-list:last-of-type {
+                    margin-right: 0;
                 }
             }
         }
@@ -125,7 +138,6 @@
         div {
             background-color: var(--dark-secondary);
             border-radius: 1rem;
-
             h2 {
                 padding: 1rem;
             }
@@ -190,11 +202,130 @@
         
         .submit-room:hover {
             cursor: pointer;
-            background-color: #e94b7a;
+            background-color: var(--pigeon-primary-hover);
 
         }
     }
 }
+
 .min {
     color: var(--light-secondary);
+}
+
+
+.contact-add {  
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    .contact-request-search {
+        display: flex;
+        flex-direction: column;
+        margin-right: 1rem;
+        .input-search {
+            display: flex;
+            align-items: center;
+            background-color: var(--dark-secondary);
+            border-radius: 1rem;
+            input {
+                background-color: transparent;
+                background-color: var(--dark-secondary);
+                border: none;
+                font-size: 1.1rem;
+                padding: 1.3rem;
+                border-radius: 0rem 1rem 1rem 0rem;
+                color: var(--light-primary);
+
+            }
+            input::placeholder {
+                color: var(--dark-gray);
+            }
+            i {
+                background-color: var(--dark-primary);
+                padding: 1.2rem;
+                font-size: 1.5rem;
+                border-radius: 1rem;
+                color: var(--pigeon-primary);
+            }
+        }
+        .contact-results {
+            margin-top: 1rem;
+            background-color: var(--dark-primary);
+            height: 100%;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            color: var(--dark-gray);
+        }
+    }
+    .request {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 2rem;
+        div {
+            background-color: var(--dark-primary);
+            width: 100%;
+            
+        }
+        input {
+            background-color: transparent;
+            background-color: var(--dark-primary);
+            border: none;
+            font-size: 1.1rem;
+            padding: 1.3rem;
+            border-radius: 1rem;
+            color: var(--light-primary);
+        }
+        input::placeholder {
+            color: var(--dark-gray);
+        }
+        input:disabled {
+            opacity: 50%;
+        }
+        button {
+            margin-top: 1rem;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            background-color: var(--pigeon-primary);
+            border-radius: 2rem;
+            color: var(--light-primary);
+            font-weight: 700;
+            transition: .3s all ease;
+        }
+        button:disabled {
+            opacity: 50%;
+        }
+        button:hover {
+            cursor: pointer;
+            background-color: var(--pigeon-primary-hover);
+        }
+    }
+}
+
+.userResume {
+    .image-resume {
+        img {
+            width: 4rem;
+            height: 4rem;
+        }
+    }
+}
+
+.loading-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    p {
+        margin-top: .5rem;
+    }
+}
+.circle {
+    background-color: var(--pigeon-primary);
+    width: 2rem;
+    height: 2rem;
 }

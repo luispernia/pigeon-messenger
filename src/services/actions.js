@@ -10,3 +10,5 @@ export const SELECT_CHAT = "SELECT_CHAT";
 export const UPDATE_PHOTOS = "UPDATE_PHOTOS";
 export const UPDATE_MESSAGES = "UPDATE_MESSAGES";
 export const FOCUS = "FOCUS";
+export const CHAT_PEEKS = "CHAT_PEEKS";
+export const UPDATE_PEEK = "UPDATE_PEEK";

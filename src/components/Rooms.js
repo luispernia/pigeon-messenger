@@ -5,7 +5,7 @@ import socket from "../services/sockets/socketConfig";
 
 function Rooms() {
 
-    const { chats } = useContext(roomsContext);
+    const { chats, chatPeeks } = useContext(roomsContext);
 
     return (
         <>
@@ -15,7 +15,7 @@ function Rooms() {
                 <Search />
                 <div className="chat-icons">
                     {chats.map(e => {
-                        return e.user_id ? <ContactIcon data={e} /> : <RoomIcon data={e} />
+                        return e.user_id ? <ContactIcon data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon data={e} peeks={chatPeeks[e.room_id]} />
                     })}
                 </div>
             </div>
@@ -23,21 +23,39 @@ function Rooms() {
     )
 }
 
-const ContactIcon = ({ data }) => {
+const ContactIcon = ({ data, peeks }) => {
 
     const { contact_id } = data;
     const { token } = useContext(userContext);
-    const { setSelectedChat } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded } = useContext(roomsContext);
 
     const selectedChat = (data) => {
         setSelectedChat(data);
-        console.log("asd")
     }
+
+    useEffect(() => {
+        unreaded(data.room_id)
+        socket.on("onMessage", (args) => {
+            unreaded(data.room_id)
+            if (args.room === data.room_id) {
+                if (selected) {
+                    if (data.room_id === selected.room_id) {
+                    }
+                } else {
+
+                }
+            }
+        })
+    }, [selected])
 
     return (
         <div onClick={() => selectedChat(data)} className="chat-icon">
             <div className="chat-icon-img">
-                <p>{ }</p>
+                {peeks.bells === 0 ? ("") : (
+                    <p className="bells-peek">
+                        {peeks.bells}
+                    </p>
+                )}
                 <img src={`http://localhost:8080/upload/user/${contact_id.img}?token=${token}`} alt={`${contact_id.name} img`} />
             </div>
             <div className="chat-icon-body">
@@ -49,30 +67,26 @@ const ContactIcon = ({ data }) => {
     )
 }
 
-const RoomIcon = ({ data }) => {
+const RoomIcon = ({ data, peeks }) => {
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected } = useContext(roomsContext);
-    const [bells, setBells] = useState(0);
+    const { setSelectedChat, selected, unreaded, setReaded } = useContext(roomsContext);
 
     const selectedChat = (data) => {
+        setReaded(data.room_id);
         setSelectedChat(data);
     }
 
-
-
     useEffect(() => {
+        unreaded(data.room_id)
         socket.on("onMessage", (args) => {
+            unreaded(data.room_id);
             if (args.room === data.room_id) {
                 if (selected) {
-                    console.log(selected);
-                    console.log(data.room_id === selected.room_id);
                     if (data.room_id === selected.room_id) {
-                        console.log("Equal");
-                        setBells(0);
+
                     }
                 } else {
-                    let bell = bells + 1;
-                    setBells(bell);
+
                 }
             }
         })
@@ -81,9 +95,11 @@ const RoomIcon = ({ data }) => {
     return (
         <div onClick={() => selectedChat(data)} className="chat-icon">
             <div className="chat-icon-img">
-                <p className="bells-peek">
-                    {bells}
-                </p>
+                {peeks.bells === 0 ? ("") : (
+                    <p className="bells-peek">
+                        {peeks.bells}
+                    </p>
+                )}
                 <img src={`http://localhost:8080/upload/user/${data.img}?token=${token}`} alt={`${data.name} img`} />
             </div>
             <div className="chat-icon-body">
@@ -127,18 +143,18 @@ const Search = () => {
 }
 
 const Create = () => {
-    
-    const {setFocus} = useContext(roomsContext);
+
+    const { setFocus } = useContext(roomsContext);
 
     return (
         <div className="bar">
             <h2>Chats</h2>
             <div className="bar-controls">
-                <div onClick={() => setFocus(true, "room")} className="create-room">
-                    <i class="bi bi-collection"></i>
+                <div className="create-room">
+                    <i onClick={() => setFocus(true, "room")} class="bi bi-collection"></i>
                 </div>
                 <div className="add-contact">
-                    <i class="bi bi-person-plus"></i>
+                    <i onClick={() => setFocus(true, "request")} class="bi bi-person-plus"></i>
                 </div>
             </div>
         </div>

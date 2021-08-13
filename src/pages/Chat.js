@@ -20,7 +20,7 @@ import FocusUI from '../components/FocusUI';
 
 function Chat() {
 
-    const { user } = useContext(userContext);
+    const { user, token } = useContext(userContext);
     const { addBell, refresh_bell } = useContext(bellsContext);
     const { refresh_rooms, roomMessages } = useContext(roomsContext);
     const chatRef = useRef(null);
@@ -34,10 +34,10 @@ function Chat() {
 
     
     useEffect(() => {
-        handleClientId(user);
-        refresh_bell();
         refresh_rooms();
-
+        refresh_bell();
+        handleClientId(token);  
+        
         socket.on("notify", (args) => {
             addBell(args, ({ ring }) => {
                 if (ring) {
@@ -45,10 +45,9 @@ function Chat() {
                     bell.play();
                 }
             });
-        })
+        })  
 
         socket.on("onMessage", (args) => {
-            refresh_rooms();
             roomMessages({ room_id: args.room });
         })
 
