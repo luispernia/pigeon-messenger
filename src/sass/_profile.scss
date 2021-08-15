@@ -1,5 +1,4 @@
 .profile {
-    flex: 0 0 calc(55%);
     border-radius: 1rem 0rem 0rem 1rem;
     background-color: var(--dark-secondary);
     display: flex;
@@ -16,6 +15,10 @@
         p { 
             margin-left: .4rem;
             font-size: .9rem;
+            display: flex;
+            span {
+                margin-right: .3rem;
+            }
         }
         h3 {
             display: flex;

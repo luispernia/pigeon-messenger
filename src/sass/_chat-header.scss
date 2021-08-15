@@ -33,6 +33,7 @@
         display: flex;
         align-items: flex-end;
         flex: 0 0 calc(20%);
+        justify-content: flex-end;
         margin-bottom: .5rem;
         i {
             color: var(--pigeon-primary);

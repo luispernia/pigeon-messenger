@@ -12,7 +12,7 @@ function ProviderRoom({ children }) {
         selectedChat: null,
         messages: [],
         photos: [],
-        focus: { bool: false, type: "" },
+        focus: { bool: false, type: "", bell: false, resetPeek: false },
         chatPeeks: {}
     }
 
@@ -40,12 +40,13 @@ function ProviderRoom({ children }) {
             handleRoomConnections(roomConnections, token);
             for (let chat of chats) {
                 if (chat.contact_id) {
-                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: [], online: false, bells: 0 } } })
+                    let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: chat.contact_id.online, bells: 0 } } })
                 } else {
-                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: [], online: false, bells: 0 } } })
+                    let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
                 }
             }
-
 
             dispatch({ type: "UPDATE_ROOMS", payload: chats });
 
@@ -72,12 +73,25 @@ function ProviderRoom({ children }) {
         }
     }
 
+    const setPeekMessages = async (room_id) => {
+        let {data} = await axios.get(`http://localhost:8080/message/last/${room_id}`, {withCredentials: true}).catch(err => alert(err));
+        if(data.messages) {
+            dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "messages", value: [data.messages[0], data.messages[1]]}})
+            dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "resetPeek", value: true}})
+
+        }
+    }
+
     const clearPhotos = async () => {
         dispatch({ type: "UPDATE_PHOTOS", payload: [] })
     }
 
     const setFocus = (bool, type) => {
         dispatch({ type: "FOCUS", payload: { bool, type } });
+    }
+
+    const setBell = (bell) => {
+        dispatch({ type: "FOCUS", payload: { bell } });
     }
 
     const updatePeek = (room_id, prop, value) => {
@@ -103,8 +117,6 @@ function ProviderRoom({ children }) {
         }
     }
 
-
-
     return <roomsContext.Provider value={{
         selected: state.selectedChat,
         chats: state.chats,
@@ -120,7 +132,10 @@ function ProviderRoom({ children }) {
         chatPeeks: state.chatPeeks,
         updatePeek,
         unreaded,
-        setReaded
+        setReaded,
+        setBell,
+        bellState: state.focus.bell,
+        setPeekMessages
     }} > {children} </roomsContext.Provider>
 }
 

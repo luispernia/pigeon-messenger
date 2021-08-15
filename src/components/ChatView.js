@@ -1,16 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from '../services/context/UserContext';
-import ChatPhotos from "./ChatPhotos";
 import ChatBar from './ChatBar';
 import Message from "./Message";
 
-function ChatView({ chat }) {
+function ChatView() {
 
+    const {token} = useContext(userContext);
     const { selected } = useContext(roomsContext);
+    const chatRef = useRef("");
 
 
-    return selected ? (selected.user_id ? <ContactView data={selected} chat={chat} /> : <RoomView data={selected} chat={chat} />) : <NotSelectedView chat={chat} />
+
+    return (
+        <div ref={chatRef} style={selected? {backgroundImage: `url(http://localhost:8080/upload/room/${selected.img}?token=${token})`} : {}} className="chat-view">
+            {selected ? (selected.user_id ? <ContactView data={selected} chat={chatRef} /> : <RoomView data={selected} chat={chatRef} />) : <NotSelectedView chat={chatRef} />}
+            <ChatBar  />
+        </div>
+    )
 }
 
 const ContactView = ({ data, chat }) => {

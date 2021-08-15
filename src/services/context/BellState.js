@@ -57,6 +57,13 @@ function ProvideBell({children}) {
                     // here update the rooms or contacts state
                     cb({ring});
                     break;
+
+                case "REQUEST_ROOM":
+                        refresh_rooms();
+                        refresh_bell();
+                        // here update the rooms or contacts state
+                        cb({ring});
+                        break;
     
                 default: 
     

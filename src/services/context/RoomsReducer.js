@@ -35,7 +35,7 @@ export default (state, action) => {
         case FOCUS:
             return {
                 ...state,
-                focus: payload
+                focus: {...state.focus, ...payload}
             }
         case CHAT_PEEKS:
             return {
@@ -45,7 +45,7 @@ export default (state, action) => {
             case UPDATE_PEEK:
                 return {
                     ...state,
-                    chatPeeks: {...state.chatPeeks, [payload.room_id]: {[payload.prop]: payload.value}}
+                    chatPeeks: {...state.chatPeeks,[payload.room_id]: {...state.chatPeeks[payload.room_id], [payload.prop]: payload.value}}
                 }
         default:
             return state

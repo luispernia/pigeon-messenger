@@ -1,18 +1,14 @@
 import React, { useContext, useEffect, useRef } from 'react'
-import { useHistory } from "react-router";
 import { handleClientId } from "../services/sockets/sockets";
 
 import userContext from '../services/context/UserContext';
 import bellsContext from '../services/context/BellContext';
 import roomsContext from "../services/context/RoomContext";
 
-import Docs from '../components/Docs';
 import socket from "../services/sockets/socketConfig";
 import ChatView from "../components/ChatView";
 import Profile from "../components/Profile";
 import Rooms from "../components/Rooms";
-import Contacts from "../components/Contacts";
-import Notifications from "../components/Notifications";
 import ChatHeader from '../components/ChatHeader';
 import ChatBar from '../components/ChatBar';
 import FocusUI from '../components/FocusUI';
@@ -20,10 +16,9 @@ import FocusUI from '../components/FocusUI';
 
 function Chat() {
 
-    const { user, token } = useContext(userContext);
+    const {  token } = useContext(userContext);
     const { addBell, refresh_bell } = useContext(bellsContext);
-    const { refresh_rooms, roomMessages } = useContext(roomsContext);
-    const chatRef = useRef(null);
+    const { refresh_rooms, roomMessages, updatePeek } = useContext(roomsContext);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -39,6 +34,7 @@ function Chat() {
         handleClientId(token);  
         
         socket.on("notify", (args) => {
+            console.log("notify");
             addBell(args, ({ ring }) => {
                 if (ring) {
                     let bell = new Audio("bell.wav");
@@ -51,6 +47,14 @@ function Chat() {
             roomMessages({ room_id: args.room });
         })
 
+        socket.on("userConnect", (res) => {
+            updatePeek(res.room_id, "online", true);
+        })
+
+        socket.on("userDisconnect", (res) => {
+            console.log(res);
+            updatePeek(res.room_id, "online", false);
+        })
     }, [])
 
 
@@ -70,11 +74,9 @@ function Chat() {
                         <ChatHeader />
                     </div>
 
-                    <div ref={chatRef} className="chat-view">
-                        <ChatView chat={chatRef} />    
-                        <ChatBar  />
-                    </div>
-
+                    
+                        <ChatView />    
+                
                 </div>
 
 

@@ -2,10 +2,12 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
 import socket from "../services/sockets/socketConfig";
+import { useSpring, animated } from "react-spring";
 
 function Rooms() {
 
     const { chats, chatPeeks } = useContext(roomsContext);
+
 
     return (
         <>
@@ -27,15 +29,17 @@ const ContactIcon = ({ data, peeks }) => {
 
     const { contact_id } = data;
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
 
     const selectedChat = (data) => {
+        setReaded(data.room_id);
         setSelectedChat(data);
     }
 
     useEffect(() => {
         unreaded(data.room_id)
         socket.on("onMessage", (args) => {
+            setPeekMessages(data.room_id);
             unreaded(data.room_id)
             if (args.room === data.room_id) {
                 if (selected) {
@@ -60,8 +64,10 @@ const ContactIcon = ({ data, peeks }) => {
             </div>
             <div className="chat-icon-body">
                 <h4>{`${contact_id.username}`}</h4>
-                <p className="chat-peek"><span>You:</span> What's up?</p>
-                <p className="chat-peek"><span>Michael:</span> All good :D</p>
+                <p className={`icon-online ${peeks.online ? "" : "offline"} `}>{peeks.online ? "Online" : "Offline"}</p>
+                {peeks.messages ? (
+                        <PeekMessage message={peeks.messages[0]} />
+                    ) : ("")}
             </div>
         </div>
     )
@@ -69,7 +75,7 @@ const ContactIcon = ({ data, peeks }) => {
 
 const RoomIcon = ({ data, peeks }) => {
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
 
     const selectedChat = (data) => {
         setReaded(data.room_id);
@@ -77,10 +83,12 @@ const RoomIcon = ({ data, peeks }) => {
     }
 
     useEffect(() => {
-        unreaded(data.room_id)
+        unreaded(data.room_id);
         socket.on("onMessage", (args) => {
+            setPeekMessages(data.room_id);
             unreaded(data.room_id);
             if (args.room === data.room_id) {
+                    
                 if (selected) {
                     if (data.room_id === selected.room_id) {
 
@@ -100,22 +108,34 @@ const RoomIcon = ({ data, peeks }) => {
                         {peeks.bells}
                     </p>
                 )}
-                <img src={`http://localhost:8080/upload/user/${data.img}?token=${token}`} alt={`${data.name} img`} />
+                <img src={`http://localhost:8080/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
             </div>
             <div className="chat-icon-body">
                 <h4>{`${data.name}`}</h4>
-                {data.lastMessages ? (
-                    data.lastMessages.length > 0 ? (
-                        <div className="chat-peek">
-                            <p><span>{data.lastMessages[0].pre.author.username}</span> {data.lastMessages[0].pre.text}</p>
-                            <p><span>{data.lastMessages[0].post.author.username}</span> {data.lastMessages[0].post.text}</p>
-                        </div>
-
-                    ) : ("")
-                ) : ""}
+                <div className="peek-messages">
+                    {peeks.messages ? (
+                        <PeekMessage message={peeks.messages[0]} />
+                    ) : ("")}
+                </div>
             </div>
         </div>
     )
+
+}
+
+const PeekMessage = ({ message, update }) => {
+
+    const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }})
+
+    return (<>
+        {message? (
+            <animated.div style={spring} className="peek-message">
+            <p className="peek-author">{message.author.username}</p>
+            <p>{message.text.slice(0, 15)}{message.text.length >= 15? "..." : ""}</p>
+        </animated.div>
+        ) : ("")}
+    </>)
+
 
 }
 

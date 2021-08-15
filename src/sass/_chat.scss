@@ -34,12 +34,12 @@
             display: flex;      
             flex-direction: row-reverse;
             justify-content: space-between;
+            max-height: 7rem;
         }
 
         .chat-view {
             background-color: var(--light-secondary);
-            flex: 0 0 calc(83%);
-        }
+            height: 100%        }
     }
 
     .module {
@@ -85,7 +85,7 @@
         }
         margin-right: 0.4rem;
     }
-
+    
     .chat-icon-body {
         .chat-peek {
             margin-bottom: 0.3rem;
@@ -95,9 +95,6 @@
             color: var(--dark-gray);
         }
 
-        h4 {
-            margin-bottom: 0.4rem;
-        }
 
         p {
             font-size: 0.9rem;
@@ -137,4 +134,32 @@
         cursor: pointer;
         color: var(--light-secondary);
     }
+}
+
+.peek-messages {
+    display: flex;
+    flex-direction: column-reverse;
+}
+.peek-message {
+    margin-top: .5rem;
+    opacity: 0;
+    .peek-author {
+        color: var(--light-secondary);
+        font-size: .9rem!important;
+    }
+    p {
+        color: var(--dark-gray);
+        font-size: .5rem;
+    }
+}
+
+.icon-online {
+    color: var(--pigeon-primary);
+}
+.icon-online:first-of-type {
+    margin-top: .2rem;
+}
+
+.offline {
+    color: var(--blue-submarine);
 }

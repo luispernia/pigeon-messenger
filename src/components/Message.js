@@ -5,10 +5,8 @@ function Message({ data }) {
 
     const { user, token } = useContext(userContext);
 
-
-
     return (
-        <div className={`message ${user.username === data.author.username ? "right" : ""}`}>
+        <div  className={`message ${user.username === data.author.username ? "right" : ""}`}>
             <div className="user">
                 <img src={`http://localhost:8080/upload/user/${data.author.img}?token=${token}`} alt="" />
                 <p>{data.author.username}</p>

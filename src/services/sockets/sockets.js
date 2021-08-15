@@ -13,9 +13,6 @@ socket.on("privateMessage", (message) => {
     console.log(message);
 })
 
-socket.on("userConnect", (res) => {
-    console.log(res);
-})
 
 function handleChat(user, setRooms, room) {
     socket.emit("joinChat", { name: user.username, room }, ({ roomUsers, myRooms }) => {
@@ -81,9 +78,9 @@ function rejectContact(data) {
     })
 }
 
-const sendMessage = ({user, message , room, files, type}) => {
+const sendMessage = (data) => {
     
-    socket.emit("sendMessage", {user, message , room, files, type}, (res) => {
+    socket.emit("sendMessage", data, (res) => {
         if(!res.ok) {
             alert(res.err)
         }
@@ -92,6 +89,21 @@ const sendMessage = ({user, message , room, files, type}) => {
     })
 }   
 
+const request_room = (data) => {
+    socket.emit("room_request", data, (res) => {
+        if(!res.ok) {
+            alert(res.err);
+        }
+    })
+}
+
+const declined_room = ({id, img}) => {
+    socket.emit("room_declined", {id, img}, (res) => {
+        if(!res.ok) {
+            alert(res.err);
+        }
+    })
+}
 
 export {
     handleChat,
@@ -102,5 +114,7 @@ export {
     acceptContact,
     rejectContact,
     sendMessage,
-    handleRoomConnections
+    handleRoomConnections,
+    request_room,
+    declined_room
 };

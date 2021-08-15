@@ -1,14 +1,75 @@
-.bells-count {
-    width: 2rem;
-    height: 2rem;
+.notifications {
+    margin-left: 2rem;
+    margin-right: 2rem;
     display: flex;
-    color: var(--pigeon-primary);
+    flex-direction: row-reverse;
+}
+
+.bells-scroll {
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.bells-scroll::-webkit-scrollbar {
+    overflow-y: hidden;
+}
+
+.bells {
+    display: flex;
+    border-radius: 1rem;
+    justify-content: flex-end;
+    flex-direction: column-reverse;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    backdrop-filter: blur(0.5rem);
+    background-color: var(--dark-transparent);
+    z-index: 9999999;
+    padding: 3rem 3rem 3rem 3rem;
+    min-height: 80vh;
+    max-height: 80vh;
+    box-shadow: 0rem 0rem 8rem #0000002b;
+    h3 {
+        color: var(--light-primary);
+    }
+}
+
+.bells-count {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    color: var(--light-primary);
     align-items: center;
     justify-content: center;
-    background-color: #0a192b;
     border-radius: 100%;
+    font-weight: 700;
     position: absolute;
-    transform: translate(0rem, 0rem);   
+}
+.bells-count:hover {
+    cursor: pointer;
+}
+.bell-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    z-index: 999999999;
+    p {
+        transition: .3s all ease-in-out;
+    }
+    i {
+        cursor: pointer;
+        font-size: 2.4rem;
+        color: var(--pigeon-primary);
+        transition: 0.3s all ease-in-out;
+    }
+}
+
+.bell-icon:hover {
+    i {
+        color: var(--pigeon-primary-hover);
+    }
 }
 
 .bell {
@@ -16,39 +77,42 @@
     color: var(--light-primary);
     padding: 1rem;
     background-color: var(--dark-primary);
-    margin-right: 1rem;
     border-radius: 1rem;
-    transition: .2s all ease-in;
-    border: 1px solid var(--pigeon-primary);
+    margin-top: 1rem;
+    transform: translate(-35px, 0px);
     img {
         width: 3rem;
         height: fit-content;
         border-radius: 100%;
-        margin-right: .4rem;
-    }
-    .bell-icon {
-        display: flex;
-        align-items: center;
-        flex: 0 0 calc(10%);
-        i {
-            font-size: 1.8rem;
-            color: var(--pigeon-primary);
-        }
+        margin-right: 0.4rem;
     }
     .bell-body {
         text-align: left;
         p {
-            transition: .2s all ease-in;
-            margin-top: .2rem;
-            font-size: .9rem;
+            transition: 0.2s all ease-in;
+            margin-top: 0.2rem;
+            font-size: 0.9rem;
             color: var(--dark-gray);
         }
-
+    }
+    button {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        border: none;
+        color: var(--light-primary);
+        border-radius: 1rem;
+        background-color: transparent;
+        border: 1px solid var(--blue-submarine);
+        transition: .3s all ease-in-out;
+    }
+    button:hover {
+        cursor: pointer;
+        background-color: var(--pigeon-primary-hover);
     }
 }
 
 .bell:hover {
-    background-color: var(--blue-submarine);
     cursor: pointer;
     .bell-body {
         p {
