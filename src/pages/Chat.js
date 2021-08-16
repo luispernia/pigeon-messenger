@@ -34,7 +34,6 @@ function Chat() {
         handleClientId(token);  
         
         socket.on("notify", (args) => {
-            console.log("notify");
             addBell(args, ({ ring }) => {
                 if (ring) {
                     let bell = new Audio("bell.wav");

@@ -1,38 +1,6 @@
 import socket from "./socketConfig";
 import axios from "axios";
 
-socket.on("createMessage", (arg) => {
-    console.log(arg);
-})
-
-socket.on("listUsers", (res) => {
-    console.log(res);
-})
-
-socket.on("privateMessage", (message) => {
-    console.log(message);
-})
-
-
-function handleChat(user, setRooms, room) {
-    socket.emit("joinChat", { name: user.username, room }, ({ roomUsers, myRooms }) => {
-        console.log("Room Users", roomUsers);
-        setRooms(myRooms);
-    })
-}
-
-function handleMessage(message, room) {
-    socket.emit("sendMessage", { message, room }, (res) => {
-        console.log(res);
-    });
-}
-
-function privateMessage(message, to) {
-    socket.emit("privateMessage", { message, to }, (res) => {
-        console.log(res);
-    });
-}
-
 function handleClientId(token) {
     socket.emit("start", { token, rooms: null }, (res) => {
         console.log(res);
@@ -105,10 +73,15 @@ const declined_room = ({id, img}) => {
     })
 }
 
+const acceptRoom = (data) => {
+    socket.emit("room_accepted", data, (res) => {
+        if(!res.ok) {
+            alert(res.err);
+        }
+    })
+}
+
 export {
-    handleChat,
-    handleMessage,
-    privateMessage,
     sendContact,
     handleClientId,
     acceptContact,
@@ -116,5 +89,6 @@ export {
     sendMessage,
     handleRoomConnections,
     request_room,
-    declined_room
+    declined_room,
+    acceptRoom
 };

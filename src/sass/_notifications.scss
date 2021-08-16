@@ -9,6 +9,10 @@
     overflow-y: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+    .bellsContain {  
+        display: flex;
+        flex-direction: column-reverse;
+    }
 }
 
 .bells-scroll::-webkit-scrollbar {
