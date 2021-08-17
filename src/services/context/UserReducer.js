@@ -1,4 +1,4 @@
-import { REGISTER_USER, LOGIN_USER, UPDATE_USER, SIGNOUT_USER } from "../actions";
+import { REGISTER_USER, LOGIN_USER, UPDATE_USER, SIGNOUT_USER, UPDATE_ALERT } from "../actions";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
@@ -12,24 +12,31 @@ export default (state, action) => {
             }
 
         case LOGIN_USER:
-    
             return {
                 ...state,
                 user: {name: payload.user.name, email: payload.user.email, img: payload.user.img, _id: payload.user._id, status: payload.user.status, username: payload.user.username,   },
                 token: payload.token
             }
+
         case UPDATE_USER:
-        
+
             return {
                 ...state,
                 user: {name: payload.user.name, email: payload.user.email, img: payload.user.img, _id: payload.user._id, status: payload.user.status, username: payload.user.username,   },
                 token: payload.token
             }
+
         case SIGNOUT_USER: 
             return {
                 ...state,
                 user: null,
                 token: null
+            }
+
+        case UPDATE_ALERT: 
+            return {
+                ...state,
+                alert: {...state.alert, ...payload}
             }
 
         default:

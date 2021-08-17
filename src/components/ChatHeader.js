@@ -1,31 +1,64 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import roomsContext from '../services/context/RoomContext';
+import axios from "axios";
+import userContext from '../services/context/UserContext';
 
 function ChatHeader() {
 
-    let [users, setUsers] = useState([]);
-    let {selected} = useContext(roomsContext)
-    let [onMouse, setOnMouse] = useState(false);
+    const [users, setUsers] = useState([]);
+    const {selected} = useContext(roomsContext)
+    const {token} = useContext(userContext);
+    const [onMouse, setOnMouse] = useState(false);
+    const [onEdit, setOnEdit] = useState(true);
+    const titleRef = useRef(null);
+    const [title, setTitle] = useState(""); 
+
+    const editTitle = () => {
+        setOnEdit(!onEdit);
+    }
+
+    const saveEdit = () => {
+        
+    }
 
     useEffect(() => {
-        fetch("https://reqres.in/api/users?page=2")
-            .then(res => res.json())
-            .then(res => {
-                res.data.pop();
-                setUsers(res.data);
-            })
-    }, [])
+        if(selected) {
+            setTitle(selected.name);
+            setUsers(selected.members);
+        } else {
+            setTitle("");
+        }
+
+        setOnEdit(true);
+
+    }, [selected])
+    
+    
+    useEffect(() => {
+        if(onEdit === false) {
+            titleRef.current.focus();
+        }
+
+
+
+    }, [onEdit])
 
     return (
         <div className="chat-header">
             <div className="chat-title">
                 <div onMouseLeave={() => {setOnMouse(false)}} onMouseOver={() => { setOnMouse(true) }} className="chat-name">
-                    <input type="text" value={selected? selected.name : ""} />
-                    <i style={ onMouse? {display: "flex"} : {display: "none"}} class="bi bi-pencil-square"></i>
+                    <input ref={titleRef} className="chat-title" type="text" value={selected? title : ""} onChange={($event) => setTitle($event.target.value)} disabled={onEdit} />
+                    <i onClick={() => {
+                        if(!onEdit) {
+                            saveEdit();
+                        } else{ 
+                            editTitle();
+                        }
+                        }} style={ onMouse? {display: "flex"} : {display: "none"}} class={`bi bi-${onEdit? "pencil-square" : "check2-circle"}`}></i>
                 </div>
                 <div className="members">
                     {users.map(e => {
-                        return <img src={e.avatar} alt={`${e.email}`} />
+                        return <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
                     })}
                     <p>And 6+ people</p>
                 </div>

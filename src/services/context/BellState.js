@@ -9,7 +9,8 @@ axios.defaults.withCredentials = true;
 function ProvideBell({ children }) {
 
     const initialState = {
-        bells: []
+        bells: [],
+   
     }
 
     const [state, dispatch] = useReducer(BellReducer, initialState);
@@ -88,7 +89,6 @@ function ProvideBell({ children }) {
                 case "ADDED_TO_ROOM":
                     refresh_rooms();
                     refresh_bell();
-                    alert("added to room");
                         // here update the rooms or contacts state
                     cb({ ring });
                     break;
@@ -107,13 +107,14 @@ function ProvideBell({ children }) {
 
     }
 
-
+  
 
     return <bellsContext.Provider value={{
         bells: state.bells,
         addBell,
         refresh_bell,
-        setBells
+        setBells,
+    
     }} > {children} </bellsContext.Provider>
 }
 

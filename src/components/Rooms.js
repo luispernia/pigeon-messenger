@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
 import socket from "../services/sockets/socketConfig";
@@ -9,6 +9,7 @@ function Rooms() {
     const { chats, chatPeeks } = useContext(roomsContext);
 
 
+
     return (
         <>
             <PigeonLogo />
@@ -16,8 +17,8 @@ function Rooms() {
                 <Create />
                 <Search />
                 <div className="chat-icons">
-                    {chats.map(e => {
-                        return e.user_id ? <ContactIcon data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon data={e} peeks={chatPeeks[e.room_id]} />
+                    {chats.map((e,i) => {
+                        return e.user_id ? <ContactIcon key={i} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon data={e} peeks={chatPeeks[e.room_id]} />
                     })}
                 </div>
             </div>
@@ -29,9 +30,11 @@ const ContactIcon = ({ data, peeks }) => {
 
     const { contact_id } = data;
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, updatePeek } = useContext(roomsContext);
+    const contactRef = useRef(null);
 
     const selectedChat = (data) => {
+
         setReaded(data.room_id);
         setSelectedChat(data);
     }
@@ -52,8 +55,12 @@ const ContactIcon = ({ data, peeks }) => {
         })
     }, [selected])
 
+    useEffect(() => {
+
+    }, [])
+
     return (
-        <div onClick={() => selectedChat(data)} className="chat-icon">
+        <div ref={contactRef} onClick={() => selectedChat(data)} className={`chat-icon ${ selected? ( data.room_id === selected.room_id? "chat-selected" : "") : ""}`}>
             <div className="chat-icon-img">
                 {peeks.bells === 0 ? ("") : (
                     <p className="bells-peek">
@@ -75,7 +82,8 @@ const ContactIcon = ({ data, peeks }) => {
 
 const RoomIcon = ({ data, peeks }) => {
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, updatePeek} = useContext(roomsContext);
+    const roomRef = useRef(null);
 
     const selectedChat = (data) => {
         setReaded(data.room_id);
@@ -100,8 +108,12 @@ const RoomIcon = ({ data, peeks }) => {
         })
     }, [selected])
 
+    useEffect(() => {
+
+    }, [])
+
     return (
-        <div onClick={() => selectedChat(data)} className="chat-icon">
+        <div ref={roomRef}  onClick={() => selectedChat(data)} className="chat-icon" style={selected? (data.room_id === selected.room_id? {backgroundColor: "var(--dark-secondary)"} : {}) : ({})}   >
             <div className="chat-icon-img">
                 {peeks.bells === 0 ? ("") : (
                     <p className="bells-peek">
@@ -123,7 +135,7 @@ const RoomIcon = ({ data, peeks }) => {
 
 }
 
-const PeekMessage = ({ message, update }) => {
+const PeekMessage = ({ message}) => {
 
     const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }})
 

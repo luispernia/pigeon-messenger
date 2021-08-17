@@ -1,6 +1,7 @@
 .chat-header {
     display: flex;
     width: 100%;
+    padding-left: .5rem;
     .chat-title {
         display: flex;
         flex-direction: column;
@@ -37,7 +38,7 @@
         margin-bottom: .5rem;
         i {
             color: var(--pigeon-primary);
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             margin-right: 1rem;
             transition: .2s all ease-in;
         }

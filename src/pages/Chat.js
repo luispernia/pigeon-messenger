@@ -10,15 +10,15 @@ import ChatView from "../components/ChatView";
 import Profile from "../components/Profile";
 import Rooms from "../components/Rooms";
 import ChatHeader from '../components/ChatHeader';
-import ChatBar from '../components/ChatBar';
 import FocusUI from '../components/FocusUI';
+import Alert from '../components/Alert';
 
 
 function Chat() {
 
-    const {  token } = useContext(userContext);
-    const { addBell, refresh_bell } = useContext(bellsContext);
-    const { refresh_rooms, roomMessages, updatePeek } = useContext(roomsContext);
+    const { token, alert, setAlert, refresh_token } = useContext(userContext);
+    const { addBell, refresh_bell, } = useContext(bellsContext);
+    const { refresh_rooms, roomMessages, updatePeek, selected } = useContext(roomsContext);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -26,24 +26,31 @@ function Chat() {
     // const [room, setRoom] = useState("");
     // const [to, setTo] = useState("");
 
+    useEffect(() => {
+        socket.on("onMessage", (args) => {
+            if(selected) {
+                if(selected.room_id === args.room) {
+                    roomMessages({ room_id: args.room });
+                }
+            }
+        })
+    }, [selected])
 
-    
+
     useEffect(() => {
         refresh_rooms();
         refresh_bell();
-        handleClientId(token);  
-        
+        handleClientId(token);
+        refresh_token();
+
         socket.on("notify", (args) => {
             addBell(args, ({ ring }) => {
+                let thing = args.bell.title? setAlert({type: "info", show: true, text: args.bell.title}) : ("");
                 if (ring) {
                     let bell = new Audio("bell.wav");
                     bell.play();
                 }
             });
-        })  
-
-        socket.on("onMessage", (args) => {
-            roomMessages({ room_id: args.room });
         })
 
         socket.on("userConnect", (res) => {
@@ -51,15 +58,17 @@ function Chat() {
         })
 
         socket.on("userDisconnect", (res) => {
-            console.log(res);
             updatePeek(res.room_id, "online", false);
         })
     }, [])
 
 
+
     return (
         <>
-
+            {alert.show? (
+                <Alert  />
+            ) : ("")}
             <div className="container">
                 <FocusUI />
                 <div className="primary-column">
@@ -72,13 +81,11 @@ function Chat() {
                         <Profile />
                         <ChatHeader />
                     </div>
+                    <ChatView />
 
-                    
-                        <ChatView />    
-                
                 </div>
 
-
+            
 
                 {/* <div className="module">
                     <Profile user={user} logout={logout} token={token} />

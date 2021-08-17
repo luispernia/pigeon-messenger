@@ -13,73 +13,75 @@ function handleRoomConnections(rooms, token) {
     })
 }
 
-function sendContact(requester, text, to, img, token) {
+function sendContact(requester, text, to, img, token, cb) {
     axios.post("http://localhost:8080/contact/on", { to }, { withCredentials: true })
         .then(res => {
             console.log(res.data.contact);
             if (!res.data.contact.length > 0) {
                 socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
                     if (!res.ok) {
-                        alert(res.err);
+                        cb({ok: false, err: res.err})
                     }
                 })
             } else {
-                alert("You already have this contact");
+                cb({ok: false, err: "You already have this contact"})
             }
         }).catch(err => console.log(err))
 }
 
-function acceptContact(data) {
+function acceptContact(data, cb) {
     socket.emit("contact-accepted", data, (res) => {
         if (!res.ok) {
-            console.log(res);
-            alert(res);
+            cb({ok: false, err: res.err})
         }
     })
 }
 
-function rejectContact(data) {
+function rejectContact(data, cb) {
     socket.emit("reject-contact", data, (res) => {
         if (!res.ok) {
-            alert(res.err);
+            cb({ok: false, err: res.err})
+
         }
     })
 }
 
-const sendMessage = (data) => {
+const sendMessage = (data, cb) => {
     
     socket.emit("sendMessage", data, (res) => {
         if(!res.ok) {
-            alert(res.err)
+            cb({ok: false, err: res.err})
         }
-
-        console.log(res);
     })
 }   
 
-const request_room = (data) => {
+const request_room = (data, cb) => {
     socket.emit("room_request", data, (res) => {
         if(!res.ok) {
-            alert(res.err);
+            cb({ok: false, err: res.err})
         }
     })
 }
 
-const declined_room = ({id, img}) => {
+const declined_room = ({id, img},cb) => {
     socket.emit("room_declined", {id, img}, (res) => {
         if(!res.ok) {
-            alert(res.err);
+            cb({ok: false, err: res.err})
         }
     })
 }
 
-const acceptRoom = (data) => {
+const acceptRoom = (data, cb) => {
     socket.emit("room_accepted", data, (res) => {
         if(!res.ok) {
-            alert(res.err);
+            cb({ok: false, err: res.err})
         }
     })
 }
+
+const roomSettings = () => {
+    
+} 
 
 export {
     sendContact,

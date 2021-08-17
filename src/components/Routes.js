@@ -1,13 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { ProvideAuth } from "../services/context/UserState";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
   useHistory,
-  useLocation
 } from "react-router-dom";
 import Register from "../pages/Register";
 import Landing from "../pages/Landing";
@@ -56,7 +53,7 @@ function Routes() {
 }
 
 function PrivateRoutePlus({ children, ...rest }) {
-  let { user, updateUser } = useContext(userContext);
+  let { updateUser } = useContext(userContext);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 

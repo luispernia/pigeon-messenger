@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from '../services/context/UserContext';
 import ChatBar from './ChatBar';
@@ -10,19 +10,18 @@ function ChatView() {
     const { selected } = useContext(roomsContext);
     const chatRef = useRef("");
 
-
-
     return (
-        <div ref={chatRef} style={selected? {backgroundImage: `url(http://localhost:8080/upload/room/${selected.img}?token=${token})`} : {}} className="chat-view">
+        <div ref={chatRef}  className="chat-view">
+            <div className="chat-glass">
             {selected ? (selected.user_id ? <ContactView data={selected} chat={chatRef} /> : <RoomView data={selected} chat={chatRef} />) : <NotSelectedView chat={chatRef} />}
             <ChatBar  />
+            </div>
         </div>
     )
 }
 
 const ContactView = ({ data, chat }) => {
 
-    const { token } = useContext(userContext);
     const { chatPhotos, clearPhotos, photos, roomMessages, selected, messages } = useContext(roomsContext);
     const messagesRef = useRef(null);
 
@@ -35,6 +34,7 @@ const ContactView = ({ data, chat }) => {
     }
 
     useEffect(() => {
+        console.log(data);
         roomMessages({ room_id: data.room_id });
         (() => {
             messagesRef.current.scroll(0, 1000000000);
@@ -42,22 +42,20 @@ const ContactView = ({ data, chat }) => {
     }, [selected])
 
     return (
-        <div className="chat-glass">
             <div ref={messagesRef} style={{ maxHeight: chat.current.offsetHeight }} className="messages">
-                {messages.map(e => {
-                    return <Message data={e} />
-                })}
+               <div className="messages-overflow">
+                    {messages.map((e,i) => {
+                    return <Message key={i} data={e} />
+                    })}
+                </div>
             </div>
-        </div>
     );
 }
 
 const RoomView = ({ data, chat }) => {
 
-    const { token } = useContext(userContext);
     const { chatPhotos, clearPhotos, photos, roomMessages, selected, messages } = useContext(roomsContext);
     const messagesRef = useRef(null);
-    let [state, setState] = useState(false);
 
     const setPhotos = () => {
         if (photos.length === 0) {
@@ -68,6 +66,7 @@ const RoomView = ({ data, chat }) => {
     }
 
     useEffect(() => {
+        console.log(data);
         roomMessages({ room_id: data.room_id });
         (() => {
             messagesRef.current.scroll(0, 1000000000);
@@ -75,21 +74,20 @@ const RoomView = ({ data, chat }) => {
     }, [selected])
 
     return (
-        <div className="chat-glass">
-            <div ref={messagesRef} style={{ maxHeight: chat.current.offsetHeight }} className="messages">
-
-                {messages.map(e => {
-                   return <Message data={e} />
-                })}
+            <div ref={messagesRef} style={{ maxHeight: chat.current.offsetHeight }}  className="messages">
+                <div className="messages-overflow">
+                    {messages.map((e,i) => {
+                    return <Message key={i} data={e} />
+                    })}
+                </div>
             </div>
-        </div>
     );
 }
 
 const NotSelectedView = ({ chat }) => {
     return (
         <div style={{ height: "100%" }} className="chat-glass">
-            <h2 className="empty">Chat empty</h2>
+            
         </div>
     )
 }

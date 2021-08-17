@@ -30,3 +30,14 @@
         }
     }
 }
+
+.chat-selected {
+    background-color: var(--dark-secondary)!important;
+}
+
+.field_error {
+    padding-top: .5rem;
+    color: var(--light-primary);
+    color: lightcoral;
+
+}

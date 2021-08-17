@@ -9,30 +9,37 @@ const ChatBar = () => {
     const [message, setMessage] = useState("");
     const [doc, setFile] = useState({ docs: [] });
     const { user } = useContext(userContext);
-    const {selected} = useContext(roomsContext);
+    const {selected, setMessageUpload} = useContext(roomsContext);
     const {room_id} = selected? selected : {room_id: ""};
     const fileRef = useRef(null);
         
     const handleSubmit = async ($event) => {
         $event.preventDefault();
+        setMessageUpload({ author: user, msgDate: new Date(), room_id, text: message, files: []})
+
         if (doc.docs.length > 0) {
             let formData = new FormData();
+
             for (let file of doc.docs) {
                 formData.append("docs", file);
             }
 
             formData.append("document", JSON.stringify({ author: user._id, msgDate: new Date(), room_id, text: message }));
 
-            let res = await axios.post("http://localhost:8080/message/docs", formData, {
+            axios.post("http://localhost:8080/message/docs", formData, {
                 withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
-            }).catch(err => {
+            })
+
+            .then((res) => {
+                sendMessage({ user, message, room: room_id, type: "docs" });
+            })
+            .catch(err => {
                 alert(err);
             })
 
-            sendMessage({ user, message, room: room_id, type: "docs" });
         } else {
             sendMessage({ user, message, room: room_id, type: "text" });
         }

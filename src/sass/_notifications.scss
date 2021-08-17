@@ -58,7 +58,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    z-index: 999999999;
+    z-index: 99999999;
     p {
         transition: .3s all ease-in-out;
     }
@@ -96,7 +96,7 @@
             transition: 0.2s all ease-in;
             margin-top: 0.2rem;
             font-size: 0.9rem;
-            color: var(--dark-gray);
+            color: var(--light-secondary);
         }
     }
     button {
@@ -105,14 +105,14 @@
         margin-right: 0.5rem;
         border: none;
         color: var(--light-primary);
-        border-radius: 1rem;
+        border-radius: .5rem;
         background-color: transparent;
         border: 1px solid var(--blue-submarine);
         transition: .3s all ease-in-out;
     }
     button:hover {
         cursor: pointer;
-        background-color: var(--pigeon-primary-hover);
+        opacity: 70%;
     }
 }
 

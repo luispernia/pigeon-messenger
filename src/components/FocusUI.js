@@ -3,10 +3,27 @@ import roomsContext from '../services/context/RoomContext'
 import userContext from "../services/context/UserContext";
 import { sendContact } from "../services/sockets/sockets";
 import { useSpring, animated } from "react-spring"
-import {request_room} from "../services/sockets/sockets";
+import { request_room } from "../services/sockets/sockets";
 import axios from 'axios';
 import Cropper from "react-cropper";
+import { useFormik } from "formik";
 import "cropperjs/dist/cropper.css"
+
+const validate = (values) => {
+    const errors = {};
+    if (!values.title) {
+        errors.title = 'Required';
+    } else if (values.title.length > 20) {
+        errors.title = 'Must be 20 characters or less';
+    }
+
+    if (values.description.length > 150) {
+        errors.description = 'Must be 150 characters or less';
+    }
+
+
+    return errors;
+}
 
 function FocusUI() {
 
@@ -36,13 +53,30 @@ function FocusUI() {
 
 const CreateRoom = ({ chats }) => {
 
-    const { token, user } = useContext(userContext);
-    const {refresh_rooms} = useContext(roomsContext);
+    const { token, user, setAlert } = useContext(userContext);
+    const { refresh_rooms, setFocus , contacts, setContacts, chatPeeks, updatePeek } = useContext(roomsContext);
+
+    const spring_error = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+
+    const formik = useFormik({
+        initialValues: {
+            title: "",
+            description: "",
+        },
+        validate,
+        onSubmit: values => {
+            createRoom((res) => {
+                setFocus(false);
+                if(members.length > 0) {
+                    setAlert({type: "info", text: `Request to join / room sended`, resalt: `${values.title}`, show: true})
+                }
+            });
+            
+        }
+    })
 
     const [members, setMembers] = useState([]);
     const [membersView, setMembersView] = useState([]);
-    const [contacts, setContacts] = useState([]);
-    const [state, setState] = useState(false);
     const [file, setFile] = useState(null);
     const fileRef = useRef(null);
     const [photo, setPhoto] = useState(null);
@@ -59,17 +93,27 @@ const CreateRoom = ({ chats }) => {
     const show = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
     const showButton = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
 
-    const addMember = (e) => {
+    const addMember = (e, i) => {
         let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
+        let contactFiltered = contacts.filter(e => {
+            if (e.contact_id) {
+                return e;
+            }
+        })
 
+        contactFiltered[i].toggle = contactFiltered[i].toggle ? false : true;
+
+        
         if (index < 0) {
-            setMembers([...members, ...[{ ...e, clicked: state }]]);
+            setContacts(contactFiltered);
+            setMembers([...members, ...[{...e}]]);
             if (members.length < 5) {
-                setMembersView([...members, ...[{ ...e, clicked: state }]]);
+                setMembersView([...members, ...[{ ...e}]]);
             }
 
         } else {
             let deleteMember = members.filter(r => r.contact_id.username !== e.contact_id.username);
+            setContacts(contactFiltered);
             setMembers(deleteMember);
             if (members.length < 5) {
                 setMembersView(deleteMember)
@@ -77,27 +121,33 @@ const CreateRoom = ({ chats }) => {
         }
     }
 
-    const createRoom = async ($event) => {
-        $event.preventDefault();
+    const createRoom = async (cb) => {
 
         const formData = new FormData();
+        if (blob) {
+            formData.append("photo", blob, "blob.png");
 
-        formData.append("photo", blob, "blob.png");
-        formData.append("document", JSON.stringify({name: title, members: user, admin: user, description, }));
+        }
 
-        let res = await axios.post("http://localhost:8080/room", formData , {
+        formData.append("document", JSON.stringify({ name: title, members: user, admin: user, description, }));
+
+        let res = await axios.post("http://localhost:8080/room", formData, {
             withCredentials: true, headers: {
-            "Content-Type": "multipart/form-data"
-        }}).catch(err => alert(err))
+                "Content-Type": "multipart/form-data"
+            }
+        }).catch(err => alert(err))
 
-        if(members.length > 0) {
-            for(let member of members) {
-                request_room({img: res.data.room.img, requester: user.username, user_id: member.contact_id._id, room_id: res.data.room.room_id, title: res.data.room.name, description: res.data.room.description, username: member.contact_id.username })
+        if (members.length > 0) {
+            for (let member of members) {
+                request_room({ img: res.data.room.img, requester: user.username, user_id: member.contact_id._id, room_id: res.data.room.room_id, title: res.data.room.name, description: res.data.room.description, username: member.contact_id.username })
             }
         }
-        
-        refresh_rooms();
-        
+
+        refresh_rooms(() => {
+            cb({room_id: res.data.room.room_id});
+        });
+
+
     }
 
     const getData = ($event) => {
@@ -110,8 +160,12 @@ const CreateRoom = ({ chats }) => {
         setShowCropper(false);
     }
 
+
     useEffect(() => {
         setContacts(chats);
+        return () => {
+            setContacts([]);
+        }
     }, [])
 
     return (
@@ -133,12 +187,12 @@ const CreateRoom = ({ chats }) => {
                 ) : (
                     <>
                         <animated.h1 style={opac}>Create a room</animated.h1>
-                        <div className="create_room">
-                            <animated.form style={height} className="room-form">
+                        <form onSubmit={formik.handleSubmit} className="create_room">
+                            <animated.div style={height} className="room-form">
                                 <animated.div style={show} className="create-room-head">
                                     <div onClick={() => {
                                         fileRef.current.click();
-                                    }} className="room-image-icon" style={{ backgroundImage: `url(${ended})`, backgroundSize: "cover" }}>
+                                    }} className="room-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `http://localhost:8080/upload/room/default.png?token=${token}`})`, backgroundSize: "cover" }}>
                                         <input style={{ display: "none" }} value={file} onChange={($event) => {
                                             if ($event.target.files.length >= 1) {
                                                 let src = URL.createObjectURL($event.target.files[0]);
@@ -151,12 +205,21 @@ const CreateRoom = ({ chats }) => {
                                     </div>
                                     <div className="room-title-icon">
                                         <p className="min">Room title</p>
-                                        <input value={title} onChange={($event) => setTitle($event.target.value)} type="text" placeholder="Pigeon room" />
+                                        <input name="title" id="title" value={formik.values.title} onChange={($event) => {
+                                            setTitle($event.target.value)
+                                            formik.handleChange($event);
+                                        }} type="text" placeholder="Pigeon room" />
+                                        {formik.errors.title ? (<animated.div style={spring_error} className="field_error">{formik.errors.title}</animated.div>) : ("")}
                                     </div>
                                 </animated.div>
                                 <animated.div style={show} className="create-room-body">
                                     <p className="min">Description</p>
-                                    <textarea value={description} onChange={($event) => setDescription($event.target.value)} maxLength="150" placeholder="Welcome to pigeon room"></textarea>
+                                    <textarea name="description" id="description" value={formik.values.description} onChange={($event) => {
+                                        setDescription($event.target.value)
+                                        formik.handleChange($event)
+                                    }} maxLength="150" placeholder="Welcome to pigeon room"></textarea>
+                                    {formik.errors.description ? (<animated.div style={spring_error} className="field_error">{formik.errors.description}</animated.div>) : ("")}
+
                                 </animated.div>
                                 <animated.div style={show} className="create-room-footer">
                                     <p className="min">Members</p>
@@ -173,7 +236,7 @@ const CreateRoom = ({ chats }) => {
                                     </ul>
                                     <p>{members.length > 6 ? `And others ${members.length - 6} members` : ""} </p>
                                 </animated.div>
-                            </animated.form>
+                            </animated.div>
                             <div className="contact-list">
                                 <animated.div style={width} className="">
                                     <animated.h2 style={show}>Contacts</animated.h2>
@@ -182,9 +245,9 @@ const CreateRoom = ({ chats }) => {
                                             if (e.contact_id) {
                                                 return e;
                                             }
-                                        }).map(e => {
+                                        }).map((e, i) => {
                                             return (
-                                                <li>
+                                                <li style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
                                                     <div style={{ background: "transparent" }}>
                                                         <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
                                                         <div style={{ background: "transparent" }} className="add-info">
@@ -192,17 +255,17 @@ const CreateRoom = ({ chats }) => {
                                                             <small>{e.contact_id.online ? "Online" : "Offline"}</small>
                                                         </div>
                                                     </div>
-                                                    <i onClick={() => addMember(e)} class="bi bi-plus-square"></i>
+                                                    <i onClick={() => addMember(e, i)} class={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
                                                 </li>
                                             )
                                         })}
                                     </animated.ul>
                                 </animated.div>
-                                <animated.button onClick={createRoom} style={showButton} className="submit-room">
+                                <animated.button type="submit" style={showButton} className="submit-room" disabled={formik.errors.title ? true : false}>
                                     <span>GO</span>
                                 </animated.button>
                             </div>
-                        </div>
+                        </form>
                     </>
                 )
             }
@@ -215,7 +278,7 @@ const CreateRoom = ({ chats }) => {
 const RequestContact = () => {
 
     const imageRef = useRef(null);
-    const { token, user } = useContext(userContext);
+    const { token, user, setAlert } = useContext(userContext);
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
     const [userFounded, setUserFounded] = useState(false);
@@ -256,7 +319,12 @@ const RequestContact = () => {
                         disabled={!userFounded}
                         type="text"
                         placeholder="Message" />
-                    <button onClick={() => sendContact(user.username, message, username, user.img, token)} disabled={!userFounded}>Request</button>
+                    <button onClick={() => sendContact(user.username, message, username, user.img, token, (res) => {
+                        if (!res.ok) {
+                            console.log(res);
+                            setAlert({ show: true, text: res.err });
+                        }
+                    })} disabled={!userFounded}>Request</button>
                 </animated.div>
             </div>
         </>

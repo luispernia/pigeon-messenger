@@ -14,6 +14,7 @@ function Login() {
     
     const handleSubmit = async ($event) => {
         $event.preventDefault();
+        
         setLoading("Loading");
 
         loginEmail({email, password}, () => {

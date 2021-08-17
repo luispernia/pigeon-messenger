@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import bellsContext from '../services/context/BellContext';
 import userContext from "../services/context/UserContext";
 import { useSpring, animated } from 'react-spring';
 import { acceptContact, rejectContact, declined_room, acceptRoom } from "../services/sockets/sockets";
 import roomsContext from '../services/context/RoomContext';
-
+import * as Vibrant from "node-vibrant/dist/vibrant";
 
 
 function Notifications() {
@@ -74,27 +74,57 @@ function Bell({ data }) {
 
 function BellComponent({ data, request, opts }) {
     const { img, date, requester, title, _id } = data;
+    const [color, setColor] = useState("");
 
-    const { token, user } = useContext(userContext)
+    const { token, user, setAlert } = useContext(userContext)
     let hour = new Date(date).getHours();
     let minutes = new Date(date).getMinutes();
     let requesterFormatted = requester.split("/")[0];
+
     const spring = useSpring({ to: {opacity: 1, transform: "translate(0px, 0px)"}, from: {transform: "translate(-33px, 0px)", opacity: 0 }, delay: 500 });
-    
+
+    useEffect(() => {
+        if(img) {
+            let v = new Vibrant(`http://localhost:8080/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`, {});
+            v.getPalette((err, palette) => {
+                if(err) {
+                    console.log(err);
+                }
+                setColor({light: palette.LightVibrant.hex, dark: palette.DarkVibrant.hex, mute: palette.Muted.hex});
+            })
+        }
+    }, [])
+
     return (
-            <animated.div style={spring} className={`bell ${request.toLowerCase()}`}>
+            <animated.div style={{...spring, background: `${color.light}`}} className={`bell ${request.toLowerCase()}`}>
                 <img src={`http://localhost:8080/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
                 <div className="bell-body">
-                    <h4>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
+                    <h4 style={{...spring, color: `${color.dark}`}}>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
                     <div className="bell-content">
-                        <p>{`${title}`}</p>
+                        <p style={{...spring, color: `${color.dark}`}}>{`${title}`}</p>
                         {opts ? (
                             <div className="bell-options">
-                                <button onClick={() =>  data.room_id?  (acceptRoom({id: _id, img: user.img})) : acceptContact({ id: _id, token, img: user.img })} className="accept button">Accept</button>
-                                <button onClick={() => data.room_id? (
-                                    declined_room({id: _id, img: user.img})
+                                <button style={{...spring, color: color.dark, borderColor: color.mute}} onClick={() =>  data.room_id?  (acceptRoom({id: _id, img: user.img}, (res) => {
+                                    if(!res.ok) {
+                                        setAlert({show: true, text: res.err})
+                                    }
+                                })) : acceptContact({ id: _id, token, img: user.img }, (res) => {
+                                    if(!res.ok) {
+                                        setAlert({show: true, text: res.err})
+                                    }
+                                })} className="accept button">Accept</button>
+                                <button style={{...spring, color: color.dark, borderColor: color.mute}} onClick={() => data.room_id? (
+                                    declined_room({id: _id, img: user.img}, (res) =>{
+                                        if(!res.ok) {
+                                            setAlert({show: true, text: res.err})
+                                        }
+                                    })
                                     
-                                ) : rejectContact({ id: _id, token, img: user.img }) } className="reject button">Reject</button>
+                                ) : rejectContact({ id: _id, token, img: user.img }, (res) => {
+                                    if(!res.ok) {
+                                        setAlert({show: true, text: res.err})
+                                    }
+                                }) } className="reject button">Reject</button>
                             </div>
                         ) : ""}
 

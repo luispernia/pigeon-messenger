@@ -62,7 +62,7 @@
     background-color: var(--dark-primary);
     color: var(--light-primary);
     padding: 1rem;
-    transition: 0.2s all ease-in-out;
+    transition: .3s all ease-in-out;
     .chat-icon-img {
         display: flex;
         flex-direction: column-reverse;
@@ -115,6 +115,7 @@
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
     overflow-y: scroll;
+    
 }
 
 .chat-icons::-webkit-scrollbar {
@@ -146,10 +147,13 @@
     .peek-author {
         color: var(--light-secondary);
         font-size: .9rem!important;
+        font-weight: bold;
+
     }
     p {
         color: var(--dark-gray);
         font-size: .5rem;
+
     }
 }
 
@@ -162,4 +166,33 @@
 
 .offline {
     color: var(--blue-submarine);
+}
+
+.pigeon-alert {
+    padding: 1rem;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    z-index: 99999999999999;
+    left: 0;
+    top: 0;
+    margin: 1rem 0rem 0rem 1rem;
+    z-index: 99999999999999;
+    border-radius: .5rem;
+    color: var(--light-primary);
+    flex-direction: row-reverse;
+    span {
+        color: lightcoral;
+    }
+    i {
+        margin-right: .5rem;
+        font-size: 1.3rem;
+    }
+}
+
+.info {
+    background-color: var(--dark-secondary);
+    i {
+        color: var(--pigeon-primary);
+    }
 }

@@ -6,7 +6,7 @@
     height: 100%;
     justify-content: center;
     align-items: center;
-    z-index: 999999999999999999999999999999999999999999999999999;
+    z-index: 999999999;
     backdrop-filter: blur(0.5rem);
     background-color: var(--dark-transparent);
     color: var(--light-primary);
@@ -50,7 +50,7 @@
                 justify-content: center;
                 background-color: var(--dark-secondary);
                 border-radius: 5rem;
-                transition: 0.3s all ease;
+                transition: .3s all ease-in;
                 i {
                     color: var(--pigeon-primary);
                     font-size: 1.5rem;
@@ -58,7 +58,7 @@
             }
            
             .room-image-icon:hover {
-                background-color: var(--blue-submarine);
+                opacity: 50%;
                 cursor: pointer;
             }
 

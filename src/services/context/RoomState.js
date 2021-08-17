@@ -13,31 +13,37 @@ function ProviderRoom({ children }) {
         messages: [],
         photos: [],
         focus: { bool: false, type: "", bell: false, resetPeek: false },
-        chatPeeks: {}
+        chatPeeks: {},
+        contacts: []
     }
 
     const [state, dispatch] = useReducer(RoomReducer, initialState);
     
     const {token} = useContext(userContext);
 
+    const setContacts = (contacts) => {
+        dispatch({type: "UPDATE_CONTACT", payload: contacts})
+    }
+
     const roomMessages = async ({ room_id }) => {
         try {
             let res = await axios.get(`http://localhost:8080/message/${room_id}`, { withCredentials: true });
-            dispatch({ type: "UPDATE_MESSAGES", payload: res.data.message })
+            
+            dispatch({ type: "UPDATE_MESSAGES", payload: res.data.message});
 
         } catch (err) {
             alert(err);
         }
     }
 
-
-    const refresh_rooms = async () => {
+    const refresh_rooms = async (cb = () => {}) => {
         try {
             let resRooms = await axios.get("http://localhost:8080/user/one", { withCredentials: true });
             let resContacts = await axios.get("http://localhost:8080/contact", { withCredentials: true });
             let chats = [...resRooms.data.user.rooms, ...resContacts.data.contacts];
             let roomConnections = chats.map(e => e.room_id);
             handleRoomConnections(roomConnections, token);
+            console.log(resRooms);
             for (let chat of chats) {
                 if (chat.contact_id) {
                     let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
@@ -47,9 +53,10 @@ function ProviderRoom({ children }) {
                     dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
                 }
             }
-
             dispatch({ type: "UPDATE_ROOMS", payload: chats });
-
+            console.log(chats);
+            
+            cb();
         } catch (err) {
             alert(err);
         }
@@ -110,12 +117,16 @@ function ProviderRoom({ children }) {
     const setReaded = async (room_id) => {
         try {
             let res = await axios.put("http://localhost:8080/message/readed", {room_id}, {withCredentials: true});
-            console.log(res);
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "bells", value: 0}})
         } catch(err) {
             alert(err)
         }
     }
+
+    const setMessageUpload = (message) => {
+        dispatch({type: "MESSAGE_UPLOAD", payload: message});
+
+    }   
 
     return <roomsContext.Provider value={{
         selected: state.selectedChat,
@@ -135,7 +146,10 @@ function ProviderRoom({ children }) {
         setReaded,
         setBell,
         bellState: state.focus.bell,
-        setPeekMessages
+        setPeekMessages,
+        contacts: state.contacts,
+        setContacts,
+        setMessageUpload
     }} > {children} </roomsContext.Provider>
 }
 

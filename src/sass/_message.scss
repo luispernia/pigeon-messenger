@@ -1,7 +1,17 @@
 .messages {
     max-height: 30rem;
-    overflow-y: scroll;
     width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    .messages-overflow {
+        display: flex;
+        overflow-y: scroll;
+        flex-direction: column-reverse;
+        overflow-x: hidden;
+    }
     .message {
         margin-bottom: 2rem;
         display: flex;
@@ -66,7 +76,8 @@
             
         }
     }
-    .message:last-of-type {
+
+    .message:first-of-type {
         margin-bottom: 5.5rem;
     }
     .right {
@@ -93,5 +104,26 @@
             }
         }
             
+    }
+}
+
+.global-message {
+    margin: 1rem 0rem;
+    display: flex;
+    justify-content: center;
+    p {
+        padding: .5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--light-primary);
+        background-color: var(--dark-transparent);
+        width: 90%;
+        border-radius: .5rem;
+        i {
+            color: var(--pigeon-primary);
+            font-size: 1.4rem;
+            margin-right: .5rem;
+        }
     }
 }
