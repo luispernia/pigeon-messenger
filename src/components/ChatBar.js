@@ -3,6 +3,7 @@ import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
 import axios from "axios";
 import roomsContext from '../services/context/RoomContext';
+import {Controller, animated} from "react-spring";
 
 const ChatBar = () => {
 
@@ -12,6 +13,10 @@ const ChatBar = () => {
     const {selected} = useContext(roomsContext);
     const {room_id} = selected? selected : {room_id: ""};
     const fileRef = useRef(null);
+    const [cursor, setCursor] = useState(false);
+    const [press, setPress] = useState(false);
+    const animations = new Controller()
+
         
     const handleSubmit = async ($event) => {
         $event.preventDefault();
@@ -54,7 +59,7 @@ const ChatBar = () => {
                     <input ref={fileRef} onChange={($event) => setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })} type="file" name="docs" multiple />
                 </div>
                 <input value={message} onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
-                <button type="submit"><i class="bi bi-arrow-right-circle"></i></button>
+                <button onMouseOver={() => setCursor(true)} onMouseLeave={() => setCursor(false)} type="submit">{cursor? <i class="bi bi-cursor-fill"></i> : <i class="bi bi-cursor"></i>}</button>
             </form>
         </div>
     )

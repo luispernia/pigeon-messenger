@@ -2,14 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from '../services/context/UserContext';
 import ChatBar from './ChatBar';
-import Message from "./Message";
-import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
 import LoadMessages from './LoadMessages';
 
 function ChatView() {
 
-    const {token} = useContext(userContext);
     const { selected } = useContext(roomsContext);
     const chatRef = useRef("");
 
@@ -18,8 +14,10 @@ function ChatView() {
     return (
         <div ref={chatRef}  className="chat-view">
             <div className="chat-glass">
+            
             {selected ? (selected.user_id ? <ContactView data={selected} chat={chatRef} /> : <RoomView data={selected} chat={chatRef} />) : <NotSelectedView chat={chatRef} />}
-            <ChatBar  />
+            {selected? <ChatBar  /> : ""}
+   
             </div>
         </div>
     )

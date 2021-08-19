@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from "../services/context/UserContext";
-import { sendContact } from "../services/sockets/sockets";
+import { roomSettings, sendContact, sendMessage } from "../services/sockets/sockets";
 import { useSpring, animated } from "react-spring"
 import { request_room } from "../services/sockets/sockets";
 import axios from 'axios';
@@ -29,22 +29,33 @@ function FocusUI() {
 
     const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
 
-    let { focus, setFocus, chats } = useContext(roomsContext);
+    let { focus, setFocus, chats, refresh_rooms } = useContext(roomsContext);
+
+    const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
 
 
     return (
         <>
             {focus.bool ? (
-                <div style={props} className="focus">
-                    <div onClick={() => setFocus(false)} className="close">
-                        <i class="bi bi-x-circle"></i>
-                    </div>
+                <animated.div style={props} className="focus">
+                    <animated.div style={spring} onClick={() => {
+                        setFocus(false)
+                        refresh_rooms();
+                    }} className="close">
+                        <animated.i style={spring} class="bi bi-x-circle"></animated.i>
+                    </animated.div>
                     <div className="glass">
-                        {focus.type === "room" ? (
-                            <CreateRoom chats={chats} />
-                        ) : (<RequestContact />)}
+                        {focus.type === "room" ?
+                            (
+                                <CreateRoom chats={chats} />
+                            ) : focus.type === "settings" ?
+                                (<ProfileSettings />) :
+                                focus.type === "add-member" ?
+                                    (<AddMember chats={chats} />) :
+                                    (<RequestContact />)
+                        }
                     </div>
-                </div>
+                </animated.div>
 
             ) : ("")}
         </>
@@ -54,7 +65,7 @@ function FocusUI() {
 const CreateRoom = ({ chats }) => {
 
     const { token, user, setAlert } = useContext(userContext);
-    const { refresh_rooms, setFocus , contacts, setContacts } = useContext(roomsContext);
+    const { refresh_rooms, setFocus, contacts, setContacts } = useContext(roomsContext);
 
     const spring_error = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
 
@@ -67,11 +78,11 @@ const CreateRoom = ({ chats }) => {
         onSubmit: values => {
             setFocus(false);
             createRoom((res) => {
-                if(members.length > 0) {
-                    setAlert({type: "info", text: `Request to join / room sended`, resalt: `${values.title}`, show: true})
+                if (members.length > 0) {
+                    setAlert({ type: "info", text: `Request to join / room sended`, resalt: `${values.title}`, show: true })
                 }
             });
-            
+
         }
     })
 
@@ -103,12 +114,12 @@ const CreateRoom = ({ chats }) => {
 
         contactFiltered[i].toggle = contactFiltered[i].toggle ? false : true;
 
-        
+
         if (index < 0) {
             setContacts(contactFiltered);
-            setMembers([...members, ...[{...e}]]);
+            setMembers([...members, ...[{ ...e }]]);
             if (members.length < 5) {
-                setMembersView([...members, ...[{ ...e}]]);
+                setMembersView([...members, ...[{ ...e }]]);
             }
 
         } else {
@@ -144,7 +155,7 @@ const CreateRoom = ({ chats }) => {
         }
 
         refresh_rooms(() => {
-            cb({room_id: res.data.room.room_id});
+            cb({ room_id: res.data.room.room_id });
         });
 
 
@@ -277,7 +288,7 @@ const CreateRoom = ({ chats }) => {
 
 const RequestContact = () => {
 
-    const {setFocus} = useContext(roomsContext);
+    const { setFocus } = useContext(roomsContext);
     const { token, user, setAlert } = useContext(userContext);
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
@@ -295,10 +306,11 @@ const RequestContact = () => {
             if (!res.ok) {
                 setAlert({ show: true, text: res.err });
                 return;
+            } else {
+                setAlert({ show: true, text: `request sended to/`, resalt: username, type: "info" });
+                setFocus(false)
             }
         })
-        setAlert({show: true, text: `request sended to ${username}`, type: "info"});
-        setFocus(false)
     }
 
     return (
@@ -397,14 +409,130 @@ const Result = ({ username, state }) => {
     </>
 }
 
-const AddMember = () => {
+const AddMember = ({ chats }) => {
 
+    const { contacts, setContacts, selected, setFocus } = useContext(roomsContext);
+    const [members, setMembers] = useState([]);
+    const { token, setAlert, user } = useContext(userContext);
+
+    const opac = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 200 });
+    const height = useSpring({ to: { height: 400, opacity: 1 }, from: { height: 0, opacity: 0 }, delay: 500 });
+    const width = useSpring({ to: { width: 250 }, from: { width: 0 }, delay: 1000 });
+    const show = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
+    const showButton = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
+
+    const addMember = (e, i) => {
+        let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
+        let contactFiltered = contacts.filter(e => {
+            if (e.contact_id) {
+                return e;
+            }
+        })
+
+        let respo = selected.members.map(e => {
+            return e.username;
+        }).indexOf(contactFiltered[i].contact_id.username);
+
+        if (respo > 0) {
+            setAlert({ type: "info", text: `Member / already in room`, resalt: `${contactFiltered[i].contact_id.username}`, show: true })
+            return;
+        }
+
+        contactFiltered[i].toggle = contactFiltered[i].toggle ? false : true;
+
+        if (index < 0) {
+            setContacts(contactFiltered);
+            setMembers([...members, ...[{ ...e }]]);
+
+        } else {
+            let deleteMember = members.filter(r => r.contact_id.username !== e.contact_id.username);
+            setContacts(contactFiltered);
+            setMembers(deleteMember);
+        }
+    }
+
+    const joinMembers = async () => {
+        if (members.length > 0) {
+            for (let member of members) {
+                request_room({ img: selected.img, requester: user.username, user_id: member.contact_id._id, room_id: selected.room_id, title: selected.name, description: selected.description, username: member.contact_id.username })
+            }
+            setFocus(false);
+            setAlert({type: "info", text: "Request to join / sended", resalt: selected.name})
+        } else {
+            setAlert({ text: "Add some members first!", show: true })
+        }
+    }
+
+    useEffect(() => {
+        setContacts(chats);
+        return () => {
+            setContacts([]);
+        }
+    }, [])
+
+    return (
+        <>
+            <div style={opac} className="add-member-title">
+                <animated.h1 style={opac}>Add Members</animated.h1>
+                <animated.h3 style={opac}>{selected.name}</animated.h3>
+            </div>
+            <div className="add-member-ui">
+                <animated.div style={height} className="current-contacts">
+                    <animated.p style={show} >{selected.members.length} members</animated.p>
+                    {selected.members.map(e => {
+                        return (
+                            <animated.div style={show} className="current-user">
+                                <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
+                                <animated.div>
+                                    <h4>{e.username}</h4>
+                                    <p>{e._id === selected.admin ? `creator` : `member`}</p>
+                                </animated.div>
+                            </animated.div>
+                        )
+                    })}
+                </animated.div>
+                <div className="contact-list">
+                    <animated.div style={width} className="">
+                        <animated.h2 style={show}>Contacts</animated.h2>
+                        <animated.ul style={show}>
+                            {contacts.filter(e => {
+                                if (e.contact_id) {
+                                    return e;
+                                }
+                            }).map((e, i) => {
+                                return (
+                                    <li style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
+                                        <div style={{ background: "transparent" }}>
+                                            <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
+                                            <div style={{ background: "transparent" }} className="add-info">
+                                                <p>{e.contact_id.username}</p>
+                                                <small>{e.contact_id.online ? "Online" : "Offline"}</small>
+                                            </div>
+                                        </div>
+                                        <i onClick={() => addMember(e, i)} class={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
+                                    </li>
+                                )
+                            })}
+                        </animated.ul>
+                    </animated.div>
+                    <animated.button onClick={joinMembers} type="submit" style={showButton} className="submit-room add">
+                        <span>Add</span>
+                        <i class="bi bi-outlet"></i>
+                    </animated.button>
+                </div>
+            </div>
+        </>
+    )
 }
 
 const ProfileSettings = () => {
-    
-}
 
+    const { user } = useContext(userContext);
+
+    return (
+        <h1>{user.username} Settings</h1>
+    )
+}
 
 
 export default FocusUI

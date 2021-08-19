@@ -69,7 +69,7 @@ function LoadMessages({ height }) {
                         style={{ display: 'flex', flexDirection: 'column-reverse' }}
                         inverse={true}
                         loader={<p>Loading...</p>}
-                        endMessage={<p>That's all</p>}
+                        endMessage={<p></p>}
                         scrollableTarget="messages-overflow"
                     >  
                         <div style={{display: "flex", flexDirection: "column", marginBottom: "3.5rem"}}>

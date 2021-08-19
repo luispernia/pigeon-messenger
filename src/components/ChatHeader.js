@@ -6,9 +6,9 @@ import {roomSettings} from '../services/sockets/sockets';
 
 function ChatHeader() {
 
-    const [users, setUsers, setAlert] = useState([]);
-    const {selected} = useContext(roomsContext)
-    const {token, user} = useContext(userContext);
+    const [users, setUsers] = useState([]);
+    const {selected, setFocus} = useContext(roomsContext)
+    const {token, user, setAlert} = useContext(userContext);
     const [onMouse, setOnMouse] = useState(false);
     const [onEdit, setOnEdit] = useState(true);
     const titleRef = useRef(null);
@@ -22,9 +22,11 @@ function ChatHeader() {
         axios.put(`http://localhost:8080/room/${selected._id}/default`, {name: title}, {withCredentials: true})
         .then((res) => {
             roomSettings({type: "title", value: title, room_id: selected.room_id? selected.room_id : "", author: user }, (res) => {
+
                 if(!res.ok) {
                     setAlert({show: true, text: res.err});
                 }
+
                 setOnEdit(!onEdit);
             });
         })
@@ -59,6 +61,8 @@ function ChatHeader() {
     }, [onEdit])
     
     return (
+        <>
+        { selected? (
         <div className="chat-header">
             <div className="chat-title">
                 <div onMouseLeave={() => {setOnMouse(false)}} onMouseOver={() => { setOnMouse(true) }} className="chat-name">
@@ -75,10 +79,10 @@ function ChatHeader() {
                     {selected? (selected.contact_id? (
                         ""
                     ) : (<>
-                            {users.map((e, i) => {
+                            {users.slice(0,7).map((e, i) => {
                                 return <img key={i} src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
                             })}
-                            <p>And 6+ people</p>
+                            <p>{users.length > 7? `and ${users.length - 7} others` : "Members"}</p>
                         </>
                     )) : ("")}
                   
@@ -86,12 +90,16 @@ function ChatHeader() {
             </div>
             <div className="chat-opts">
                 <div className="opts-container">
-                    <i class="bi bi-plus-circle-dotted"></i>
+                    <i onClick={() => setFocus(true, "add-member")} class="bi bi-plus-circle-dotted"></i>
                     <i class="bi bi-archive"></i>
-
                 </div>
             </div>
         </div>
+            ) : (
+                ""
+            ) 
+        }
+        </>
     )
 }
 

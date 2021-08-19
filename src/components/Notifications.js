@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import bellsContext from '../services/context/BellContext';
 import userContext from "../services/context/UserContext";
 import { useSpring, animated } from 'react-spring';
-import { acceptContact, rejectContact, declined_room, acceptRoom } from "../services/sockets/sockets";
+import { acceptContact, rejectContact, declined_room, acceptRoom, roomSettings } from "../services/sockets/sockets";
 import roomsContext from '../services/context/RoomContext';
+
 import * as Vibrant from "node-vibrant/dist/vibrant";
 
 
@@ -81,11 +82,27 @@ function BellComponent({ data, request, opts }) {
     const [color, setColor] = useState("");
 
     const { token, user, setAlert } = useContext(userContext)
+    const {selected} = useContext(roomsContext);
+    
     let hour = new Date(date).getHours();
     let minutes = new Date(date).getMinutes();
     let requesterFormatted = requester.split("/")[0];
 
     const spring = useSpring({ to: {opacity: 1, transform: "translate(0px, 0px)"}, from: {transform: "translate(-33px, 0px)", opacity: 0 }, delay: 500 });
+
+    const joinRoom = () => {
+        acceptRoom({id: _id, img: user.img}, (res) => {
+            if(!res.ok) {
+                setAlert({show: true, text: res.err})
+                return;
+            }
+        })
+        console.log(data);
+        roomSettings({type: "add_member", value: `${user.username} joins`, room_id: data.room_id? data.room_id : "", author: user }, (res) => {
+            console.log(res);
+        })
+
+    }
 
     useEffect(() => {
         if(img) {
@@ -108,11 +125,10 @@ function BellComponent({ data, request, opts }) {
                         <p style={{...spring, color: `${color.light}`}}>{`${title}`}</p>
                         {opts ? (
                             <div className="bell-options">
-                                <button style={{...spring, color: color.light, borderColor: color.mute}} onClick={() =>  data.room_id?  (acceptRoom({id: _id, img: user.img}, (res) => {
-                                    if(!res.ok) {
-                                        setAlert({show: true, text: res.err})
-                                    }
-                                })) : acceptContact({ id: _id, token, img: user.img }, (res) => {
+                                <button style={{...spring, color: color.light, borderColor: color.mute}} onClick={() =>  data.room_id?  (
+                                    joinRoom()
+                                    )
+                                 : acceptContact({ id: _id, token, img: user.img }, (res) => {
                                     if(!res.ok) {
                                         setAlert({show: true, text: res.err})
                                     }

@@ -6,7 +6,7 @@ function Message({ data }) {
 
     const { user, token } = useContext(userContext);
 
-    const spring = useSpring({to: {transform: "translate(0rem, 0rem)", opacity: 1}, from: {transform: "translate(-1rem, 0rem)", opacity: 0}})
+    const spring = useSpring({to: {transform: "translate(0rem, 0rem)", opacity: 1}, from: {transform: "translate(-1rem, 0rem)", opacity: 0}, delay: 100})
 
     return (
         <>

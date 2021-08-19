@@ -30,7 +30,6 @@ function Chat() {
 
     useEffect(() => {
         socket.on("onMessage", (args) => {
-            console.log(args);
             let content = args.message;
             if(!content.files) {
                 content.files = [];

@@ -72,7 +72,7 @@ function ProviderRoom({ children }) {
     const setPeekMessages = async (room_id) => {
         let {data} = await axios.get(`http://localhost:8080/message/last/${room_id}`, {withCredentials: true}).catch(err => alert(err));
         if(data.messages) {
-            dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "messages", value: [data.messages[0], data.messages[1]]}})
+            dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "messages", value: data.messages}})
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "resetPeek", value: true}})
 
         }

@@ -42,8 +42,6 @@ const ContactIcon = ({ data, peeks }) => {
     useEffect(() => {
         unreaded(data.room_id)
         socket.on("onMessage", (args) => {
-            setPeekMessages(data.room_id);
-            unreaded(data.room_id)
             if (args.room === data.room_id) {
                 if (selected) {
                     if (data.room_id === selected.room_id) {
@@ -54,6 +52,13 @@ const ContactIcon = ({ data, peeks }) => {
             }
         })
     }, [selected])
+
+    useEffect(() => {
+        socket.on("onMessage", (args) => {
+            setPeekMessages(data.room_id);
+            unreaded(data.room_id)
+        })
+    }, [])
 
     return (
         <div ref={contactRef} onClick={() => selectedChat(data)} className={`chat-icon ${ selected? ( data.room_id === selected.room_id? "chat-selected" : "") : ""}`}>
@@ -80,7 +85,7 @@ const RoomIcon = ({ data, peeks }) => {
     const { token } = useContext(userContext);
     const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages} = useContext(roomsContext);
     const {clear_queue} = useContext(messagesContext);
-    
+
     const roomRef = useRef(null);
 
     const selectedChat = (data) => {
@@ -90,14 +95,11 @@ const RoomIcon = ({ data, peeks }) => {
     }
 
     useEffect(() => {
-        unreaded(data.room_id);
+        unreaded(data.room_id)
         socket.on("onMessage", (args) => {
-            setPeekMessages(data.room_id);
-            unreaded(data.room_id);
             if (args.room === data.room_id) {
                 if (selected) {
                     if (data.room_id === selected.room_id) {
-                        
                     }
                 } else {
 
@@ -105,6 +107,15 @@ const RoomIcon = ({ data, peeks }) => {
             }
         })
     }, [selected])
+
+    
+    useEffect(() => {
+        socket.on("onMessage", (args) => {
+            setPeekMessages(data.room_id);
+            unreaded(data.room_id)
+        })
+    }, [])
+
 
     return (
         <div ref={roomRef}  onClick={() => selectedChat(data)} className="chat-icon" style={selected? (data.room_id === selected.room_id? {backgroundColor: "var(--dark-secondary)"} : {}) : ({})}   >

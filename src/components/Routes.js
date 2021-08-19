@@ -64,7 +64,6 @@ function PrivateRoutePlus({ children, ...rest }) {
     axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true })
       .then(res => {
         if (res.data.ok) {
-          console.log(res.data);
           updateUser(res.data, (user) => {
             history.replace("/chat");
             setLoading(true);
