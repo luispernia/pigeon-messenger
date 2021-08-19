@@ -9,13 +9,12 @@ const ChatBar = () => {
     const [message, setMessage] = useState("");
     const [doc, setFile] = useState({ docs: [] });
     const { user } = useContext(userContext);
-    const {selected, setMessageUpload} = useContext(roomsContext);
+    const {selected} = useContext(roomsContext);
     const {room_id} = selected? selected : {room_id: ""};
     const fileRef = useRef(null);
         
     const handleSubmit = async ($event) => {
         $event.preventDefault();
-        setMessageUpload({ author: user, msgDate: new Date(), room_id, text: message, files: []})
 
         if (doc.docs.length > 0) {
             let formData = new FormData();
@@ -34,7 +33,7 @@ const ChatBar = () => {
             })
 
             .then((res) => {
-                sendMessage({ user, message, room: room_id, type: "docs" });
+                sendMessage({ user, message: res.data.message, room: room_id, type: "docs"});
             })
             .catch(err => {
                 alert(err);

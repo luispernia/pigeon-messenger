@@ -54,7 +54,7 @@ function FocusUI() {
 const CreateRoom = ({ chats }) => {
 
     const { token, user, setAlert } = useContext(userContext);
-    const { refresh_rooms, setFocus , contacts, setContacts, chatPeeks, updatePeek } = useContext(roomsContext);
+    const { refresh_rooms, setFocus , contacts, setContacts } = useContext(roomsContext);
 
     const spring_error = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
 

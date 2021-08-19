@@ -70,16 +70,14 @@
             margin-left: 1rem;
             align-items: flex-start;
             margin-bottom: 1rem;
-            img {
+            img {   
                 width: 50%;
+                border-radius: .5rem;
             }
             
         }
     }
 
-    .message:first-of-type {
-        margin-bottom: 5.5rem;
-    }
     .right {
         align-items: flex-end;    
         .user {
@@ -126,4 +124,7 @@
             margin-right: .5rem;
         }
     }
+}
+.global-message:first-of-type {
+    margin-bottom: 5.5rem;
 }

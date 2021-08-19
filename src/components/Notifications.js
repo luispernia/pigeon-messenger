@@ -96,15 +96,15 @@ function BellComponent({ data, request, opts }) {
     }, [])
 
     return (
-            <animated.div style={{...spring, background: `${color.light}`}} className={`bell ${request.toLowerCase()}`}>
+            <animated.div style={spring} className={`bell ${request.toLowerCase()}`}>
                 <img src={`http://localhost:8080/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
                 <div className="bell-body">
-                    <h4 style={{...spring, color: `${color.dark}`}}>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
+                    <h4 style={{...spring, color: `${color.light}`}}>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
                     <div className="bell-content">
-                        <p style={{...spring, color: `${color.dark}`}}>{`${title}`}</p>
+                        <p style={{...spring, color: `${color.light}`}}>{`${title}`}</p>
                         {opts ? (
                             <div className="bell-options">
-                                <button style={{...spring, color: color.dark, borderColor: color.mute}} onClick={() =>  data.room_id?  (acceptRoom({id: _id, img: user.img}, (res) => {
+                                <button style={{...spring, color: color.light, borderColor: color.mute}} onClick={() =>  data.room_id?  (acceptRoom({id: _id, img: user.img}, (res) => {
                                     if(!res.ok) {
                                         setAlert({show: true, text: res.err})
                                     }
@@ -113,7 +113,7 @@ function BellComponent({ data, request, opts }) {
                                         setAlert({show: true, text: res.err})
                                     }
                                 })} className="accept button">Accept</button>
-                                <button style={{...spring, color: color.dark, borderColor: color.mute}} onClick={() => data.room_id? (
+                                <button style={{...spring, color: color.light, borderColor: color.mute}} onClick={() => data.room_id? (
                                     declined_room({id: _id, img: user.img}, (res) =>{
                                         if(!res.ok) {
                                             setAlert({show: true, text: res.err})

@@ -3,12 +3,12 @@ import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
 import socket from "../services/sockets/socketConfig";
 import { useSpring, animated } from "react-spring";
+import messagesContext from '../services/context/MessagesContext';
 
 function Rooms() {
 
     const { chats, chatPeeks } = useContext(roomsContext);
-
-
+    
 
     return (
         <>
@@ -17,6 +17,7 @@ function Rooms() {
                 <Create />
                 <Search />
                 <div className="chat-icons">
+                    
                     {chats.map((e,i) => {
                         return e.user_id ? <ContactIcon key={i} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon data={e} peeks={chatPeeks[e.room_id]} />
                     })}
@@ -30,11 +31,10 @@ const ContactIcon = ({ data, peeks }) => {
 
     const { contact_id } = data;
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, updatePeek } = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
     const contactRef = useRef(null);
 
     const selectedChat = (data) => {
-
         setReaded(data.room_id);
         setSelectedChat(data);
     }
@@ -54,10 +54,6 @@ const ContactIcon = ({ data, peeks }) => {
             }
         })
     }, [selected])
-
-    useEffect(() => {
-
-    }, [])
 
     return (
         <div ref={contactRef} onClick={() => selectedChat(data)} className={`chat-icon ${ selected? ( data.room_id === selected.room_id? "chat-selected" : "") : ""}`}>
@@ -82,10 +78,13 @@ const ContactIcon = ({ data, peeks }) => {
 
 const RoomIcon = ({ data, peeks }) => {
     const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, updatePeek} = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages} = useContext(roomsContext);
+    const {clear_queue} = useContext(messagesContext);
+    
     const roomRef = useRef(null);
 
     const selectedChat = (data) => {
+        clear_queue();
         setReaded(data.room_id);
         setSelectedChat(data);
     }
@@ -96,10 +95,9 @@ const RoomIcon = ({ data, peeks }) => {
             setPeekMessages(data.room_id);
             unreaded(data.room_id);
             if (args.room === data.room_id) {
-                    
                 if (selected) {
                     if (data.room_id === selected.room_id) {
-
+                        
                     }
                 } else {
 
@@ -107,10 +105,6 @@ const RoomIcon = ({ data, peeks }) => {
             }
         })
     }, [selected])
-
-    useEffect(() => {
-
-    }, [])
 
     return (
         <div ref={roomRef}  onClick={() => selectedChat(data)} className="chat-icon" style={selected? (data.room_id === selected.room_id? {backgroundColor: "var(--dark-secondary)"} : {}) : ({})}   >

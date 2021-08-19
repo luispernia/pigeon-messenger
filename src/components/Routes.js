@@ -15,6 +15,7 @@ import userContext from "../services/context/UserContext";
 import ProvideBell from "../services/context/BellState";
 import axios from "axios";
 import ProviderRoom from "../services/context/RoomState";
+import ProviderMessages from "../services/context/MessagesState";
 
 
 function Routes() {
@@ -41,9 +42,11 @@ function Routes() {
 
           <PrivateRoutePlus path="/chat">
             <ProviderRoom>
-              <ProvideBell>
-                <Chat />
-              </ProvideBell>
+              <ProviderMessages>
+                <ProvideBell>
+                  <Chat />
+                </ProvideBell>
+              </ProviderMessages>
             </ProviderRoom>
           </PrivateRoutePlus>
         </Switch>

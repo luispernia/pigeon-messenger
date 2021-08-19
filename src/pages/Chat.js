@@ -12,13 +12,15 @@ import Rooms from "../components/Rooms";
 import ChatHeader from '../components/ChatHeader';
 import FocusUI from '../components/FocusUI';
 import Alert from '../components/Alert';
+import messagesContext from '../services/context/MessagesContext';
 
 
 function Chat() {
 
     const { token, alert, setAlert, refresh_token } = useContext(userContext);
     const { addBell, refresh_bell, } = useContext(bellsContext);
-    const { refresh_rooms, roomMessages, updatePeek, selected } = useContext(roomsContext);
+    const { refresh_rooms, updatePeek } = useContext(roomsContext);
+    const {setMessageUpload} = useContext(messagesContext);
 
     // const [message, setMessage] = useState("");
     // const [rooms, setRooms] = useState([]);
@@ -28,13 +30,13 @@ function Chat() {
 
     useEffect(() => {
         socket.on("onMessage", (args) => {
-            if(selected) {
-                if(selected.room_id === args.room) {
-                    roomMessages({ room_id: args.room });
-                }
-            }
+            let content = args.message;
+            console.log(content);
+            content.files = [];
+            setMessageUpload(content);
         })
-    }, [selected])
+
+    }, [])
 
 
     useEffect(() => {
@@ -45,7 +47,7 @@ function Chat() {
 
         socket.on("notify", (args) => {
             addBell(args, ({ ring }) => {
-                let thing = args.bell.title? setAlert({type: "info", show: true, text: args.bell.title}) : ("");
+                let thing = args.bell.title ? setAlert({ type: "info", show: true, text: args.bell.title }) : ("");
                 if (ring) {
                     let bell = new Audio("bell.wav");
                     bell.play();
@@ -66,8 +68,8 @@ function Chat() {
 
     return (
         <>
-            {alert.show? (
-                <Alert  />
+            {alert.show ? (
+                <Alert />
             ) : ("")}
             <div className="container">
                 <FocusUI />
@@ -85,7 +87,7 @@ function Chat() {
 
                 </div>
 
-            
+
 
                 {/* <div className="module">
                     <Profile user={user} logout={logout} token={token} />

@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import roomsContext from '../services/context/RoomContext';
 import axios from "axios";
+import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
+import {roomSettings} from '../services/sockets/sockets';
 
 function ChatHeader() {
 
-    const [users, setUsers] = useState([]);
+    const [users, setUsers, setAlert] = useState([]);
     const {selected} = useContext(roomsContext)
-    const {token} = useContext(userContext);
+    const {token, user} = useContext(userContext);
     const [onMouse, setOnMouse] = useState(false);
     const [onEdit, setOnEdit] = useState(true);
     const titleRef = useRef(null);
@@ -16,21 +17,35 @@ function ChatHeader() {
     const editTitle = () => {
         setOnEdit(!onEdit);
     }
-
+    
     const saveEdit = () => {
+        axios.put(`http://localhost:8080/room/${selected._id}/default`, {name: title}, {withCredentials: true})
+        .then((res) => {
+            roomSettings({type: "title", value: title, room_id: selected.room_id? selected.room_id : "", author: user }, (res) => {
+                if(!res.ok) {
+                    setAlert({show: true, text: res.err});
+                }
+                setOnEdit(!onEdit);
+            });
+        })
+        .catch(err => {
+            alert(err);
+        }) 
         
     }
-
+    
     useEffect(() => {
         if(selected) {
             setTitle(selected.name);
             setUsers(selected.members);
+            if(selected.contact_id) {
+                setUsers([]);
+            }
         } else {
             setTitle("");
         }
-
-        setOnEdit(true);
-
+        setOnEdit(true);  
+        
     }, [selected])
     
     
@@ -38,11 +53,11 @@ function ChatHeader() {
         if(onEdit === false) {
             titleRef.current.focus();
         }
-
-
-
+        
+        
+        
     }, [onEdit])
-
+    
     return (
         <div className="chat-header">
             <div className="chat-title">
@@ -57,10 +72,16 @@ function ChatHeader() {
                         }} style={ onMouse? {display: "flex"} : {display: "none"}} class={`bi bi-${onEdit? "pencil-square" : "check2-circle"}`}></i>
                 </div>
                 <div className="members">
-                    {users.map(e => {
-                        return <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
-                    })}
-                    <p>And 6+ people</p>
+                    {selected? (selected.contact_id? (
+                        ""
+                    ) : (<>
+                            {users.map((e, i) => {
+                                return <img key={i} src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
+                            })}
+                            <p>And 6+ people</p>
+                        </>
+                    )) : ("")}
+                  
                 </div>
             </div>
             <div className="chat-opts">

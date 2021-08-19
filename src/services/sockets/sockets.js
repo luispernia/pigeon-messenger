@@ -79,9 +79,14 @@ const acceptRoom = (data, cb) => {
     })
 }
 
-const roomSettings = () => {
-    
-} 
+const roomSettings = (data, cb) => {
+    socket.emit("room_settings", data, (res) => {
+        if(!res.ok) {
+            cb({ok: false, err: res.err})
+        }
+        cb({ok: true});
+    })
+}   
 
 export {
     sendContact,
@@ -92,5 +97,6 @@ export {
     handleRoomConnections,
     request_room,
     declined_room,
-    acceptRoom
+    acceptRoom,
+    roomSettings
 };

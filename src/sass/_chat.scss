@@ -196,3 +196,6 @@
         color: var(--pigeon-primary);
     }
 }
+#messages-overflow {
+    scroll-behavior: smooth;
+}

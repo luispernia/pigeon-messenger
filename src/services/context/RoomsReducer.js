@@ -6,9 +6,7 @@ import {
     FOCUS,
     CHAT_PEEKS,
     UPDATE_PEEK,
-    UPDATE_CONTACT,
-    MESSAGE_UPLOAD,
-    DELETE_UPLOAD
+    UPDATE_CONTACT
 } from "../actions";
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -33,7 +31,8 @@ export default (state, action) => {
         case UPDATE_MESSAGES:
             return {
                 ...state,
-                messages: payload
+                messages: [...payload.messages, ...state.messages],
+                size: payload.size  
             }
         case FOCUS:
             return {
@@ -55,17 +54,6 @@ export default (state, action) => {
                 ...state,
                 contacts: payload
             }
-        case MESSAGE_UPLOAD:
-            return {
-                ...state,
-                messages: [...[payload],...state.messages]
-            }
-        case DELETE_UPLOAD:
-            return {
-                ...state,
-                messages: [...state.messages]
-            }
-        
         default:
             return state
     }

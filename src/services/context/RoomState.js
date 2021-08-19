@@ -10,11 +10,11 @@ function ProviderRoom({ children }) {
     const initialState = {
         chats: [],
         selectedChat: null,
-        messages: [],
         photos: [],
         focus: { bool: false, type: "", bell: false, resetPeek: false },
         chatPeeks: {},
-        contacts: []
+        contacts: [],
+        size: 0
     }
 
     const [state, dispatch] = useReducer(RoomReducer, initialState);
@@ -25,17 +25,6 @@ function ProviderRoom({ children }) {
         dispatch({type: "UPDATE_CONTACT", payload: contacts})
     }
 
-    const roomMessages = async ({ room_id }) => {
-        try {
-            let res = await axios.get(`http://localhost:8080/message/${room_id}`, { withCredentials: true });
-            
-            dispatch({ type: "UPDATE_MESSAGES", payload: res.data.message});
-
-        } catch (err) {
-            alert(err);
-        }
-    }
-
     const refresh_rooms = async (cb = () => {}) => {
         try {
             let resRooms = await axios.get("http://localhost:8080/user/one", { withCredentials: true });
@@ -43,7 +32,7 @@ function ProviderRoom({ children }) {
             let chats = [...resRooms.data.user.rooms, ...resContacts.data.contacts];
             let roomConnections = chats.map(e => e.room_id);
             handleRoomConnections(roomConnections, token);
-            console.log(resRooms);
+            
             for (let chat of chats) {
                 if (chat.contact_id) {
                     let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
@@ -53,8 +42,8 @@ function ProviderRoom({ children }) {
                     dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
                 }
             }
+
             dispatch({ type: "UPDATE_ROOMS", payload: chats });
-            console.log(chats);
             
             cb();
         } catch (err) {
@@ -123,11 +112,6 @@ function ProviderRoom({ children }) {
         }
     }
 
-    const setMessageUpload = (message) => {
-        dispatch({type: "MESSAGE_UPLOAD", payload: message});
-
-    }   
-
     return <roomsContext.Provider value={{
         selected: state.selectedChat,
         chats: state.chats,
@@ -136,7 +120,6 @@ function ProviderRoom({ children }) {
         chatPhotos,
         photos: state.photos,
         clearPhotos,
-        roomMessages,
         messages: state.messages,
         setFocus,
         focus: state.focus,
@@ -149,7 +132,7 @@ function ProviderRoom({ children }) {
         setPeekMessages,
         contacts: state.contacts,
         setContacts,
-        setMessageUpload
+        size: state.size,
     }} > {children} </roomsContext.Provider>
 }
 
