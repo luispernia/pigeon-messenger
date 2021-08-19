@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
 
-function ChatPhotos({photos}) {
+    function ChatPhotos({photos}) {
 
     const {token} = useContext(userContext);
 

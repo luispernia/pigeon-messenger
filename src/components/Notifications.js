@@ -28,9 +28,13 @@ function Notifications() {
                     <animated.div style={spring} className="bells">
                         <div  className="bells-scroll">
                             <div className="bellsContain">
-                            {bells.map((e, i) => {
-                                return <Bell data={e} />
-                            })}
+                                {bells.length > 0? (
+                                    bells.map((e, i) => {
+                                        return <Bell data={e} />
+                                    })
+                                ) : (
+                                    <p className="bells-clean">All Clean 😎</p>
+                                )}  
                             </div>
                         </div>
 

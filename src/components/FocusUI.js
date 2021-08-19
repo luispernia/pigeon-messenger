@@ -65,8 +65,8 @@ const CreateRoom = ({ chats }) => {
         },
         validate,
         onSubmit: values => {
+            setFocus(false);
             createRoom((res) => {
-                setFocus(false);
                 if(members.length > 0) {
                     setAlert({type: "info", text: `Request to join / room sended`, resalt: `${values.title}`, show: true})
                 }
@@ -277,7 +277,7 @@ const CreateRoom = ({ chats }) => {
 
 const RequestContact = () => {
 
-    const imageRef = useRef(null);
+    const {setFocus} = useContext(roomsContext);
     const { token, user, setAlert } = useContext(userContext);
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
@@ -290,7 +290,16 @@ const RequestContact = () => {
     const userInput = useSpring({ to: { width: "100%" }, from: { width: "0%" }, delay: 1000 });
     const width = useSpring({ to: { width: "100%", opacity: 1 }, from: { opacity: 0, width: "0%" }, delay: 500 });
 
-
+    const handleRequest = () => {
+        sendContact(user.username, message, username, user.img, token, (res) => {
+            if (!res.ok) {
+                setAlert({ show: true, text: res.err });
+                return;
+            }
+        })
+        setAlert({show: true, text: `request sended to ${username}`, type: "info"});
+        setFocus(false)
+    }
 
     return (
         <>
@@ -319,12 +328,7 @@ const RequestContact = () => {
                         disabled={!userFounded}
                         type="text"
                         placeholder="Message" />
-                    <button onClick={() => sendContact(user.username, message, username, user.img, token, (res) => {
-                        if (!res.ok) {
-                            console.log(res);
-                            setAlert({ show: true, text: res.err });
-                        }
-                    })} disabled={!userFounded}>Request</button>
+                    <button onClick={() => handleRequest()} disabled={!userFounded}>Request</button>
                 </animated.div>
             </div>
         </>
@@ -392,5 +396,15 @@ const Result = ({ username, state }) => {
         )}
     </>
 }
+
+const AddMember = () => {
+
+}
+
+const ProfileSettings = () => {
+    
+}
+
+
 
 export default FocusUI

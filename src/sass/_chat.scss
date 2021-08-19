@@ -168,19 +168,28 @@
     color: var(--blue-submarine);
 }
 
+.pigeon-alert-container {
+    position: absolute;
+    left: 0;
+    z-index: 99999999999999;
+    top: 0;
+    z-index: 99999999999999;
+    max-height: 70vh;
+    width: 30rem;
+    overflow-y: hidden;
+}
+
 .pigeon-alert {
     padding: 1rem;
     display: flex;
-    position: absolute;
     align-items: center;
-    z-index: 99999999999999;
-    left: 0;
-    top: 0;
+    justify-content: flex-end;
     margin: 1rem 0rem 0rem 1rem;
-    z-index: 99999999999999;
     border-radius: .5rem;
     color: var(--light-primary);
     flex-direction: row-reverse;
+    background-color: var(--dark-secondary);
+    width: fit-content;
     span {
         color: lightcoral;
     }

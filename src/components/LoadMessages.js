@@ -72,7 +72,7 @@ function LoadMessages({ height }) {
                         endMessage={<p>That's all</p>}
                         scrollableTarget="messages-overflow"
                     >  
-                        <div style={{display: "flex", flexDirection: "column", marginBottom: "3rem"}}>
+                        <div style={{display: "flex", flexDirection: "column", marginBottom: "3.5rem"}}>
                             { 
                             selected? (
                             messages[selected.room_id]? (

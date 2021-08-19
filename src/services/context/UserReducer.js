@@ -36,7 +36,7 @@ export default (state, action) => {
         case UPDATE_ALERT: 
             return {
                 ...state,
-                alert: {...state.alert, ...payload}
+                alerts: [...state.alerts, ...[payload]]
             }
 
         default:

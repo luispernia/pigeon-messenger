@@ -9,7 +9,7 @@ function ProvideUser({ children }) {
     const initialState = {
         user: null,
         token: null,
-        alert: { type: "", text: "", show: false }
+        alerts: []
     }
 
     const [state, dispatch] = useReducer(UserReducer, initialState);
@@ -76,7 +76,7 @@ function ProvideUser({ children }) {
         updateUser,
         signOut,
         setAlert,
-        alert: state.alert,
+        alerts: state.alerts,
         refresh_token
     }}>{children}</userContext.Provider>
 }

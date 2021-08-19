@@ -17,7 +17,7 @@ import messagesContext from '../services/context/MessagesContext';
 
 function Chat() {
 
-    const { token, alert, setAlert, refresh_token } = useContext(userContext);
+    const { token, alerts, setAlert, refresh_token } = useContext(userContext);
     const { addBell, refresh_bell, } = useContext(bellsContext);
     const { refresh_rooms, updatePeek } = useContext(roomsContext);
     const {setMessageUpload} = useContext(messagesContext);
@@ -30,6 +30,7 @@ function Chat() {
 
     useEffect(() => {
         socket.on("onMessage", (args) => {
+            console.log(args);
             let content = args.message;
             if(!content.files) {
                 content.files = [];
@@ -71,7 +72,7 @@ function Chat() {
 
     return (
         <>
-            {alert.show ? (
+            {alerts.length > 0 ? (
                 <Alert />
             ) : ("")}
             <div className="container">
