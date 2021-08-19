@@ -6,7 +6,7 @@ import roomsContext from './RoomContext';
 function ProviderMessages({children}) {
 
     const initialState = {
-        messages: []
+        messages: {}
     }
 
     const { selected } = useContext(roomsContext);
@@ -14,12 +14,11 @@ function ProviderMessages({children}) {
     const [state, dispatch] = useReducer(MessagesReducer, initialState);
 
     const clear_queue = () => {
-        dispatch({type: "DELETE_UPLOAD", payload: []});
+        dispatch({type: "DELETE_UPLOAD", payload: {}});
     }
 
-    const setMessageUpload = (message) => {
-        console.log(selected);
-        dispatch({type: "MESSAGE_UPLOAD", payload: message});
+    const setMessageUpload = ({message, room_id}) => {
+        dispatch({type: "MESSAGE_UPLOAD", payload: {message, room_id}});
     }   
 
     return (

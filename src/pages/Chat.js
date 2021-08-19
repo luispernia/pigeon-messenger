@@ -31,9 +31,12 @@ function Chat() {
     useEffect(() => {
         socket.on("onMessage", (args) => {
             let content = args.message;
-            console.log(content);
-            content.files = [];
-            setMessageUpload(content);
+            if(!content.files) {
+                content.files = [];
+                setMessageUpload({message: content, room_id: content.room_id});
+                return;
+            }
+            setMessageUpload({message: content, room_id: content.room_id});
         })
 
     }, [])

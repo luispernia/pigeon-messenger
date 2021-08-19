@@ -73,10 +73,14 @@ function LoadMessages({ height }) {
                         scrollableTarget="messages-overflow"
                     >  
                         <div style={{display: "flex", flexDirection: "column", marginBottom: "3rem"}}>
-                            {
-                                messages.map(e => {
+                            { 
+                            selected? (
+                            messages[selected.room_id]? (
+                                messages[selected.room_id].map(e => {
                                     return <Message data={e} />
                                 })
+                                ) : ("")
+                                ) : ("")
                             }
                         </div>
                      {
