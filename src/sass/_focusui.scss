@@ -14,8 +14,7 @@
     .close {
         color: var(--light-secondary);
         font-size: 1.6rem;
-        margin-top: 1rem;
-        transition: 0.3s all ease-in-out;
+        margin: 1rem 0rem;
     }
     .close:hover {
         color: var(--pigeon-primary);
@@ -444,4 +443,15 @@
         color: var(--pigeon-primary);
         margin: 1rem 0rem;
     }
+}
+
+.current-scroll {
+    max-height: 300px;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    overflow-y: scroll;
+    
+}
+.current-scroll::-webkit-scrollbar {
+    display: none;
 }

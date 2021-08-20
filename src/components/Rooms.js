@@ -8,7 +8,7 @@ import messagesContext from '../services/context/MessagesContext';
 function Rooms() {
 
     const { chats, chatPeeks } = useContext(roomsContext);
-    
+
 
     return (
         <>
@@ -54,6 +54,7 @@ const ContactIcon = ({ data, peeks }) => {
     }, [selected])
 
     useEffect(() => {
+        console.log("change");
         socket.on("onMessage", (args) => {
             setPeekMessages(data.room_id);
             unreaded(data.room_id)

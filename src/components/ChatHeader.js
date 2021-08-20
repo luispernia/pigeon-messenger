@@ -82,7 +82,7 @@ function ChatHeader() {
                             {users.slice(0,7).map((e, i) => {
                                 return <img key={i} src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
                             })}
-                            <p>{users.length > 7? `and ${users.length - 7} others` : "Members"}</p>
+                            <p>{users.length > 7? `and ${users.length - 7} members` : "Members"}</p>
                         </>
                     )) : ("")}
                   

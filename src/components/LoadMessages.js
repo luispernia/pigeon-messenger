@@ -9,14 +9,14 @@ import messagesContext from '../services/context/MessagesContext';
 function LoadMessages({ height }) {
 
     const [hasMore, setHasMore] = useState(true);
-    const [page, setPage] = useState(20);
+    const [page, setPage] = useState(10);
     const [items, setItems] = useState([]);
     const { selected } = useContext(roomsContext);
     const {messages, clear_queue} = useContext(messagesContext);
     const scrollRef = useRef();
 
     const fetchMessages = (reset) => {
-        axios.get(`http://localhost:8080/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 20}&to=${reset ? 20 : page}`)
+        axios.get(`http://localhost:8080/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
             .then((res) => {
 
                 const result = res.data;
@@ -28,7 +28,7 @@ function LoadMessages({ height }) {
                 }
 
                 setPage(prev => {
-                    return reset ? 20 : prev + 20
+                    return reset ? 10 : prev + 10
                 })
 
                 if (reset) {

@@ -2,19 +2,13 @@ import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
 import { useHistory } from "react-router-dom";
 import Notifications from './Notifications';
+import roomsContext from '../services/context/RoomContext';
 
 function Profile() {
 
     const history = useHistory();
     const {user, token, signOut} = useContext(userContext);
-
-    
-    const logout = async (user) => {
-        signOut(() => {
-            alert("Bye");
-            history.replace("/");
-        })
-    }
+    const {setFocus} = useContext(roomsContext);
 
     return (
         <div className="profile">
@@ -22,7 +16,7 @@ function Profile() {
                 <img src={`http://localhost:8080/upload/user/${user.img}?token=${token}`} alt="" />
                 <div>
                     <h3><span><i class="bi bi-at"></i></span>{user.username}</h3>
-                    <p><span><i class="bi bi-box"></i></span> Settings</p>
+                    <p onClick={() => setFocus(true, "settings")} ><span><i class="bi bi-box"></i></span> Settings</p>
                 </div>
             </div>
 

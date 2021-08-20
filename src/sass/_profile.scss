@@ -16,9 +16,14 @@
             margin-left: .4rem;
             font-size: .9rem;
             display: flex;
+            transition: .3s all ease;
             span {
                 margin-right: .3rem;
             }
+        }
+        p:hover {
+            cursor: pointer;
+            color: var(--pigeon-primary);
         }
         h3 {
             display: flex;
@@ -35,5 +40,90 @@
             height: fit-content;
             border-radius: 100%;    
         }
+    }
+}
+
+.settings-title {
+    color: var(--light-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i {
+        color: var(--pigeon-primary);
+        margin-left: .5rem;
+    }
+}
+
+.profile_settings {
+    padding: 1rem;
+    background-color: var(--dark-primary);
+    border-radius: 1rem;
+    margin-top: 1rem;
+    .profile-resume {
+        display: flex;
+        align-items: flex-start;
+        .profile-info {
+            text-align: left;
+            h3 {
+                font-size: 1.6rem;
+            }
+            p {
+                margin-top: .3rem;
+            }
+            i {
+                color: var(--pigeon-primary);
+                font-size: 1.4rem;
+            }
+        }
+    }
+    img {
+        width: 5rem;
+        margin-right: 1rem;
+    }
+}
+
+.profile-description {
+    text-align: left;
+    textarea {
+        color: var(--light-secondary);
+        font-family: inherit;
+        resize: none;
+        background-color: transparent;
+        border: none;
+        width: 90%;
+        font-size: 1.2rem;
+        height: 6rem;
+    }
+    textarea::placeholder {
+        color: var(--dark-gray);
+    }
+    p {
+        font-size: 1.2rem;
+    }
+}
+.button-logout {
+    padding: .5rem 1rem;
+    border: none;
+    background-color: var(--dark-secondary);
+    color: var(--light-primary);
+    font-size: 1rem;
+    border-radius: .5rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    transition: .3s all ease;
+    i {
+        color: var(--pigeon-primary);
+        font-size: 1.4rem;
+        margin-left: .3rem;
+        transition: .3s all ease;
+    }
+}
+.button-logout:hover {
+    background-color: var(--pigeon-primary);
+    color: var(--dark-primary);
+    cursor: pointer;
+    i {
+        color: var(--dark-primary);
     }
 }

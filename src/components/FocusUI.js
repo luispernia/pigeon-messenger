@@ -7,6 +7,7 @@ import { request_room } from "../services/sockets/sockets";
 import axios from 'axios';
 import Cropper from "react-cropper";
 import { useFormik } from "formik";
+import ProfileSettings from "./ProfileSettings";
 import "cropperjs/dist/cropper.css"
 
 const validate = (values) => {
@@ -31,19 +32,10 @@ function FocusUI() {
 
     let { focus, setFocus, chats, refresh_rooms } = useContext(roomsContext);
 
-    const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
-
-
     return (
         <>
             {focus.bool ? (
                 <animated.div style={props} className="focus">
-                    <animated.div style={spring} onClick={() => {
-                        setFocus(false)
-                        refresh_rooms();
-                    }} className="close">
-                        <animated.i style={spring} class="bi bi-x-circle"></animated.i>
-                    </animated.div>
                     <div className="glass">
                         {focus.type === "room" ?
                             (
@@ -171,6 +163,8 @@ const CreateRoom = ({ chats }) => {
         setShowCropper(false);
     }
 
+    const close = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 })
+
 
     useEffect(() => {
         setContacts(chats);
@@ -181,6 +175,12 @@ const CreateRoom = ({ chats }) => {
 
     return (
         <>
+            <animated.div style={close} onClick={() => {
+                setFocus(false)
+                refresh_rooms();
+            }} className="close">
+                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+            </animated.div>
             {
                 showCropper ? (
                     <div className="crop-contain">
@@ -288,7 +288,7 @@ const CreateRoom = ({ chats }) => {
 
 const RequestContact = () => {
 
-    const { setFocus } = useContext(roomsContext);
+    const { setFocus, refresh_rooms } = useContext(roomsContext);
     const { token, user, setAlert } = useContext(userContext);
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
@@ -300,6 +300,8 @@ const RequestContact = () => {
     const height = useSpring({ to: { height: 400 }, from: { height: 0 }, delay: 500 });
     const userInput = useSpring({ to: { width: "100%" }, from: { width: "0%" }, delay: 1000 });
     const width = useSpring({ to: { width: "100%", opacity: 1 }, from: { opacity: 0, width: "0%" }, delay: 500 });
+    const close = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 })
+
 
     const handleRequest = () => {
         sendContact(user.username, message, username, user.img, token, (res) => {
@@ -315,6 +317,12 @@ const RequestContact = () => {
 
     return (
         <>
+            <animated.div style={close} onClick={() => {
+                setFocus(false)
+                refresh_rooms();
+            }} className="close">
+                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+            </animated.div>
             <animated.h1 style={opac}>Add Contact</animated.h1>
             <div className="contact-add">
                 <animated.div style={height} className="contact-request-search">
@@ -411,15 +419,17 @@ const Result = ({ username, state }) => {
 
 const AddMember = ({ chats }) => {
 
-    const { contacts, setContacts, selected, setFocus } = useContext(roomsContext);
+    const { contacts, setContacts, selected, setFocus, refresh_rooms } = useContext(roomsContext);
     const [members, setMembers] = useState([]);
     const { token, setAlert, user } = useContext(userContext);
 
     const opac = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 200 });
-    const height = useSpring({ to: { height: 400, opacity: 1 }, from: { height: 0, opacity: 0 }, delay: 500 });
+    const height = useSpring({ to: { height: 300, opacity: 1 }, from: { height: 0, opacity: 0 }, delay: 500 });
     const width = useSpring({ to: { width: 250 }, from: { width: 0 }, delay: 1000 });
     const show = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
     const showButton = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1200 });
+    const close = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 })
+
 
     const addMember = (e, i) => {
         let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
@@ -433,7 +443,7 @@ const AddMember = ({ chats }) => {
             return e.username;
         }).indexOf(contactFiltered[i].contact_id.username);
 
-        if (respo > 0) {
+        if (respo > -1) {
             setAlert({ type: "info", text: `Member / already in room`, resalt: `${contactFiltered[i].contact_id.username}`, show: true })
             return;
         }
@@ -457,7 +467,7 @@ const AddMember = ({ chats }) => {
                 request_room({ img: selected.img, requester: user.username, user_id: member.contact_id._id, room_id: selected.room_id, title: selected.name, description: selected.description, username: member.contact_id.username })
             }
             setFocus(false);
-            setAlert({type: "info", text: "Request to join / sended", resalt: selected.name})
+            setAlert({ type: "info", text: "Request to join / sended", resalt: selected.name })
         } else {
             setAlert({ text: "Add some members first!", show: true })
         }
@@ -472,6 +482,12 @@ const AddMember = ({ chats }) => {
 
     return (
         <>
+        <animated.div style={close} onClick={() => {
+                setFocus(false)
+                refresh_rooms();
+            }} className="close">
+                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+            </animated.div>
             <div style={opac} className="add-member-title">
                 <animated.h1 style={opac}>Add Members</animated.h1>
                 <animated.h3 style={opac}>{selected.name}</animated.h3>
@@ -479,17 +495,19 @@ const AddMember = ({ chats }) => {
             <div className="add-member-ui">
                 <animated.div style={height} className="current-contacts">
                     <animated.p style={show} >{selected.members.length} members</animated.p>
-                    {selected.members.map(e => {
-                        return (
-                            <animated.div style={show} className="current-user">
-                                <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
-                                <animated.div>
-                                    <h4>{e.username}</h4>
-                                    <p>{e._id === selected.admin ? `creator` : `member`}</p>
+                    <div className="current-scroll">
+                        {selected.members.map(e => {
+                            return (
+                                <animated.div style={show} className="current-user">
+                                    <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
+                                    <animated.div>
+                                        <h4>{e.username}</h4>
+                                        <p>{e._id === selected.admin ? `creator` : `member`}</p>
+                                    </animated.div>
                                 </animated.div>
-                            </animated.div>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </animated.div>
                 <div className="contact-list">
                     <animated.div style={width} className="">
@@ -524,15 +542,5 @@ const AddMember = ({ chats }) => {
         </>
     )
 }
-
-const ProfileSettings = () => {
-
-    const { user } = useContext(userContext);
-
-    return (
-        <h1>{user.username} Settings</h1>
-    )
-}
-
 
 export default FocusUI
