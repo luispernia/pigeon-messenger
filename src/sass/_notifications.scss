@@ -69,6 +69,11 @@
         color: var(--pigeon-primary);
         transition: 0.3s all ease-in-out;
     }
+    @media (max-width: 769px) {
+        i {
+            font-size: 2.1rem;
+        }    
+    }
 }
 
 .bell-icon:hover {

@@ -16,3 +16,4 @@ export const UPDATE_ALERT = "UPDATE_ALERT";
 export const UPDATE_CONTACT = "UPDATE_CONTACT";
 export const MESSAGE_UPLOAD = "MESSAGE_UPLOAD";
 export const DELETE_UPLOAD = "DELETE_UPLOAD";
+export const SHOW_BAR = "SHOW_BAR";

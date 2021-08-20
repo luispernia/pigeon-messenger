@@ -23,7 +23,7 @@ function Notifications() {
                 setBells();
                 }} className="bell-icon">
                 <p className="bells-count">{bells.filter(e => e.watched === false).length > 0? bells.filter(e => e.watched === false).length : ""}</p>
-                <i class="bi bi-bell-fill"></i>
+                <i className="bi bi-bell-fill"></i>
             </div>
                 <animated.div style={springDisplay}>
                     <animated.div style={spring} className="bells">

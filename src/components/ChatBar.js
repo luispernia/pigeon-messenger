@@ -55,11 +55,11 @@ const ChatBar = () => {
         <div className="bar-container">
             <form onSubmit={handleSubmit} className="send-bar">
                 <div className="fileInput">
-                    <i onClick={() => fileRef.current.click()} class="bi bi-images"></i>
+                    <i onClick={() => fileRef.current.click()} className="bi bi-images"></i>
                     <input ref={fileRef} onChange={($event) => setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })} type="file" name="docs" multiple />
                 </div>
                 <input value={message} onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
-                <button onMouseOver={() => setCursor(true)} onMouseLeave={() => setCursor(false)} type="submit">{cursor? <i class="bi bi-cursor-fill"></i> : <i class="bi bi-cursor"></i>}</button>
+                <button onMouseOver={() => setCursor(true)} onMouseLeave={() => setCursor(false)} type="submit">{cursor? <i className="bi bi-cursor-fill"></i> : <i className="bi bi-cursor"></i>}</button>
             </form>
         </div>
     )

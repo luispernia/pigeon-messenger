@@ -15,8 +15,8 @@ function Profile() {
             <div className="profile-opts">
                 <img src={`http://localhost:8080/upload/user/${user.img}?token=${token}`} alt="" />
                 <div>
-                    <h3><span><i class="bi bi-at"></i></span>{user.username}</h3>
-                    <p onClick={() => setFocus(true, "settings")} ><span><i class="bi bi-box"></i></span> Settings</p>
+                    <h3><span><i className="bi bi-at"></i></span>{user.username}</h3>
+                    <p onClick={() => setFocus(true, "settings")} ><span><i className="bi bi-box"></i></span> Settings</p>
                 </div>
             </div>
 

@@ -12,7 +12,7 @@ function Message({ data }) {
         <>
             {data.global ? (
                 <div className="global-message">
-                    <p> <i class="bi bi-broadcast"></i> {data.text}</p>
+                    <p> <i className="bi bi-broadcast"></i> {data.text}</p>
                 </div>
             ) : (
                 <animated.div style={spring} className={`message ${user.username === data.author.username ? "right" : ""}`}>

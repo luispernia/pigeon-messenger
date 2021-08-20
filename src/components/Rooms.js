@@ -4,22 +4,29 @@ import userContext from '../services/context/UserContext';
 import socket from "../services/sockets/socketConfig";
 import { useSpring, animated } from "react-spring";
 import messagesContext from '../services/context/MessagesContext';
+import useWindowSize from './useWindowSize';
+import Profile from './Profile';
 
 function Rooms() {
 
     const { chats, chatPeeks } = useContext(roomsContext);
-
+    const [width, height] = useWindowSize();
+    const chatRef = useRef();
 
     return (
         <>
-            <PigeonLogo />
+            <div className="bar-header">
+                <PigeonLogo />
+                {width <= 769? (
+                    <Profile />
+                ) : ("")}
+            </div>
             <div className="chat-panel">
                 <Create />
                 <Search />
-                <div className="chat-icons">
-                    
+                <div ref={chatRef} className="chat-icons">                    
                     {chats.map((e,i) => {
-                        return e.user_id ? <ContactIcon key={i} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon data={e} peeks={chatPeeks[e.room_id]} />
+                        return e.user_id ? <ContactIcon key={i} chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} />
                     })}
                 </div>
             </div>
@@ -27,11 +34,11 @@ function Rooms() {
     )
 }
 
-const ContactIcon = ({ data, peeks }) => {
+const ContactIcon = ({ data, peeks, chatRef }) => {
 
     const { contact_id } = data;
-    const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages } = useContext(roomsContext);
+    const { token, user } = useContext(userContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms} = useContext(roomsContext);
     const contactRef = useRef(null);
 
     const selectedChat = (data) => {
@@ -53,14 +60,25 @@ const ContactIcon = ({ data, peeks }) => {
         })
     }, [selected])
 
+ 
     useEffect(() => {
-        console.log("change");
         socket.on("onMessage", (args) => {
+            if(args.message.global) {
+                refresh_rooms(() => {}, true);
+                unreaded(data.room_id);                
+            } else {
+                if(args.message.author.username !== user.username) {
+                    refresh_rooms(() => {}, true);
+                    unreaded(data.room_id);
+                }
+            }
             setPeekMessages(data.room_id);
-            unreaded(data.room_id)
+            unreaded(data.room_id);
+            chatRef.current.scrollTop = -999999;
         })
-    }, [])
+        chatRef.current.scrollTop = -999999;
 
+    }, [])
     return (
         <div ref={contactRef} onClick={() => selectedChat(data)} className={`chat-icon ${ selected? ( data.room_id === selected.room_id? "chat-selected" : "") : ""}`}>
             <div className="chat-icon-img">
@@ -82,9 +100,9 @@ const ContactIcon = ({ data, peeks }) => {
     )
 }
 
-const RoomIcon = ({ data, peeks }) => {
-    const { token } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages} = useContext(roomsContext);
+const RoomIcon = ({ data, peeks, chatRef }) => {
+    const { token, user } = useContext(userContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms} = useContext(roomsContext);
     const {clear_queue} = useContext(messagesContext);
 
     const roomRef = useRef(null);
@@ -112,9 +130,20 @@ const RoomIcon = ({ data, peeks }) => {
     
     useEffect(() => {
         socket.on("onMessage", (args) => {
+            if(args.message.global) {
+                refresh_rooms(() => {}, true);
+                unreaded(data.room_id)                
+            } else {
+                if(args.message.author.username !== user.username) {
+                    unreaded(data.room_id)
+                    refresh_rooms(() => {}, true);
+                }
+            }
             setPeekMessages(data.room_id);
-            unreaded(data.room_id)
+            unreaded(data.room_id);
+            chatRef.current.scrollTop = -999999;
         })
+        chatRef.current.scrollTop = -999999;
     }, [])
 
 
@@ -128,27 +157,30 @@ const RoomIcon = ({ data, peeks }) => {
                 )}
                 <img src={`http://localhost:8080/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
             </div>
-            <div className="chat-icon-body">
+            <animated.div className="chat-icon-body">
                 <h4>{`${data.name}`}</h4>
                 <div className="peek-messages">
                     {peeks.messages ? (
                         <PeekMessage message={peeks.messages[0]} />
                     ) : ("")}
                 </div>
-            </div>
+            </animated.div>
         </div>
     )
 
 }
 
-const PeekMessage = ({ message}) => {
+const PeekMessage = ({message}) => {
 
     const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }})
 
     return (<>
         {message? (
             <animated.div style={spring} className="peek-message">
-            <p className="peek-author">{message.author.username}</p>
+                {message.author? (
+                    <p className="peek-author">{message.author.username}</p>
+
+                ) : ("")}
             <p>{message.text.slice(0, 15)}{message.text.length >= 15? "..." : ""}</p>
         </animated.div>
         ) : ("")}
@@ -169,11 +201,18 @@ const PigeonLogo = () => {
 const Search = () => {
 
     const search = useRef();
+    const [value, setValue] = useState("");
+    const {searchRoom} = useContext(roomsContext);
+    
 
     return (
         <div className="center-bar">
-            <div onClick={() => { search.current.focus() }} className="search-bar">
-                <i class="bi bi-search"></i>
+            <div onClick={() => { search.current.focus()}} value={value} onChange={($event) => {
+                setValue($event.target.value);
+                console.log($event.target.value);
+                searchRoom($event.target.value);
+            }} className="search-bar">
+                <i className="bi bi-search"></i>
                 <input ref={search} type="text" placeholder="Search Pigeon" />
             </div>
         </div>
@@ -182,17 +221,17 @@ const Search = () => {
 
 const Create = () => {
 
-    const { setFocus } = useContext(roomsContext);
+    const { setFocus, setShowBar, showBar } = useContext(roomsContext);
 
     return (
         <div className="bar">
             <h2>Chats</h2>
             <div className="bar-controls">
                 <div className="create-room">
-                    <i onClick={() => setFocus(true, "room")} class="bi bi-collection"></i>
+                    <i onClick={() => setFocus(true, "room")} className="bi bi-collection"></i>
                 </div>
                 <div className="add-contact">
-                    <i onClick={() => setFocus(true, "request")} class="bi bi-person-plus"></i>
+                    <i onClick={() => setFocus(true, "request")} className="bi bi-person-plus"></i>
                 </div>
             </div>
         </div>

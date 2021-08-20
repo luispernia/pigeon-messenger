@@ -13,7 +13,7 @@ const ProfileSettings = () => {
     const history = useHistory();
     const opac = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
     const close = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 1000 })
-    const height = useSpring({ to: { height: 300, opacity: 1 }, from: { opacity: 0, height: 100 }, delay: 1000 })
+    const height = useSpring({ to: { height: 200, opacity: 1 }, from: { opacity: 0, height: 100 }, delay: 1000 })
     const width = useSpring({ to: { width: 400, opacity: 1 }, from: { opacity: 0, width: 300 }, delay: 500 })
 
     const logout = () => {
@@ -29,7 +29,7 @@ const ProfileSettings = () => {
                 setFocus(false)
                 refresh_rooms();
             }} className="close">
-                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+                <animated.i style={close} className="bi bi-x-circle"></animated.i>
             </animated.div>
             <animated.h1 style={opac} className="settings-title">Settings <i className="bi bi-box"></i></animated.h1>
             <animated.div style={{ ...height, ...width }} className="profile_settings">
@@ -41,7 +41,9 @@ const ProfileSettings = () => {
                         <p><i className="bi bi-person-square"></i> {chats.filter(e => e.contact_id).length} Contacts</p>
                     </div>
                 </animated.div>
-                <button className="button-logout" onClick={() => logout()}>Logout <i className="bi bi-box-arrow-in-right"></i></button>
+                <div style={{display: "flex", justifyContent: "flex-end"}}>
+                    <animated.button style={close} className="button-logout" onClick={() => logout()}>Logout <i className="bi bi-box-arrow-in-right"></i></animated.button>
+                </div>
             </animated.div>
         </>
     )

@@ -14,7 +14,8 @@ function ProviderRoom({ children }) {
         focus: { bool: false, type: "", bell: false, resetPeek: false },
         chatPeeks: {},
         contacts: [],
-        size: 0
+        size: 0,
+        showBar: {reverse: true}
     }
 
     const [state, dispatch] = useReducer(RoomReducer, initialState);
@@ -25,25 +26,52 @@ function ProviderRoom({ children }) {
         dispatch({type: "UPDATE_CONTACT", payload: contacts})
     }
 
-    const refresh_rooms = async (cb = () => {}) => {
+    const searchRoom = async (value) => {
+        try {
+
+            const res = await axios.get(`http://localhost:8080/room/search/${value}`, {withCredentials: true}).catch(err => console.log(err))   
+            if(value.length > 0) {
+                dispatch({type: "UPDATE_ROOMS", payload: res.data.rooms});
+            } else {
+                refresh_rooms();
+            }
+
+        } catch(err) {
+            alert(err);
+        }
+    }
+
+    const refresh_rooms = async (cb = () => {}, bool) => {
         try {
             let resRooms = await axios.get("http://localhost:8080/user/one", { withCredentials: true });
             let resContacts = await axios.get("http://localhost:8080/contact", { withCredentials: true });
             let chats = [...resRooms.data.user.rooms, ...resContacts.data.contacts];
             let roomConnections = chats.map(e => e.room_id);
             handleRoomConnections(roomConnections, token);
-            
-            for (let chat of chats) {
-                if (chat.contact_id) {
-                    let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
-                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: chat.contact_id.online, bells: 0 } } })
-                } else {
-                    let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
-                    dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
-                }
-            }
 
-            dispatch({ type: "UPDATE_ROOMS", payload: chats });
+            let filter = [];
+
+            for (let chat of chats) {
+                let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                filter.push({data, chat});
+                if(!bool) {
+                    if (chat.contact_id) {
+                        let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                        dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: chat.contact_id.online, bells: 0 } } })
+                    } else {
+                        let {data} = await axios.get(`http://localhost:8080/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                        dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
+                    }
+                }
+
+                unreaded(chat.room_id);
+            }
+            let filtered = filter.sort((a,b) => new Date(a.data.messages ? a.data.messages[0].msgDate : 0) - new Date(b.data.messages ? b.data.messages[0].msgDate : 0))
+            .map(e => {
+                return e.chat;
+            })
+
+            dispatch({ type: "UPDATE_ROOMS", payload: filtered });
             
             cb();
         } catch (err) {
@@ -94,10 +122,11 @@ function ProviderRoom({ children }) {
         dispatch({ type: "UPDATE_PEEK", payload: { room_id, prop, value } })
     }
 
-    const unreaded = async (room_id) => {
+    const unreaded = async (room_id, cb = () => {}) => {
         try {
             let res = await axios.post("http://localhost:8080/message/unread", { room_id }, { withCredentials: true });
             updatePeek(room_id, "bells", res.data.count);
+            cb({count: res.data.count})
         } catch (err) {
             alert(err)
         }
@@ -110,6 +139,10 @@ function ProviderRoom({ children }) {
         } catch(err) {
             alert(err)
         }
+    }
+
+    const setShowBar = (bool) => {
+        dispatch({type:"SHOW_BAR", payload: bool})
     }
 
     return <roomsContext.Provider value={{
@@ -133,6 +166,9 @@ function ProviderRoom({ children }) {
         contacts: state.contacts,
         setContacts,
         size: state.size,
+        searchRoom,
+        setShowBar,
+        showBar: state.showBar 
     }} > {children} </roomsContext.Provider>
 }
 

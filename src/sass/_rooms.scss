@@ -5,7 +5,17 @@
 .chat-panel {   
     flex: 0 0 calc(90%);
 }
-
+.bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-direction: column;
+}
+@media (min-width: 769px) {
+    .bar-header {
+        margin-bottom: 0;
+    }
+}
 .bar {
     display: flex;
     justify-content: space-between;

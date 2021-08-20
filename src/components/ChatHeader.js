@@ -73,7 +73,7 @@ function ChatHeader() {
                         } else{ 
                             editTitle();
                         }
-                        }} style={ onMouse? {display: "flex"} : {display: "none"}} class={`bi bi-${onEdit? "pencil-square" : "check2-circle"}`}></i>
+                        }} style={ onMouse? {display: "flex"} : {display: "none"}} className={`bi bi-${onEdit? "pencil-square" : "check2-circle"}`}></i>
                 </div>
                 <div className="members">
                     {selected? (selected.contact_id? (
@@ -90,8 +90,8 @@ function ChatHeader() {
             </div>
             <div className="chat-opts">
                 <div className="opts-container">
-                    <i onClick={() => setFocus(true, "add-member")} class="bi bi-plus-circle-dotted"></i>
-                    <i class="bi bi-archive"></i>
+                    <i onClick={() => setFocus(true, "add-member")} className="bi bi-plus-circle-dotted"></i>
+                    <i className="bi bi-archive"></i>
                 </div>
             </div>
         </div>

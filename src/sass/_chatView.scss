@@ -37,11 +37,12 @@
         border-radius: 2rem;
         background-color: var(--dark-transparent);
         backdrop-filter: blur(.5rem);
+        width: 95%;
         input[type=file] {
             display: none;
         }
         input[type=text] {
-            width: 85%;
+            width: 90%;
             border: none;
             font-size: 1.1rem;
             background-color: transparent;
@@ -52,7 +53,7 @@
             color: var(--dark-gray);
         }
         button {
-            width: 10%;
+            width: 5rem;
             border-radius: 2rem;        
             border: none;
             font-size: 1.6rem;
@@ -69,7 +70,7 @@
         .fileInput {
             background-color: var(--pigeon-primary);
             display: flex;
-            width: 5%;
+            width: 3rem;
             padding: 1rem;
             flex-direction: column;
             justify-content: center;

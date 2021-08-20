@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
 import userContext from "./UserContext";
 import UserReducer from "./UserReducer";
@@ -67,6 +67,7 @@ function ProvideUser({ children }) {
             setAlert({ text: err });
         }
     }
+
 
     return <userContext.Provider value={{
         user: state.user,

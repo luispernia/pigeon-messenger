@@ -44,9 +44,9 @@ const AlertComponent = ({ data }) => {
                         <p>{data.text}</p>
                     )}
                     {data.type === "info" ? (
-                        <i class="bi bi-eyeglasses"></i>
+                        <i className="bi bi-eyeglasses"></i>
                     ) : (
-                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <i className="bi bi-exclamation-circle-fill"></i>
                     )}
                 </animated.div>
             ) : (

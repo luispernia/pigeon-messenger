@@ -179,7 +179,7 @@ const CreateRoom = ({ chats }) => {
                 setFocus(false)
                 refresh_rooms();
             }} className="close">
-                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+                <animated.i style={close} className="bi bi-x-circle"></animated.i>
             </animated.div>
             {
                 showCropper ? (
@@ -266,7 +266,7 @@ const CreateRoom = ({ chats }) => {
                                                             <small>{e.contact_id.online ? "Online" : "Offline"}</small>
                                                         </div>
                                                     </div>
-                                                    <i onClick={() => addMember(e, i)} class={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
+                                                    <i onClick={() => addMember(e, i)} className={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
                                                 </li>
                                             )
                                         })}
@@ -321,13 +321,13 @@ const RequestContact = () => {
                 setFocus(false)
                 refresh_rooms();
             }} className="close">
-                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+                <animated.i style={close} className="bi bi-x-circle"></animated.i>
             </animated.div>
             <animated.h1 style={opac}>Add Contact</animated.h1>
             <div className="contact-add">
                 <animated.div style={height} className="contact-request-search">
                     <animated.div style={width} className="input-search">
-                        <i class="bi bi-at"></i>
+                        <i className="bi bi-at"></i>
                         <animated.input
                             value={username}
                             onChange={($event) => setUsername($event.target.value)}
@@ -486,7 +486,7 @@ const AddMember = ({ chats }) => {
                 setFocus(false)
                 refresh_rooms();
             }} className="close">
-                <animated.i style={close} class="bi bi-x-circle"></animated.i>
+                <animated.i style={close} className="bi bi-x-circle"></animated.i>
             </animated.div>
             <div style={opac} className="add-member-title">
                 <animated.h1 style={opac}>Add Members</animated.h1>
@@ -527,7 +527,7 @@ const AddMember = ({ chats }) => {
                                                 <small>{e.contact_id.online ? "Online" : "Offline"}</small>
                                             </div>
                                         </div>
-                                        <i onClick={() => addMember(e, i)} class={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
+                                        <i onClick={() => addMember(e, i)} className={`bi bi-${e.toggle ? "dash" : "plus"}-square`}></i>
                                     </li>
                                 )
                             })}
@@ -535,7 +535,7 @@ const AddMember = ({ chats }) => {
                     </animated.div>
                     <animated.button onClick={joinMembers} type="submit" style={showButton} className="submit-room add">
                         <span>Add</span>
-                        <i class="bi bi-outlet"></i>
+                        <i className="bi bi-outlet"></i>
                     </animated.button>
                 </div>
             </div>

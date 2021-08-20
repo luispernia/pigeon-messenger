@@ -42,7 +42,21 @@
         }
     }
 }
-
+@media (max-width: 769px) {
+    .profile {
+        background-color: transparent;
+        .profile-opts {
+            align-items: center;
+            img {
+                margin-bottom: .5rem;
+                width: 3rem;
+            }
+        }
+        .notifications {
+            margin: 0rem 1rem;
+        }
+    }
+}
 .settings-title {
     color: var(--light-primary);
     display: flex;
