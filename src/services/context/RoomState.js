@@ -134,6 +134,7 @@ function ProviderRoom({ children }) {
 
     const setReaded = async (room_id) => {
         try {
+            // eslint-disable-next-line no-unused-vars
             let res = await axios.put("http://localhost:8080/message/readed", {room_id}, {withCredentials: true});
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "bells", value: 0}})
         } catch(err) {

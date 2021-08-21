@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext, useEffect } from 'react'
 import { handleClientId } from "../services/sockets/sockets";
 
 import userContext from '../services/context/UserContext';
@@ -21,9 +22,9 @@ function Chat() {
 
     const { token, alerts, setAlert, refresh_token } = useContext(userContext);
     const { addBell, refresh_bell, } = useContext(bellsContext);
-    const { refresh_rooms, updatePeek, showBar, setShowBar } = useContext(roomsContext);
+    const { refresh_rooms, updatePeek, showBar } = useContext(roomsContext);
     const {setMessageUpload} = useContext(messagesContext);
-    const [width, height] = useWindowSize();
+    const [width] = useWindowSize();
 
     useEffect(() => {
         socket.on("onMessage", (args) => {
@@ -48,6 +49,7 @@ function Chat() {
 
         socket.on("notify", (args) => {
             addBell(args, ({ ring }) => {
+                // eslint-disable-next-line no-unused-vars
                 let thing = args.bell.title ? setAlert({ type: "info", show: true, text: args.bell.title }) : ("");
                 if (ring) {
                     let bell = new Audio("bell.wav");
@@ -100,11 +102,9 @@ function Chat() {
 const PrimaryColumn = () => {
 
 
-    const { showBar, setShowBar } = useContext(roomsContext);
-    const [width, height] = useWindowSize();
-    const spring = useSpring({to: {width: "0%"}, from: {width: "100%"}, reverse: !showBar.reverse, delay: 500});
-    const springOpac = useSpring({to: {opacity: 0}, from: {opacity: 1}, reverse: !showBar.reverse, delay: 400 });
-
+    const { showBar } = useContext(roomsContext);
+    const [width] = useWindowSize();
+    const spring = useSpring({to: {width: "0%"}, from: {width: "100%"}, reverse: !showBar.reverse, delay: 100});
 
     return (
     <>

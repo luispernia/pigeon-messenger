@@ -19,7 +19,7 @@ function ChatHeader() {
         setOnEdit(!onEdit);
     }
 
-    const [width, height] = useWindowSize();
+    const [width] = useWindowSize();
 
     const saveEdit = () => {
         axios.put(`http://localhost:8080/room/${selected._id}/default`, { name: title }, { withCredentials: true })
@@ -67,12 +67,13 @@ function ChatHeader() {
         <>
             {selected ? (
                 <div className="chat-header">
-                    <i onClick={() => setShowBar({ reverse: !showBar.reverse })} class="bi bi-app-indicator open-bar"></i>
+                    <i onClick={() => setShowBar({ reverse: !showBar.reverse })} className="bi bi-app-indicator open-bar"></i>
                     {selected.contact_id ? (
                         <div className="contact_header">
                             <img src={`http://localhost:8080/upload/user/${selected.contact_id.img}?token=${token}`} alt={`${selected.contact_id.username}`} />    
                             <div className="contact_text">
                                 <h3>{selected.contact_id.username}</h3>
+                                <p>{selected.contact_id.online? "Online" : "Offline"}</p>
                             </div>
                         </div>
                     ) : (

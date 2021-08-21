@@ -3,7 +3,6 @@ import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
 import axios from "axios";
 import roomsContext from '../services/context/RoomContext';
-import {Controller, animated} from "react-spring";
 
 const ChatBar = () => {
 
@@ -14,9 +13,6 @@ const ChatBar = () => {
     const {room_id} = selected? selected : {room_id: ""};
     const fileRef = useRef(null);
     const [cursor, setCursor] = useState(false);
-    const [press, setPress] = useState(false);
-    const animations = new Controller()
-
         
     const handleSubmit = async ($event) => {
         $event.preventDefault();

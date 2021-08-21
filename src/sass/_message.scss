@@ -36,7 +36,7 @@
         .message-content {
             display: flex;
             flex-direction: row-reverse;
-            justify-content: end;
+            justify-content: flex-end;
             align-items: center;
             .date {
                 .pdate {
@@ -78,6 +78,9 @@
             }
             
         }
+    }
+    .message:last-of-type {
+        margin-top: 1rem;
     }
 
     .right {

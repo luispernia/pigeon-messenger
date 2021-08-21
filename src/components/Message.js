@@ -24,8 +24,8 @@ function Message({ data }) {
                     {data.files.length > 0 ? (
                         <>
                             <div className="image">
-                                {data.files.map(e => {
-                                    return <img src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
+                                {data.files.map((e, i) => {
+                                    return <img key={i} src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
                                 })}
                             </div>
                             <div className="message-content">

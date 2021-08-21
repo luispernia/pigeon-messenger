@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useRef  } from 'react'
 import roomsContext from '../services/context/RoomContext'
-import userContext from '../services/context/UserContext';
 import ChatBar from './ChatBar';
 import LoadMessages from './LoadMessages';
 
@@ -8,9 +7,7 @@ function ChatView() {
 
     const { selected } = useContext(roomsContext);
     const chatRef = useRef("");
-
-
-
+    
     return (
         <div ref={chatRef}  className="chat-view">
             <div className="chat-glass">
@@ -24,16 +21,6 @@ function ChatView() {
 }
 
 const ContactView = ({ data, chat }) => {
-
-    const { chatPhotos, clearPhotos, photos } = useContext(roomsContext);
-
-    const setPhotos = () => {
-        if (photos.length === 0) {
-            chatPhotos({ room_id: data.room_id });
-        } else {
-            clearPhotos();
-        }
-    }
     
     return (
         <LoadMessages height={chat.current.offsetHeight} />
@@ -41,16 +28,6 @@ const ContactView = ({ data, chat }) => {
 }
 
 const RoomView = ({ data, chat }) => {
-
-    const { chatPhotos, clearPhotos, photos } = useContext(roomsContext);
-    
-    const setPhotos = () => {
-        if (photos.length === 0) {
-            chatPhotos({ room_id: data.room_id });
-        } else {
-            clearPhotos();
-        }
-    }
     
     return (
         <LoadMessages height={chat.current.offsetHeight} />

@@ -4,13 +4,13 @@ import userContext from '../services/context/UserContext';
 
 function Alert() {
 
-    const { alerts, setAlert } = useContext(userContext);
+    const { alerts } = useContext(userContext);
 
     return (
         <>
             <div className="pigeon-alert-container">
-                {alerts.map(e => {
-                    return <AlertComponent data={e} />
+                {alerts.map((e, i) => {
+                    return <AlertComponent key={i} data={e} />
                 })}
             </div>
         </>
@@ -19,13 +19,11 @@ function Alert() {
 
 const AlertComponent = ({ data }) => {
 
-    const { alerts, setAlert } = useContext(userContext);
     const [show, setShow] = useState(true);
     const [reversing, setReversing] = useState(false);
     const spring = useSpring({ to: { transform: "translate(1rem, 0rem)", opacity: 1 }, from: { transform: "translate(-1rem, 0rem)", opacity: 0 }, reverse: reversing })
 
     useEffect(() => {
-        console.log(data);
         setTimeout(() => {
             setReversing(true);
             setTimeout(() => {

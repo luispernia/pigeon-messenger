@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import userContext from "../services/context/UserContext";
 import Child from "../components/Child";
 
 function Register() {
-    const { user, signUpEmail } = useContext(userContext);
+    const { signUpEmail } = useContext(userContext);
     const history = useHistory();
 
     const [loading, setLoading] = useState("");

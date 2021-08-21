@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer } from "react";
 import axios from "axios";
 import userContext from "./UserContext";
 import UserReducer from "./UserReducer";
@@ -32,6 +32,7 @@ function ProvideUser({ children }) {
 
     const signOut = async (cb) => {
         try {
+            // eslint-disable-next-line no-unused-vars
             let res = await axios.post("http://localhost:8080/signOut", {}, { withCredentials: true });
             setTimeout(() => {
                 dispatch({ type: "SIGNOUT_USER", payload: null });
@@ -59,10 +60,12 @@ function ProvideUser({ children }) {
         }
     }
 
-    const refresh_token = async () => {
+    const refresh_token = async (data) => {
         try {
             let res = await axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true });
-
+            if(data) {
+                updateUser({user: data.user, token: res.data.token}, () => {})
+            }
         } catch (err) {
             setAlert({ text: err });
         }

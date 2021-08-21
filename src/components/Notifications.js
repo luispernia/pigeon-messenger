@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import bellsContext from '../services/context/BellContext';
 import userContext from "../services/context/UserContext";
@@ -13,7 +14,7 @@ function Notifications() {
 
     const { bells, setBells } = useContext(bellsContext);
     const { setBell, bellState } = useContext(roomsContext);
-    const [width, height] = useWindowSize(); 
+    const [width] = useWindowSize(); 
     
     const spring = useSpring({ to: { padding: "3rem", opacity: 1}, from: {padding: "0rem", opacity: 0 }, reverse: !bellState})
     const springDisplay = useSpring({ to: {display: "flex", delay: 100}, from: {display: "none",  delay: 200}, reverse: !bellState })
@@ -35,7 +36,7 @@ function Notifications() {
                             <div className="bellsContain">
                                 {bells.length > 0? (
                                     bells.map((e, i) => {
-                                        return <Bell data={e} />
+                                        return <Bell key={i} data={e} />
                                     })
                                 ) : (
                                     <p className="bells-clean">All Clean 😎</p>
@@ -82,14 +83,11 @@ function Bell({ data }) {
 }
 
 function BellComponent({ data, request, opts }) {
-    const { img, date, requester, title, _id } = data;
+    const { img, requester, title, _id } = data;
     const [color, setColor] = useState("");
 
     const { token, user, setAlert } = useContext(userContext)
-    const {selected} = useContext(roomsContext);
-    
-    let hour = new Date(date).getHours();
-    let minutes = new Date(date).getMinutes();
+   
     let requesterFormatted = requester.split("/")[0];
 
     const spring = useSpring({ to: {opacity: 1, transform: "translate(0px, 0px)"}, from: {transform: "translate(-33px, 0px)", opacity: 0 }, delay: 500 });

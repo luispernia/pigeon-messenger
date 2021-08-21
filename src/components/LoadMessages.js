@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -52,10 +53,7 @@ function LoadMessages({ height }) {
         fetchMessages(true);
     }, [selected])
 
-    const down = () => {
-        let down = scrollRef.current? scrollRef.current.scrollTop = 0 : "";
-        
-    }
+    const down = () => scrollRef.current? scrollRef.current.scrollTop = 0 : "";        
 
     return (
         <>
@@ -80,16 +78,16 @@ function LoadMessages({ height }) {
                             { 
                             selected? (
                             messages[selected.room_id]? (
-                                messages[selected.room_id].map(e => {
-                                    return <Message data={e} />
+                                messages[selected.room_id].map((e, i) => {
+                                    return <Message key={i} data={e} />
                                 })
                                 ) : ("")
                                 ) : ("")
                             }
                         </div>
                      {
-                            items.map(e => {
-                                return <Message data={e} />
+                            items.map((e, i) => {
+                                return <Message key={i} data={e} />
                             })
                         }
                     </InfiniteScroll>

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext'
 import userContext from "../services/context/UserContext";
-import { roomSettings, sendContact, sendMessage } from "../services/sockets/sockets";
+import { sendContact } from "../services/sockets/sockets";
 import { useSpring, animated } from "react-spring"
 import { request_room } from "../services/sockets/sockets";
 import axios from 'axios';
@@ -30,7 +31,7 @@ function FocusUI() {
 
     const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
 
-    let { focus, setFocus, chats, refresh_rooms } = useContext(roomsContext);
+    let { focus, chats} = useContext(roomsContext);
 
     return (
         <>
@@ -80,15 +81,15 @@ const CreateRoom = ({ chats }) => {
 
     const [members, setMembers] = useState([]);
     const [membersView, setMembersView] = useState([]);
-    const [file, setFile] = useState(null);
-    const fileRef = useRef(null);
-    const [photo, setPhoto] = useState(null);
-    const [cropper, setCropper] = useState(null);
-    const [showCropper, setShowCropper] = useState(null);
-    const [ended, setEnded] = useState(null);
-    const [blob, setBlob] = useState(null);
+    const [ended, setEnded] = useState("");
+    const fileRef = useRef("");
     const [description, setDescription] = useState("");
+    const [photo, setPhoto] = useState("");
     const [title, setTitle] = useState("");
+    const [file, setFile] = useState("");
+    const [cropper, setCropper] = useState("");
+    const [showCropper, setShowCropper] = useState("");
+    const [blob, setBlob] = useState("");
 
     const opac = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 200 });
     const height = useSpring({ to: { height: 400 }, from: { height: 0 }, delay: 500 });
@@ -98,11 +99,7 @@ const CreateRoom = ({ chats }) => {
 
     const addMember = (e, i) => {
         let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
-        let contactFiltered = contacts.filter(e => {
-            if (e.contact_id) {
-                return e;
-            }
-        })
+        let contactFiltered = contacts.filter(e => e.contact_id? e : null)
 
         contactFiltered[i].toggle = contactFiltered[i].toggle ? false : true;
 
@@ -212,7 +209,6 @@ const CreateRoom = ({ chats }) => {
                                                 setShowCropper(true);
                                             }
                                         }} ref={fileRef} type="file" />
-
                                     </div>
                                     <div className="room-title-icon">
                                         <p className="min">Room title</p>
@@ -235,13 +231,11 @@ const CreateRoom = ({ chats }) => {
                                 <animated.div style={show} className="create-room-footer">
                                     <p className="min">Members</p>
                                     <ul>
-                                        {membersView.map(e => {
+                                        {membersView.map((e,i) => {
                                             return (
-                                                <>
-                                                    <animated.div className="members-list" >
+                                                    <animated.div key={i} className="members-list" >
                                                         <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt={`${e.contact_id.username} img`} />
                                                     </animated.div>
-                                                </>
                                             )
                                         })}
                                     </ul>
@@ -252,13 +246,10 @@ const CreateRoom = ({ chats }) => {
                                 <animated.div style={width} className="">
                                     <animated.h2 style={show}>Contacts</animated.h2>
                                     <animated.ul style={show}>
-                                        {contacts.filter(e => {
-                                            if (e.contact_id) {
-                                                return e;
-                                            }
-                                        }).map((e, i) => {
+                                        {contacts.filter(e => e.contact_id? e : null)
+                                        .map((e, i) => {
                                             return (
-                                                <li style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
+                                                <li key={i} style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
                                                     <div style={{ background: "transparent" }}>
                                                         <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
                                                         <div style={{ background: "transparent" }} className="add-info">
@@ -270,12 +261,8 @@ const CreateRoom = ({ chats }) => {
                                                 </li>
                                             )
                                         })}
-                                        {contacts.filter(e => {
-                                            if(e.contact_id) {
-                                                return e;
-                                            }
-                                        }).length <= 0? (
-                                            <p>Add some contacts in <i class="bi bi-person-plus"></i></p>
+                                        {contacts.filter(e => e.contact_id? e : null).length <= 0? (
+                                            <p>Add some contacts in <i className="bi bi-person-plus"></i></p>
                                         ) : (
                                             ""
                                         )}
@@ -401,9 +388,12 @@ const Result = ({ username, state }) => {
 
     return <>
         {loaded ? (
-            (userData ? (<div className="userResume">
+            (userData ? 
+            (<div className="userResume">
                 <div className="image-resume">
-                    <img src={`http://localhost:8080/upload/user/${userData.img}?token=${token}`} alt="" />
+                    {userData.img? (
+                        <img src={`http://localhost:8080/upload/user/${userData.img}?token=${token}`} alt="" />
+                    ) : ("")}
                 </div>
                 <div className="resume-body">
                     <h3>{userData.username}</h3>
@@ -442,11 +432,7 @@ const AddMember = ({ chats }) => {
 
     const addMember = (e, i) => {
         let index = members.findIndex(x => x.contact_id.username === e.contact_id.username);
-        let contactFiltered = contacts.filter(e => {
-            if (e.contact_id) {
-                return e;
-            }
-        })
+        let contactFiltered = contacts.filter(e => e.contact_id? e : null);
 
         let respo = selected.members.map(e => {
             return e.username;
@@ -505,9 +491,9 @@ const AddMember = ({ chats }) => {
                 <animated.div style={height} className="current-contacts">
                     <animated.p style={show} >{selected.members.length} members</animated.p>
                     <div className="current-scroll">
-                        {selected.members.map(e => {
+                        {selected.members.map((e, i) => {
                             return (
-                                <animated.div style={show} className="current-user">
+                                <animated.div key={i} style={show} className="current-user">
                                     <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
                                     <animated.div>
                                         <h4>{e.username}</h4>
@@ -522,13 +508,9 @@ const AddMember = ({ chats }) => {
                     <animated.div style={width} className="">
                         <animated.h2 style={show}>Contacts</animated.h2>
                         <animated.ul style={show}>
-                            {contacts.filter(e => {
-                                if (e.contact_id) {
-                                    return e;
-                                }
-                            }).map((e, i) => {
+                            {contacts.filter(e => e.contact_id? e : null).map((e, i) => {
                                 return (
-                                    <li style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
+                                    <li key={i} style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
                                         <div style={{ background: "transparent" }}>
                                             <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
                                             <div style={{ background: "transparent" }} className="add-info">

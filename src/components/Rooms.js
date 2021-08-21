@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
@@ -9,12 +10,14 @@ import Profile from './Profile';
 
 function Rooms() {
 
-    const { chats, chatPeeks } = useContext(roomsContext);
-    const [width, height] = useWindowSize();
+    const { chats, chatPeeks, showBar } = useContext(roomsContext);
+    const [width] = useWindowSize();
     const chatRef = useRef();
+    const springOpac = useSpring({to: {opacity: 0}, from: {opacity: 1}, reverse: !showBar.reverse, delay: 400 });
+
 
     return (
-        <>
+        <animated.div style={springOpac}>
             <div className="bar-header">
                 <PigeonLogo />
                 {width <= 769? (
@@ -26,11 +29,11 @@ function Rooms() {
                 <Search />
                 <div ref={chatRef} className="chat-icons">                    
                     {chats.map((e,i) => {
-                        return e.user_id ? <ContactIcon key={i} chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} />
+                        return e.user_id ? <ContactIcon key={i} chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} /> : <RoomIcon key={i} chatRef={chatRef} data={e} peeks={chatPeeks[e.room_id]} />
                     })}
                 </div>
             </div>
-        </>
+        </animated.div>
     )
 }
 
@@ -39,8 +42,8 @@ const ContactIcon = ({ data, peeks, chatRef }) => {
     const { contact_id } = data;
     const { token, user } = useContext(userContext);
     const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms, showBar, setShowBar} = useContext(roomsContext);
-    const contactRef = useRef(null);
-    const [width, height] = useWindowSize();
+    const contactRef = useRef("");
+    const [width] = useWindowSize();
 
     const selectedChat = (data) => {
         setReaded(data.room_id);
@@ -108,9 +111,9 @@ const RoomIcon = ({ data, peeks, chatRef }) => {
     const { token, user } = useContext(userContext);
     const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms, showBar, setShowBar} = useContext(roomsContext);
     const {clear_queue} = useContext(messagesContext);
-    const [width, height] = useWindowSize()
+    const [width] = useWindowSize()
 
-    const roomRef = useRef(null);
+    const roomRef = useRef("");
 
     const selectedChat = (data) => {
         clear_queue();
@@ -229,7 +232,7 @@ const Search = () => {
 
 const Create = () => {
 
-    const { setFocus, setShowBar, showBar } = useContext(roomsContext);
+    const { setFocus } = useContext(roomsContext);
 
     return (
         <div className="bar">

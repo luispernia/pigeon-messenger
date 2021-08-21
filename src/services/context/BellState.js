@@ -1,5 +1,4 @@
-import { useContext, useReducer, useState } from "react";
-import userContext from "./UserContext";
+import { useContext, useReducer } from "react";
 import axios from "axios";
 import bellsContext from "./BellContext";
 import BellReducer from "./BellReducer";
@@ -29,6 +28,7 @@ function ProvideBell({ children }) {
 
     const setBells = async () => {
         try {
+            // eslint-disable-next-line no-unused-vars
             let res = await axios.put("http://localhost:8080/bell/readed", {}, { withCredentials: true })
             refresh_bell();
         } catch (err) {

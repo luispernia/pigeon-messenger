@@ -1,13 +1,11 @@
 import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
-import { useHistory } from "react-router-dom";
 import Notifications from './Notifications';
 import roomsContext from '../services/context/RoomContext';
 
 function Profile() {
 
-    const history = useHistory();
-    const {user, token, signOut} = useContext(userContext);
+    const {user, token} = useContext(userContext);
     const {setFocus} = useContext(roomsContext);
 
     return (
