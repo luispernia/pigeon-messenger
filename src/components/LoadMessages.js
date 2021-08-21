@@ -42,6 +42,9 @@ function LoadMessages({ height }) {
 
     useEffect(() => {
         fetchMessages();
+        socket.on("onMessage", (args) => {
+            down();
+        })
     }, [])
 
     useEffect(() => {
@@ -50,7 +53,8 @@ function LoadMessages({ height }) {
     }, [selected])
 
     const down = () => {
-        scrollRef.current.scrollTop = 0;
+        let down = scrollRef.current? scrollRef.current.scrollTop = 0 : "";
+        
     }
 
     return (

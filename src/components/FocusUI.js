@@ -270,6 +270,15 @@ const CreateRoom = ({ chats }) => {
                                                 </li>
                                             )
                                         })}
+                                        {contacts.filter(e => {
+                                            if(e.contact_id) {
+                                                return e;
+                                            }
+                                        }).length <= 0? (
+                                            <p>Add some contacts in <i class="bi bi-person-plus"></i></p>
+                                        ) : (
+                                            ""
+                                        )}
                                     </animated.ul>
                                 </animated.div>
                                 <animated.button type="submit" style={showButton} className="submit-room" disabled={formik.errors.title ? true : false}>

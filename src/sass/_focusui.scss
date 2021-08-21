@@ -131,6 +131,13 @@
         }
     }
 }
+
+@media (max-width: 430px) {
+    .create_room {
+        flex-direction: column;
+        align-items: center;
+    }
+}
 .contact-list {
     height: 100%;
     margin-left: 2rem;
@@ -217,7 +224,11 @@
 
     }
 }
-
+@media (max-width: 769px) {
+    .contact-list {
+        margin-left: 0;
+    }
+}
 .min {
     color: var(--light-secondary);
 }
@@ -264,12 +275,13 @@
             height: 100%;
             display: flex;
             width: 100%;
-            
+            text-align: left;            
             p {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 width: 100%;
+
             }
             .loading-circle {
                 display: flex;
@@ -323,6 +335,21 @@
         button:hover {
             cursor: pointer;
             background-color: var(--pigeon-primary-hover);
+        }
+    }
+}
+
+@media (max-width: 769px) {
+    .contact-add {
+        flex-direction: column;
+        align-items: center;
+        .request {
+            margin: 0;
+        }
+        .contact-request-search {
+            .contact-results {
+                background-color: #0b1c30;
+            }
         }
     }
 }
@@ -433,6 +460,16 @@
             }
         }
     }
+}
+@media (max-width: 769px) {
+    .add-member-ui {
+        flex-direction: column;
+        align-items: center;
+        .current-contacts {
+            margin-bottom: 1rem;
+        }
+    }
+
 }
 
 .add-member-title {

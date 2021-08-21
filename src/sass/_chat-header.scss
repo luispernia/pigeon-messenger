@@ -31,6 +31,13 @@
 
         }
     }   
+    .user {
+        .chat-name {
+            input{
+                border-bottom: 1px solid transparent!important;
+            }
+        }
+    }
     .chat-opts {
         display: flex;
         align-items: flex-end;
@@ -47,5 +54,33 @@
             cursor: pointer;
             color: var(--light-primary);
         }
+    }
+    @media (max-width: 430px) {
+        .chat-opts {
+            flex: 0 0 0;
+        }
+    }
+}
+.open-bar {
+    position: absolute;
+    color: var(--pigeon-primary);
+    font-size: 1.5rem;
+    margin-top: 6.4rem;
+    z-index: 99;
+    display: flex;
+    background-color: var(--dark-transparent);
+    border-radius: 0rem 6rem 6rem 0rem;
+    padding: 1rem;
+    left: 0;
+}
+
+.contact_header {
+    display: flex;
+    align-items: center;
+    color: var(--light-primary);
+    img {
+        width: 3rem;
+        height: 3rem;
+        margin-right: .5rem;
     }
 }

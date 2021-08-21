@@ -6,15 +6,19 @@ import { acceptContact, rejectContact, declined_room, acceptRoom, roomSettings }
 import roomsContext from '../services/context/RoomContext';
 
 import * as Vibrant from "node-vibrant/dist/vibrant";
+import useWindowSize from './useWindowSize';
 
 
 function Notifications() {
 
     const { bells, setBells } = useContext(bellsContext);
     const { setBell, bellState } = useContext(roomsContext);
-    const lastElement = bells[bells.length - 1];
+    const [width, height] = useWindowSize(); 
+    
     const spring = useSpring({ to: { padding: "3rem", opacity: 1}, from: {padding: "0rem", opacity: 0 }, reverse: !bellState})
     const springDisplay = useSpring({ to: {display: "flex", delay: 100}, from: {display: "none",  delay: 200}, reverse: !bellState })
+    const springMobile = useSpring({ to: { padding: "3rem 1rem", opacity: 1}, from: {padding: "0rem 0rem", opacity: 0 }, reverse: !bellState})
+        
 
     return (
         <div className="notifications">
@@ -26,7 +30,7 @@ function Notifications() {
                 <i className="bi bi-bell-fill"></i>
             </div>
                 <animated.div style={springDisplay}>
-                    <animated.div style={spring} className="bells">
+                    <animated.div style={ width <= 430? {...springMobile} : {...spring}} className="bells">
                         <div  className="bells-scroll">
                             <div className="bellsContain">
                                 {bells.length > 0? (

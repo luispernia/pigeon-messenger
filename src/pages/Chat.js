@@ -75,8 +75,11 @@ function Chat() {
             <div className="container">
                 <FocusUI />
 
-
-                <PrimaryColumn />
+                {showBar.show? (
+                    ""
+                    ) : (
+                        <PrimaryColumn /> 
+                )}
 
 
                 <div className="principal-view">
@@ -99,12 +102,15 @@ const PrimaryColumn = () => {
 
     const { showBar, setShowBar } = useContext(roomsContext);
     const [width, height] = useWindowSize();
+    const spring = useSpring({to: {width: "0%"}, from: {width: "100%"}, reverse: !showBar.reverse, delay: 500});
+    const springOpac = useSpring({to: {opacity: 0}, from: {opacity: 1}, reverse: !showBar.reverse, delay: 400 });
+
 
     return (
     <>
         {width? (
             <>
-            <animated.div  className="primary-column">
+            <animated.div style={{...spring}} className="primary-column">
                 <Rooms />
             </animated.div>
             </>

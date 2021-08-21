@@ -15,7 +15,7 @@ function ProviderRoom({ children }) {
         chatPeeks: {},
         contacts: [],
         size: 0,
-        showBar: {reverse: true}
+        showBar: {reverse: false}
     }
 
     const [state, dispatch] = useReducer(RoomReducer, initialState);

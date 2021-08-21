@@ -38,12 +38,16 @@ const ContactIcon = ({ data, peeks, chatRef }) => {
 
     const { contact_id } = data;
     const { token, user } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms} = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms, showBar, setShowBar} = useContext(roomsContext);
     const contactRef = useRef(null);
+    const [width, height] = useWindowSize();
 
     const selectedChat = (data) => {
         setReaded(data.room_id);
         setSelectedChat(data);
+        if(width <= 769) {
+            setShowBar({reverse: !showBar.reverse})   
+        }
     }
 
     useEffect(() => {
@@ -102,8 +106,9 @@ const ContactIcon = ({ data, peeks, chatRef }) => {
 
 const RoomIcon = ({ data, peeks, chatRef }) => {
     const { token, user } = useContext(userContext);
-    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms} = useContext(roomsContext);
+    const { setSelectedChat, selected, unreaded, setReaded, setPeekMessages, refresh_rooms, showBar, setShowBar} = useContext(roomsContext);
     const {clear_queue} = useContext(messagesContext);
+    const [width, height] = useWindowSize()
 
     const roomRef = useRef(null);
 
@@ -111,6 +116,9 @@ const RoomIcon = ({ data, peeks, chatRef }) => {
         clear_queue();
         setReaded(data.room_id);
         setSelectedChat(data);
+        if(width <= 769) {
+            setShowBar({reverse: !showBar.reverse})   
+        }
     }
 
     useEffect(() => {
