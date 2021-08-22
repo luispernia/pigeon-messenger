@@ -3,6 +3,7 @@ import userContext from '../services/context/UserContext'
 import Notifications from './Notifications';
 import roomsContext from '../services/context/RoomContext';
 
+
 function Profile() {
 
     const {user, token} = useContext(userContext);

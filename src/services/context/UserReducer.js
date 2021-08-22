@@ -11,7 +11,7 @@ export default (state, action) => {
                 user: payload
             }
 
-        case LOGIN_USER:
+        case LOGIN_USER:    
             return {
                 ...state,
                 user: {name: payload.user.name, email: payload.user.email, img: payload.user.img, _id: payload.user._id, status: payload.user.status, username: payload.user.username,   },
@@ -24,7 +24,7 @@ export default (state, action) => {
                 ...state,
                 user: {name: payload.user.name, email: payload.user.email, img: payload.user.img, _id: payload.user._id, status: payload.user.status, username: payload.user.username,   },
                 token: payload.token
-            }
+            }   
 
         case SIGNOUT_USER: 
             return {

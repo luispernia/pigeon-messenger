@@ -2,9 +2,12 @@ import React, { useContext, useState } from 'react'
 import { useHistory } from "react-router-dom";
 import userContext from "../services/context/UserContext";
 import Child from "../components/Child";
+import GoogleSignIn from '../components/GoogleSignIn';
+import Loading from '../components/Loading';
+import Alert from "../components/Alert";
 
 function Register() {
-    const { signUpEmail } = useContext(userContext);
+    const { signUpEmail, alerts } = useContext(userContext);
     const history = useHistory();
 
     const [loading, setLoading] = useState("");
@@ -18,17 +21,19 @@ function Register() {
         $event.preventDefault();
         setLoading("loading");
         signUpEmail({ name, email, password, username }, () => {
-            setLoading("Done")
-            history.replace("/success");
+            setLoading("Done");
+            history.replace("/chat");
         });
     }
 
     return (
         <div>
+            {alerts.length > 0 ? (
+                <Alert />
+            ) : ("")}
             <h2>Register</h2>
-            <p>{loading}</p>
             <form onSubmit={handleSubmit} className="form">
-
+            <GoogleSignIn history={history} type="register" loading={setLoading} />
                 <div className="control">
                     <label className="label">Username</label>
                     <input type="text" value={username} onChange={($event => setUsername($event.target.value))} className="input" placeholder="Username" />
@@ -52,7 +57,9 @@ function Register() {
 
                 <button type="submit" className="submit">Rock</button>
             </form>
-
+            {loading === "Loading"? (
+                <Loading  />
+            ) : ("")}
             <Child />
         </div>
     )

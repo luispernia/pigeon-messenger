@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
-import { useSpring, animated } from 'react-spring';
+import { animated } from 'react-spring';
 import userContext from '../services/context/UserContext'
 
 function Message({ data }) {
 
     const { user, token } = useContext(userContext);
 
-    const spring = useSpring({to: {transform: "translate(0rem, 0rem)", opacity: 1}, from: {transform: "translate(-1rem, 0rem)", opacity: 0}, delay: 100})
 
     return (
         <>
@@ -15,7 +14,7 @@ function Message({ data }) {
                     <p> <i className="bi bi-broadcast"></i> {data.text}</p>
                 </div>
             ) : (
-                <animated.div style={spring} className={`message ${user.username === data.author.username ? "right" : ""}`}>
+                <animated.div className={`message ${user.username === data.author.username ? "right" : ""}`}>
                     <div className="user">
                         <img src={`http://localhost:8080/upload/user/${data.author.img}?token=${token}`} alt="" />
                         <p>{data.author.username}</p>

@@ -1,10 +1,13 @@
 import React, {useState, useContext} from 'react'
 import {useHistory} from "react-router-dom";
+import GoogleSignIn from '../components/GoogleSignIn';
 import userContext from '../services/context/UserContext';
+import Loading from '../components/Loading';
+import Alert from '../components/Alert';
 
 function Login() {
 
-    const { loginEmail } = useContext(userContext);
+    const { loginEmail, alerts } = useContext(userContext);
 
     const history = useHistory();
 
@@ -17,8 +20,11 @@ function Login() {
         
         setLoading("Loading");
 
-        loginEmail({email, password}, () => {
-            setLoading("Done!");
+        loginEmail({email, password}, (res) => {
+            if(!res.ok) {
+                setLoading("failed");
+                return;
+            }
             history.replace("/chat");
         })
         
@@ -28,8 +34,13 @@ function Login() {
     return (
 
         <div>
+            {alerts.length > 0 ? (
+                <Alert />
+            ) : ("")}
             <h2>Login</h2>
             <form onSubmit={handleSubmit} className="form">
+
+                <GoogleSignIn type="login" history={history} loading={setLoading} />
 
                 <div className="control">
                     <label className="label">Email</label>
@@ -43,7 +54,9 @@ function Login() {
                 </div>
 
                 <button type="submit" className="submit">Rock</button>
-                <p>{loading}</p>
+                <p>{loading === "Loading"? (
+                    <Loading/>
+                ) : ("")}</p>
             </form>
         </div>
 

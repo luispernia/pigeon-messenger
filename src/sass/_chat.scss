@@ -192,7 +192,15 @@
     max-height: 70vh;
     width: 30rem;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
+
+@media (max-width: 430px) {
+    .pigeon-alert-container {
+        width: 100%;
+    }
+}
+
 
 .pigeon-alert {
     padding: 1rem;
@@ -213,6 +221,7 @@
         font-size: 1.3rem;
     }
 }
+
 
 .info {
     background-color: var(--dark-secondary);

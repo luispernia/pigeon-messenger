@@ -23,7 +23,12 @@ function ProvideUser({ children }) {
         try {
             let data = { email, password, username, name };
             let response = await axios.post("http://localhost:8080/user", data);
-            dispatch({ type: "REGISTER_USER", payload: response.data.user.username });
+            let login = await axios.post("http://localhost:8080/login", {email: response.data.user.email, password}, {withCredentials: true})
+            .catch(({response}) =>{
+                console.log(response);
+            })
+            
+            dispatch({ type: "REGISTER_USER", payload: {user: login.data.user, token: login.data.token}});
             cb();
         } catch (err) {
             alert(err);
@@ -51,20 +56,50 @@ function ProvideUser({ children }) {
     const loginEmail = async ({ email, password }, cb) => {
         try {
             let data = { email, password };
-            let response = await axios.post("http://localhost:8080/login", data, { withCredentials: true });
+            console.log(email);
+            let response = await axios.post("http://localhost:8080/login", data, { withCredentials: true })
+            .catch(({response}) => {
+                if(response.data.err) {
+                    cb({ ok: false });
+                    setAlert({ text: response.data.err })
+                    return;
+                }
+            })
+
+
             let userDB = await axios.get("http://localhost:8080/user/one", { withCredentials: true });
             dispatch({ type: "LOGIN_USER", payload: { user: userDB.data.user, token: response.data.token } });
-            cb();
+
+            cb({ ok: true });   
+
         } catch (err) {
-            alert(err);
+            cb({ ok: false });
+        }
+    }
+
+    const googlelogin = async (data, cb) => {
+        try {
+            let res = await axios.post(`http://localhost:8080/google`, {idtoken: data}, {withCredentials: true}).catch(err => console.log(err));
+            dispatch({type: "LOGIN_USER", payload: {user: res.data.user, token: res.data.token}});
+            cb({ok: true, user: res.data.user});
+        } catch(err) {
+            cb({ok: false})
+        }
+    }
+
+    const finishSettings = async (data,cb) => {
+        try {
+            // let res = await axios.   
+        } catch(err) {
+            cb({ok: false})
         }
     }
 
     const refresh_token = async (data) => {
         try {
             let res = await axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true });
-            if(data) {
-                updateUser({user: data.user, token: res.data.token}, () => {})
+            if (data) {
+                updateUser({ user: data.user, token: res.data.token }, () => { })
             }
         } catch (err) {
             setAlert({ text: err });
@@ -77,6 +112,7 @@ function ProvideUser({ children }) {
         token: state.token,
         signUpEmail,
         loginEmail,
+        googlelogin,
         updateUser,
         signOut,
         setAlert,

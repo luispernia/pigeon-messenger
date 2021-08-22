@@ -156,3 +156,103 @@
         color: var(--dark-primary);
     }
 }
+
+.user-image-icon {
+    width: 5rem;
+    height: 5rem;
+    margin-right: 1rem;
+    border-radius: 4rem;
+    transition: .3s all ease;
+}
+.user-image-icon:hover {
+    opacity: 50%;
+    cursor: pointer;
+}
+
+
+
+
+.finish-settings {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--dark-primary);
+
+    .finish-header {
+        color: var(--light-primary);
+        p {
+            color: var(--dark-gray);
+        }
+        margin-bottom: 1rem;
+    }
+    .finish-container {
+        display: flex;
+        padding: 1rem;
+        background-color: var(--dark-secondary);
+        border-radius: 1rem;
+        border-bottom: 2px solid var(--pigeon-primary);
+        .finish-body {
+            .finish-control {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                p {
+                    color: var(--light-primary);
+                    font-size: 1.2rem;
+                    text-transform: capitalize;
+                }
+                .input {
+                    display: flex;
+                    align-items: center;
+                    margin: .5rem 0rem 1rem 0rem;
+                    i {
+                        color: var(--pigeon-primary);
+                        padding: .7rem 0rem .7rem .7rem;
+                        background-color: var(--dark-primary);
+                        font-size: 1.3rem;
+                        border-radius: 1rem 0rem 0rem 1rem;
+                    }                    
+                }
+                input {
+                    background-color: var(--dark-primary);
+                    border: none;
+                    padding: .8rem;
+                    border-radius: 0rem 1rem 1rem 0rem;
+                    font-size: 1.1rem;
+                    color: var(--light-primary);
+                    font-family: inherit;
+            
+                }
+                input::placeholder {
+                    color: var(--dark-gray);
+                }
+                button {
+                    background-color: var(--pigeon-primary);
+                    border: none;
+                    padding: .5rem 1rem;
+                    color: var(--light-primary);
+                    border-radius: 1rem;
+                    font-size: .9rem;
+                    font-family: inherit;
+                }
+            }
+        }
+    }
+    @media (max-width: 400px) {
+        .finish-container {
+            width: 80%;
+            flex-direction: column;
+            align-items: center;
+            .user-image-icon {
+                margin: .5rem 0rem;
+            }
+            .finish-control {
+                align-items: center!important;
+            }
+        }
+    }
+}

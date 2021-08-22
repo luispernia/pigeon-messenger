@@ -17,6 +17,8 @@ import ProvideBell from "../services/context/BellState";
 import axios from "axios";
 import ProviderRoom from "../services/context/RoomState";
 import ProviderMessages from "../services/context/MessagesState";
+import Loading from "./Loading";
+import PostRegister from "./PostRegister";
 
 
 function Routes() {
@@ -28,6 +30,10 @@ function Routes() {
           <Route exact path="/">
             <Landing />
           </Route>
+
+          <PreRoute path="/finish">
+            <PostRegister />
+          </PreRoute>
 
           <PrivateRoute path="/success">
             <Success />
@@ -64,13 +70,22 @@ function PrivateRoutePlus({ children, ...rest }) {
   useEffect(() => {
     axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true })
       .then(res => {
+        console.log(res);
         if (res.data.ok) {
-          updateUser(res.data, (user) => {
-            history.replace("/chat");
-            setLoading(true);
-          })
+          if(res.data.user.username === res.data.user.email) {
+              updateUser(res.data, (user) => {
+                history.replace("/finish")
+                setLoading(true);
+              })
+          } else {
+            updateUser(res.data, (user) => {
+              history.replace("/chat");
+              setLoading(true);
+            })
+          }
         } else {
           history.replace("/login");
+          setLoading(true);
         }
       })
       .catch(err => {
@@ -90,12 +105,12 @@ function PrivateRoutePlus({ children, ...rest }) {
 
         ) : (
           <>
-            <h1>Loading</h1>
+            <Loading />
           </>
         )
       }
     />) : (<>
-      <h1>LOADING</h1>
+      <Loading />
     </>)}
   </>
   );
@@ -105,23 +120,42 @@ function PrivateRoutePlus({ children, ...rest }) {
 function PrivateRoute({ children, ...rest }) {
   let { user } = useContext(userContext);
 
-
   return (<>
     <Route
       {...rest}
       render={({ location }) =>
-        user ? (
+        user ? (user.username !== user.email? (
+
           <>
             {children}
           </>
 
-        ) : (
-          <Redirect to={{ pathname: "/", state: { from: location } }} />
+        ) : (<Redirect to={{ pathname: "/finish", state: { from: location } }} />)) : (
+          <Redirect to={{ pathname: "/register", state: { from: location } }} />
         )
       }
     />
   </>
   );
+}
+
+function PreRoute({children, ...rest}) {
+  const {user} = useContext(userContext);
+
+  return (
+    <Route
+      {...rest}
+      render={({location}) => {
+        return (
+          user? 
+          (user.username !== user.email? (<Redirect to={{pathname: "/chat"}} />) : 
+          children) : <Redirect to={{pathname: "/login"}} />
+        )
+      }}
+    />
+  )
+
+    
 }
 
 export default Routes;
