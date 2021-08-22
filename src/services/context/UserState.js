@@ -27,7 +27,7 @@ function ProvideUser({ children }) {
             .catch(({response}) =>{
                 console.log(response);
             })
-            
+
             dispatch({ type: "REGISTER_USER", payload: {user: login.data.user, token: login.data.token}});
             cb();
         } catch (err) {
@@ -89,7 +89,8 @@ function ProvideUser({ children }) {
 
     const finishSettings = async (data,cb) => {
         try {
-            // let res = await axios.   
+            let res = await axios.put(`http://localhost:8080/user/${data.id}`, {username: data.username});
+            cb({ok: true}) 
         } catch(err) {
             cb({ok: false})
         }
@@ -117,7 +118,8 @@ function ProvideUser({ children }) {
         signOut,
         setAlert,
         alerts: state.alerts,
-        refresh_token
+        refresh_token,
+        finishSettings
     }}>{children}</userContext.Provider>
 }
 

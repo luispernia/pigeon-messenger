@@ -163,6 +163,18 @@
     margin-right: 1rem;
     border-radius: 4rem;
     transition: .3s all ease;
+    .container-user {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4rem;
+        height: 100%;
+        backdrop-filter: brightness(0.7);
+        i {
+            color: var(--light-secondary);
+            font-size: 1.4rem;
+    }
+    }
 }
 .user-image-icon:hover {
     opacity: 50%;
@@ -196,6 +208,14 @@
         border-radius: 1rem;
         border-bottom: 2px solid var(--pigeon-primary);
         .finish-body {
+            .control-container {
+                text-align: left;
+                margin: .5rem 0rem 1rem 0rem;
+                small {
+                    color: var(--pigeon-primary);
+                    font-size: .8rem;
+                }
+            }
             .finish-control {
                 display: flex;
                 flex-direction: column;
@@ -208,7 +228,7 @@
                 .input {
                     display: flex;
                     align-items: center;
-                    margin: .5rem 0rem 1rem 0rem;
+              
                     i {
                         color: var(--pigeon-primary);
                         padding: .7rem 0rem .7rem .7rem;

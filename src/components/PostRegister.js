@@ -3,13 +3,52 @@ import { useSpring, animated } from 'react-spring';
 import userContext from '../services/context/UserContext';
 import axios from "axios";
 import Cropper from "react-cropper";
-import { Formik } from 'formik';
+import Loading from './Loading';
+import { useFormik } from "formik";
+import { useHistory } from 'react-router';
 import "cropperjs/dist/cropper.css"
+
+const validate = (values) => {
+    const errors = {};
+    var alpha = /^[a-zA-Z\s]*$/; 
+
+    if(!values.username) {
+        errors.username = "Required";
+    }
+    
+    if(!alpha.test(values.username)) {
+        errors.username = "Only [a-z] letters"
+    }
+
+    if(values.username.length > 14) {
+        errors.username = "Max length 10 characters"
+    }
+
+
+    return errors;
+}
 
 function PostRegister() {
 
-    const { user, refresh_token, token } = useContext(userContext);
+    const history = useHistory();
+    const { user, refresh_token, token, finishSettings, setAlert } = useContext(userContext);
     const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 300 });
+    const [loading, setLoading] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            username: ""
+        },
+        validate,
+        onSubmit: values => {
+            setLoading(true)
+            finishSettings({id: user._id, username: values.username},(res) => {
+                if(res.ok) {
+                    setLoading(false);
+                    history.replace("/chat")
+                }
+            })
+        }
+    })    
 
     const [photo, setPhoto] = useState("");
     const [file, setFile] = useState("");
@@ -41,7 +80,7 @@ function PostRegister() {
 
     return (
         <>
-
+            {loading? (<Loading />) : ("")}
             {showCropper ? (
                 <div className="crop-contain">
                     <Cropper
@@ -64,6 +103,10 @@ function PostRegister() {
                         <div onClick={() => {
                             fileRef.current.click();
                         }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `http://localhost:8080/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                           
+                            <div className="container-user">
+                           <i class="bi bi-image"></i>  
+                            </div>
                             <input style={{ display: "none" }} value={file} onChange={($event) => {
                                 if ($event.target.files.length >= 1) {
                                     let src = URL.createObjectURL($event.target.files[0]);
@@ -74,13 +117,16 @@ function PostRegister() {
                             }} ref={fileRef} type="file" />
                         </div>
                         <div className="finish-body">
-                            <form className="finish-control">
+                            <form onSubmit={formik.handleSubmit} className="finish-control">
                                 <p>username</p>
-                                <div className="input">
-                                    <i class="bi bi-at"></i>
-                                    <input type="text" placeholder="your username" />
+                                <div className="control-container">  
+                                    <div className="input">
+                                        <i class="bi bi-at"></i>
+                                        <input name="username" id="username" value={formik.values.username} onChange={formik.handleChange} type="text" placeholder="your username" />
+                                    </div>
+                                    {formik.errors.username?  <small>{formik.errors.username}</small> : "" }
                                 </div>
-                                <button>Submit</button>
+                                <button type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
