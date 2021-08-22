@@ -4,11 +4,12 @@ import userContext from '../services/context/UserContext';
 import axios from "axios";
 import Cropper from "react-cropper";
 import Loading from './Loading';
+import Alert from "./Alert";
 import { useFormik } from "formik";
 import { useHistory } from 'react-router';
 import "cropperjs/dist/cropper.css"
 
-const validate = (values) => {
+const validate = (values) => {  
     const errors = {};
     var alpha = /^[a-zA-Z\s]*$/; 
 
@@ -28,34 +29,46 @@ const validate = (values) => {
     return errors;
 }
 
-function PostRegister() {
 
+function PostRegister() {
+    
     const history = useHistory();
-    const { user, refresh_token, token, finishSettings, setAlert } = useContext(userContext);
+    const { user, refresh_token, token, finishSettings, setAlert, alerts } = useContext(userContext);
     const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 300 });
     const [loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             username: ""
         },
         validate,
-        onSubmit: values => {
-            setLoading(true)
-            finishSettings({id: user._id, username: values.username},(res) => {
-                if(res.ok) {
-                    setLoading(false);
-                    history.replace("/chat")
-                }
-            })
+        onSubmit: async values => {
+            let {data} = await compare(values.username);
+            if(!data.user) {
+                setLoading(true)
+                finishSettings({id: user._id, username: values.username},(res) => {
+                    if(res.ok) {
+                        setLoading(false);
+                        history.replace("/chat")
+                    }
+                })
+            } else {
+                setAlert({text: "Username already exist"});
+            }
         }
     })    
-
+    
     const [photo, setPhoto] = useState("");
     const [file, setFile] = useState("");
     const [cropper, setCropper] = useState("");
     const [showCropper, setShowCropper] = useState("");
     const [ended, setEnded] = useState("");
     const fileRef = useRef("");
+    
+    const compare = async (value) => {
+        let res = axios.get(`http://localhost:8080/user/search/${value}`, {withCredentials: true});
+        return res;
+    }
 
     const getData = ($event) => {
         $event.preventDefault();
@@ -79,7 +92,10 @@ function PostRegister() {
 
 
     return (
-        <>
+        <>  
+            {alerts.length > 0 ? (
+                <Alert />
+            ) : ("")}
             {loading? (<Loading />) : ("")}
             {showCropper ? (
                 <div className="crop-contain">
