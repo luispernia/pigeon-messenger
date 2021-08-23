@@ -28,7 +28,7 @@ function Routes() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Landing />
+              <Redirect to="/register" />
           </Route>
 
           <PreRoute path="/finish">
