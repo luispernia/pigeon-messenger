@@ -39,7 +39,6 @@ function GoogleSignIn({history, type, loading}) {
                 buttonText={type === "login"? "Login with google" : "Register with google"}
                 onSuccess={login}
                 onFailure={fail}
-                cookiePolicy={'single_host_origin'}
             />
             </div>
         </>
