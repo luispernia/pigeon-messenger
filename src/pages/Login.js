@@ -53,6 +53,10 @@ function Login() {
     const [loading, setLoading] = useState("");
     
     const title = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-2rem, 0rem)"}});
+    const displays1 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 400});
+    const displays2 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 600});
+
+
 
     return (
 
@@ -66,13 +70,13 @@ function Login() {
                         <animated.h1 style={title}>Pigeon <span>Messenger</span></animated.h1>
                         <h3>Real-time messaging in a lightweight way</h3>
                     </div>
-                    <div className="landing-body">
-                        <div className="mobile">
+                    <div  className="landing-body">
+                        <animated.div style={displays1} className="mobile">
                             <img src="/mobiles.gif" alt="mobile gif" />
-                        </div>
-                        <div className="desktop">
+                        </animated.div>
+                        <animated.div style={displays2} className="desktop">
                         <img src="/desktops.gif" alt="desktop gif" />
-                        </div>
+                        </animated.div>
                     </div>
                 </div>
                 <div className="form-div">
