@@ -65,8 +65,8 @@ const ChatBar = () => {
                 ""
             )}
             <form onSubmit={handleSubmit} className="send-bar">
-                <div className="fileInput">
-                    <i onClick={() => fileRef.current.click()} className="bi bi-images"></i>
+                <div onClick={() => fileRef.current.click()} className="fileInput">
+                    <i className="bi bi-images"></i>
                     <input ref={fileRef} onChange={($event) => {
                         setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })
                         setPhotos([...$event.currentTarget.files].map(e => {

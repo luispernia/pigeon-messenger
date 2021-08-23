@@ -68,10 +68,10 @@ function Login() {
                     </div>
                     <div className="landing-body">
                         <div className="mobile">
-
+                            <img src="/mobiles.gif" alt="mobile gif" />
                         </div>
                         <div className="desktop">
-                            
+                        <img src="/desktops.gif" alt="desktop gif" />
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ function Login() {
                     <ChatIcons />   
 
                     <form onSubmit={formik.handleSubmit} className="form">
-                        <h2>Join</h2>
+                        <h2>Welcome Back!</h2>
                         <GoogleSignIn history={history} type="login" loading={setLoading} />
                         <p>or</p>
                         <div className="control">
