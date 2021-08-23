@@ -18,6 +18,7 @@ function sendContact(requester, text, to, img, token, cb) {
                 socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
                     if (!res.ok) {
                         cb({ ok: false, err: res.err })
+                        return;
                     }
                     cb({ ok: true });
                 })

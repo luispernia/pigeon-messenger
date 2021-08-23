@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react'
 import { useSpring, animated } from 'react-spring';
 import userContext from '../services/context/UserContext';
@@ -9,7 +10,6 @@ function Alert() {
 
     useEffect(() => {
         alert.pop();
-        console.log(alert);
     }, [toDelete])
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const AlertComponent = ({data, alertID}) => {
                 });
                 setShow(false);   
             }, 400);
-        }, 5000);
+        }, 3000);
     }, [])
 
     return (

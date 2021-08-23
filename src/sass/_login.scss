@@ -5,9 +5,33 @@
  
 }
 
+@media (max-width: 768px) {
+    .principal-page-view {
+        flex-direction: column;
+    }
+}
+
 .landing {
     flex: 0 0 calc(60% - 1rem);
     min-height: 100vh;
+    .landing-title {
+        h1 {
+            margin-top: 1rem;
+            color: var(--pigeon-primary);
+            font-size: 2.4rem;
+            span {
+                color: var(--light-primary)
+            }
+        }
+        h3 {
+            margin-top: .5rem;
+            color: var(--light-secondary);
+        }
+    }
+    .landing-body {
+        display: flex;
+
+    }
 }
 
 .form-div {   
@@ -99,9 +123,11 @@
         box-shadow: none!important;
         color: var(--light-primary)!important;
         border-radius: .5rem!important;
+        width: 80%!important;
     }
 }
 
 .form-redirect {
     margin: 1rem 0rem;
 }
+

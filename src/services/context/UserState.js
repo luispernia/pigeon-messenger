@@ -23,16 +23,19 @@ function ProvideUser({ children }) {
     const signUpEmail = async ({ name, email, password }, cb) => {
         try {
             let data = { email, password, name };
-            let response = await axios.post("http://localhost:8080/user", data);
+            let response = await axios.post("http://localhost:8080/user", data)
+            .catch(({response}) => {
+                cb({ok: false, err: "Email already registered"});
+            })
             let login = await axios.post("http://localhost:8080/login", {email: response.data.user.email, password}, {withCredentials: true})
             .catch(({response}) =>{
-                console.log(response);
+                cb({ok: false, err: "Error"})
             })
 
             dispatch({ type: "REGISTER_USER", payload: {user: login.data.user, token: login.data.token}});
-            cb();
+            cb({ok: true});
         } catch (err) {
-            alert(err);
+            console.log(err);
         }
     }
 
@@ -90,6 +93,7 @@ function ProvideUser({ children }) {
 
     const finishSettings = async (data,cb) => {
         try {
+            // eslint-disable-next-line no-unused-vars
             let res = await axios.put(`http://localhost:8080/user/${data.id}`, {username: data.username});
             cb({ok: true}) 
         } catch(err) {

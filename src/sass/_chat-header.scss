@@ -4,11 +4,29 @@
     padding-left: .5rem;
     .chat-title {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
+        justify-content: flex-start;
+        align-items: center;
         flex: 0 0 calc(80%);
         color: var(--light-primary);
+        .title-content {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .chat-name {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 80%;
+        }
+        .chat-img {
+            img {
+                width: 4rem;
+                height: 4rem;
+                border-radius: 5rem;
+                margin-right: 1rem;
+            }
+        }
         input {
             font-size: 1.4rem;
             margin-top: .5rem;
@@ -17,12 +35,13 @@
             color: var(--light-marker);
             border-bottom: .1rem solid var(--pigeon-primary);
             background-color: transparent;
+            width: 100%;
         }
         .members {
             display: flex;
             align-items: center;
             margin-bottom: .4rem;
-            margin-top: 1rem;
+            margin-top: .4rem;
             img {
                 width: 2rem;
                 border-radius: 100%;
@@ -33,6 +52,7 @@
     }   
     .user {
         .chat-name {
+         
             input{
                 border-bottom: 1px solid transparent!important;
             }
@@ -55,11 +75,7 @@
             color: var(--light-primary);
         }
     }
-    @media (max-width: 430px) {
-        .chat-opts {
-            flex: 0 0 0;
-        }
-    }
+ 
 }
 .open-bar {
     position: absolute;

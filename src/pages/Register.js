@@ -7,6 +7,7 @@ import Alert from "../components/Alert";
 import ChatIcons from '../components/ChatIcons';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
+import { useSpring, animated } from 'react-spring';
 
 const validate = (values) => {
     const errors = {};
@@ -27,7 +28,7 @@ const validate = (values) => {
 }
 
 function Register() {
-    const { signUpEmail, alerts } = useContext(userContext);
+    const { signUpEmail, alerts, setAlert } = useContext(userContext);
     const history = useHistory();
 
     const formik = useFormik({
@@ -39,13 +40,18 @@ function Register() {
         validate,
         onSubmit: values => {
             setLoading("loading");
-            signUpEmail({ name: formik.values.name, email: formik.values.email, password: formik.values.password }, () => {
+            signUpEmail({ name: formik.values.name, email: formik.values.email, password: formik.values.password }, (res) => {
+                if(!res.ok) {
+                    setAlert({text: res.err})
+                    return;
+                }
                 setLoading("Done");
                 history.replace("/chat");
             });
         }
     })
 
+    const title = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-2rem, 0rem)"}});
 
     const [loading, setLoading] = useState("");
 
@@ -56,8 +62,18 @@ function Register() {
             ) : ("")}
             <div className="principal-page-view">
                 <div className="landing">
-                    <h1>Pigeon Messenger</h1>
-                    <h3>Real-time messaging in a lightweight way</h3>
+                    <div className="landing-title">
+                        <animated.h1 style={title}>Pigeon <span>Messenger</span></animated.h1>
+                        <h3>Real-time messaging in a lightweight way</h3>
+                    </div>
+                    <div className="landing-body">
+                        <div className="mobile">
+
+                        </div>
+                        <div className="desktop">
+
+                        </div>
+                    </div>
                 </div>
                 <div className="form-div">
 
@@ -70,7 +86,7 @@ function Register() {
                         <div className="control">
                             <label className="label">Name</label>
                             <input name="name" id="name" type="text " value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" placeholder="Your name" />
-                            {formik.touched.name && formik.errors.name? <p className="form-error">{formik.errors.email}</p> : ""}
+                            {formik.touched.name && formik.errors.name? <p className="form-error">{formik.errors.name}</p> : ""}
                         </div>
 
                         <div className="control">

@@ -1,19 +1,21 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
 import axios from "axios";
 import roomsContext from '../services/context/RoomContext';
+import { useSpring, animated } from 'react-spring';
 
 const ChatBar = () => {
 
     const [message, setMessage] = useState("");
     const [doc, setFile] = useState({ docs: [] });
-    const { user } = useContext(userContext);
-    const {selected} = useContext(roomsContext);
-    const {room_id} = selected? selected : {room_id: ""};
+    const { user, setAlert } = useContext(userContext);
+    const { selected } = useContext(roomsContext);
+    const { room_id } = selected ? selected : { room_id: "" };
     const fileRef = useRef(null);
     const [cursor, setCursor] = useState(false);
-        
+    const [photos, setPhotos] = useState([]);
+
     const handleSubmit = async ($event) => {
         $event.preventDefault();
 
@@ -33,12 +35,14 @@ const ChatBar = () => {
                 }
             })
 
-            .then((res) => {
-                sendMessage({ user, message: res.data.message, room: room_id, type: "docs"});
-            })
-            .catch(err => {
-                alert(err);
-            })
+                .then((res) => {
+                    sendMessage({ user, message: res.data.message, room: room_id, type: "docs" });
+                    setFile({ docs: [] });
+                    setPhotos([]);
+                })
+                .catch(err => {
+                    alert(err);
+                })
 
         } else {
             sendMessage({ user, message, room: room_id, type: "text" });
@@ -47,18 +51,61 @@ const ChatBar = () => {
 
     }
 
+    useEffect(() => {
+        if(photos.length > 7) {
+            setAlert({text: "Need to be less than 7 photos"});
+        }
+    },[photos])
+
     return (
         <div className="bar-container">
+            {photos.length > 0 ? (
+                <Uploads files={photos} />
+            ) : (
+                ""
+            )}
             <form onSubmit={handleSubmit} className="send-bar">
                 <div className="fileInput">
                     <i onClick={() => fileRef.current.click()} className="bi bi-images"></i>
-                    <input ref={fileRef} onChange={($event) => setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })} type="file" name="docs" multiple />
+                    <input ref={fileRef} onChange={($event) => {
+                        setFile({ docs: [...doc.docs, ...$event.currentTarget.files] })
+                        setPhotos([...$event.currentTarget.files].map(e => {
+                            return URL.createObjectURL(e);
+                        }))
+                    }
+
+                        } type="file" name="docs" multiple />
                 </div>
-                <input value={message} onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
-                <button onMouseOver={() => setCursor(true)} onMouseLeave={() => setCursor(false)} type="submit">{cursor? <i className="bi bi-cursor-fill"></i> : <i className="bi bi-cursor"></i>}</button>
+                <input value={message} accept=".png,.jpg,.jpge" onChange={($event) => setMessage($event.target.value)} type="text" placeholder="Message" />
+                <button onMouseOver={() => setCursor(true)} onMouseLeave={() => setCursor(false)} type="submit" disabled={message.length <= 0 || doc.docs.length > 7}>{cursor ? <i className="bi bi-cursor-fill"></i> : <i className="bi bi-cursor"></i>}</button>
             </form>
         </div>
     )
 }
+
+const Uploads = ({ files }) => {
+
+    const [photos, setPhotos] = useState([]);
+    const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 200 });
+
+    useEffect(() => {
+        setPhotos(files);
+    }, [files])
+
+    return (
+        <>
+            <animated.div style={spring} className="uploads-content">
+                {photos.slice(0,7).map(e => {
+                    return (
+                    <div className="img-content">
+                        <img src={e} alt="img" />
+                    </div>
+                    )
+                })}
+            </animated.div>
+        </>
+    )
+}
+
 
 export default ChatBar

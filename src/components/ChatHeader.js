@@ -67,20 +67,23 @@ function ChatHeader() {
         <>
             {selected ? (
                 <div className="chat-header">
-                    <i onClick={() => setShowBar({ reverse: !showBar.reverse })} className="bi bi-app-indicator open-bar"></i>
+                    <i onClick={() => setShowBar({ reverse: !showBar.reverse })} className="bi bi-back open-bar"></i>
                     {selected.contact_id ? (
                         <div className="contact_header">
-                            <img src={`http://localhost:8080/upload/user/${selected.contact_id.img}?token=${token}`} alt={`${selected.contact_id.username}`} />    
+                            <img src={`http://localhost:8080/upload/user/${selected.contact_id.img}?token=${token}`} alt={`${selected.contact_id.username}`} />
                             <div className="contact_text">
                                 <h3>{selected.contact_id.username}</h3>
-                                <p>{selected.contact_id.online? "Online" : "Offline"}</p>
+                                <p>{selected.contact_id.online ? "Online" : "Offline"}</p>
                             </div>
                         </div>
                     ) : (
                         <>
                             <div className="chat-title">
+                            <div className="chat-img">
+                                        <img src={`http://localhost:8080/upload/room/${selected.img}?token=${token}`} alt={`${selected.name} img`} />
+                                    </div>
                                 <div onMouseLeave={() => { setOnMouse(false) }} onMouseOver={() => { setOnMouse(true) }} className="chat-name">
-                                    <input ref={titleRef} className="chat-title" type="text" value={selected ? title : ""} onChange={($event) => setTitle($event.target.value)} disabled={onEdit} />
+                                    <div className="title-content">
                                     <i onClick={() => {
                                         if (!onEdit) {
                                             saveEdit();
@@ -88,8 +91,9 @@ function ChatHeader() {
                                             editTitle();
                                         }
                                     }} style={onMouse ? { display: "flex" } : { display: "none" }} className={`bi bi-${onEdit ? "pencil-square" : "check2-circle"}`}></i>
-                                </div>
-                                <div className="members">
+                                    <input ref={titleRef} className="chat-title" type="text" value={selected ? title : ""} onChange={($event) => setTitle($event.target.value)} disabled={onEdit} />
+                                    </div>
+                                    <div className="members">
                                     {selected ? (selected.contact_id ? (
                                         ""
                                     ) : (<>
@@ -101,6 +105,8 @@ function ChatHeader() {
                                     )) : ("")}
 
                                 </div>
+                                </div>
+                      
                             </div>
 
                             <div className="chat-opts">
@@ -109,7 +115,8 @@ function ChatHeader() {
                                     {width <= 430 ? (
                                         ""
                                     ) : (
-                                        <i className="bi bi-archive"></i>
+                                        // <i className="bi bi-archive"></i>
+                                        ""
                                     )}
                                 </div>
                             </div>

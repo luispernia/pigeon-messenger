@@ -118,7 +118,7 @@ function PostRegister() {
                     <div className="finish-container">
                         <div onClick={() => {
                             fileRef.current.click();
-                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `http://localhost:8080/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : user.img === "default.png"? "" : `http://localhost:8080/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
                            
                             <div className="container-user">
                            <i class="bi bi-image"></i>  

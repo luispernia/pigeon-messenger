@@ -70,7 +70,6 @@ function PrivateRoutePlus({ children, ...rest }) {
   useEffect(() => {
     axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true })
       .then(res => {
-        console.log(res);
         if (res.data.ok) {
           if(res.data.user.username === res.data.user.email) {
               updateUser(res.data, (user) => {

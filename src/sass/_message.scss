@@ -12,6 +12,19 @@
         flex-direction: column-reverse;
         overflow-x: hidden;
     }
+    .messages-overflow::-webkit-scrollbar {
+        width: .7rem;
+        border-radius: 1rem
+    }
+    .messages-overflow::-webkit-scrollbar-track {
+        background: var(--dark-transparent);
+        width: 10px;
+
+      }
+    .messages-overflow::-webkit-scrollbar-thumb {
+        background: var(--dark-gray);
+        border-radius: 1rem
+      }
     .message {
         margin-bottom: 2rem;
         display: flex;

@@ -4,6 +4,25 @@ import GoogleSignIn from '../components/GoogleSignIn';
 import userContext from '../services/context/UserContext';
 import Loading from '../components/Loading';
 import Alert from '../components/Alert';
+import ChatIcons from '../components/ChatIcons';
+import { useFormik } from 'formik';
+import { Link } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring';
+
+const validate = (values) => {
+    const errors = {};
+
+
+    if(!values.email) {
+        errors.email = "The email is required";
+    }
+
+    if(!values.password) {
+        errors.password = "The password is required";
+    }
+
+    return errors;
+}
 
 function Login() {
 
@@ -11,53 +30,80 @@ function Login() {
 
     const history = useHistory();
 
-    const [loading, setLoading] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    
-    const handleSubmit = async ($event) => {
-        $event.preventDefault();
-        
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: ""
+        },
+        validate,
+        onSubmit: values => {
+                   
         setLoading("Loading");
 
-        loginEmail({email, password}, (res) => {
+        loginEmail({email: formik.values.email, password: formik.values.password}, (res) => {
             if(!res.ok) {
                 setLoading("failed");
                 return;
             }
             history.replace("/chat");
         })
-        
-    }
+        }
+    })
 
+    const [loading, setLoading] = useState("");
+    
+    const title = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-2rem, 0rem)"}});
 
     return (
 
         <div>
-            {alerts.length > 0 ? (
+          {alerts.length > 0 ? (
                 <Alert />
             ) : ("")}
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit} className="form">
+            <div className="principal-page-view">
+                <div className="landing">
+                    <div className="landing-title">
+                        <animated.h1 style={title}>Pigeon <span>Messenger</span></animated.h1>
+                        <h3>Real-time messaging in a lightweight way</h3>
+                    </div>
+                    <div className="landing-body">
+                        <div className="mobile">
 
-                <GoogleSignIn type="login" history={history} loading={setLoading} />
-
-                <div className="control">
-                    <label className="label">Email</label>
-                    <input type="email" value={email} onChange={($event => setEmail($event.target.value))} className="input" placeholder="Email" />
+                        </div>
+                        <div className="desktop">
+                            
+                        </div>
+                    </div>
                 </div>
+                <div className="form-div">
 
+                    <ChatIcons />   
 
-                <div className="control">
-                    <label className="label">Password</label>
-                    <input type="password" value={password} onChange={($event => setPassword($event.target.value))} className="input" placeholder="Password" />
+                    <form onSubmit={formik.handleSubmit} className="form">
+                        <h2>Join</h2>
+                        <GoogleSignIn history={history} type="login" loading={setLoading} />
+                        <p>or</p>
+                        <div className="control">
+                            <label className="label">Email</label>
+                            <input name="email" id="email" type="email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" placeholder="example@example.com" />
+                            {formik.touched.email && formik.errors.email? <p className="form-error">{formik.errors.email}</p> : ""}
+                        </div>
+                        
+
+                        <div className="control">
+                            <label className="label">Password</label>
+                            <input name="password" id="password" type="password" value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" placeholder="Strong password" />
+                            {formik.touched.password && formik.errors.password? <p className="form-error">{formik.errors.password}</p> : ""}
+                        </div>
+
+                        <button type="submit" className="submit">Next</button>
+                        <p className="form-redirect">New on site? <Link to="/register">Register</Link> </p>
+                    </form>
                 </div>
-
-                <button type="submit" className="submit">Rock</button>
-                <p>{loading === "Loading"? (
-                    <Loading/>
-                ) : ("")}</p>
-            </form>
+            </div>
+            {loading === "Loading" ? (
+                <Loading />
+            ) : ("")}
         </div>
 
     )
