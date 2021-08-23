@@ -4,21 +4,32 @@ import userContext from '../services/context/UserContext';
 
 function Alert() {
 
-    const { alerts } = useContext(userContext);
+    const { alerts, toDelete } = useContext(userContext);
+    const [alert, setAlert] = useState([]);
+
+    useEffect(() => {
+        alert.pop();
+        console.log(alert);
+    }, [toDelete])
+
+    useEffect(() => {
+        setAlert(alerts? alerts : []);
+    }, [alerts])
 
     return (
         <>
             <div className="pigeon-alert-container">
-                {alerts.map((e, i) => {
-                    return <AlertComponent key={i} data={e} />
+                {alert.map((e, i) => {
+                    return <AlertComponent key={i} alertID={i} data={e} />
                 })}
             </div>
         </>
     )
 }
 
-const AlertComponent = ({ data }) => {
+const AlertComponent = ({data, alertID}) => {
 
+    const {deleteAlert} = useContext(userContext);
     const [show, setShow] = useState(true);
     const [reversing, setReversing] = useState(false);
     const spring = useSpring({ to: { transform: "translate(1rem, 0rem)", opacity: 1 }, from: { transform: "translate(-1rem, 0rem)", opacity: 0 }, reverse: reversing })
@@ -27,7 +38,10 @@ const AlertComponent = ({ data }) => {
         setTimeout(() => {
             setReversing(true);
             setTimeout(() => {
-                setShow(false);
+                deleteAlert([alertID], () => {
+                    
+                });
+                setShow(false);   
             }, 400);
         }, 5000);
     }, [])

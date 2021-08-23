@@ -33,7 +33,7 @@ function GoogleSignIn({history, type, loading}) {
 
 
     return (
-        <> 
+        <> <div className="google-button">
             <GoogleLogin
                 clientId="1027404860731-ust4j779j69l1rhgtgjf37vj78rpour0.apps.googleusercontent.com"
                 buttonText={type === "login"? "Login with google" : "Register with google"}
@@ -41,6 +41,7 @@ function GoogleSignIn({history, type, loading}) {
                 onFailure={fail}
                 cookiePolicy={'single_host_origin'}
             />
+            </div>
         </>
     )
 }

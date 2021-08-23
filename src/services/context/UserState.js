@@ -9,7 +9,8 @@ function ProvideUser({ children }) {
     const initialState = {
         user: null,
         token: null,
-        alerts: []
+        alerts: [],
+        toDelete: []
     }
 
     const [state, dispatch] = useReducer(UserReducer, initialState);
@@ -19,9 +20,9 @@ function ProvideUser({ children }) {
 
     }
 
-    const signUpEmail = async ({ username, name, email, password }, cb) => {
+    const signUpEmail = async ({ name, email, password }, cb) => {
         try {
-            let data = { email, password, username, name };
+            let data = { email, password, name };
             let response = await axios.post("http://localhost:8080/user", data);
             let login = await axios.post("http://localhost:8080/login", {email: response.data.user.email, password}, {withCredentials: true})
             .catch(({response}) =>{
@@ -107,6 +108,11 @@ function ProvideUser({ children }) {
         }
     }
 
+    const deleteAlert = (alerts, cb) => {
+        dispatch({type: "DELETE_ALERT", payload: {alerts}})
+        cb();
+    }
+
 
     return <userContext.Provider value={{
         user: state.user,
@@ -119,7 +125,9 @@ function ProvideUser({ children }) {
         setAlert,
         alerts: state.alerts,
         refresh_token,
-        finishSettings
+        finishSettings,
+        deleteAlert,
+        toDelete: state.toDelete
     }}>{children}</userContext.Provider>
 }
 

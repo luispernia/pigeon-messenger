@@ -142,7 +142,7 @@ function PostRegister() {
                                     </div>
                                     {formik.errors.username?  <small>{formik.errors.username}</small> : "" }
                                 </div>
-                                <button type="submit">Submit</button>
+                                <button type="submit">Next</button>
                             </form>
                         </div>
                     </div>

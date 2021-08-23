@@ -1,4 +1,4 @@
-import { REGISTER_USER, LOGIN_USER, UPDATE_USER, SIGNOUT_USER, UPDATE_ALERT } from "../actions";
+import { REGISTER_USER, LOGIN_USER, UPDATE_USER, SIGNOUT_USER, UPDATE_ALERT, DELETE_ALERT } from "../actions";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
@@ -38,7 +38,11 @@ export default (state, action) => {
                 ...state,
                 alerts: [...state.alerts, ...[payload]]
             }
-
+        case DELETE_ALERT: 
+            return {
+                ...state,
+                toDelete: [...state.toDelete, ...payload.alerts]
+            }
         default:
             return state
     }

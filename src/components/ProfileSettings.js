@@ -29,7 +29,7 @@ const ProfileSettings = () => {
     const logout = () => {
         signOut(() => {
             setAlert({ type: "info", text: "bye" });
-            history.replace("/");
+            history.replace("/register");
         })
     }
 
