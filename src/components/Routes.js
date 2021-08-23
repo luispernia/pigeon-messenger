@@ -8,7 +8,6 @@ import {
   useHistory,
 } from "react-router-dom";
 import Register from "../pages/Register";
-import Landing from "../pages/Landing";
 import Chat from "../pages/Chat";
 import Success from "./Success";
 import Login from "../pages/Login";

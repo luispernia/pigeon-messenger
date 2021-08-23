@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useRef, useEffect } from 'react'
 import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
@@ -57,7 +58,7 @@ const ChatBar = () => {
         }
     },[photos])
 
-    return (
+    return (    
         <div className="bar-container">
             {photos.length > 0 ? (
                 <Uploads files={photos} />
