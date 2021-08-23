@@ -39,11 +39,10 @@ const ProfileSettings = () => {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`http://localhost:8080/user/upload/${user._id}`, formData, {withCredentials: true})
+            axios.post(`https://pigeon-messenger-server.herokuapp.com/user/upload/${user._id}`, formData, {withCredentials: true})
             .then((res) => {
                 setEnded(canvas.toDataURL("image/png"));
                 setShowCropper(false);
-                console.log(res);
                 refresh_token({bool: true, user: res.data.user});
             })
             .catch(err => {
@@ -80,7 +79,7 @@ const ProfileSettings = () => {
                         <animated.div className="profile-resume">
                             <div onClick={() => {
                                 fileRef.current.click();
-                            }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `http://localhost:8080/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                            }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `https://pigeon-messenger-server.herokuapp.com/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
                                 <input style={{ display: "none" }} value={file} onChange={($event) => {
                                     if ($event.target.files.length >= 1) {
                                         let src = URL.createObjectURL($event.target.files[0]);

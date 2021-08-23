@@ -68,7 +68,7 @@ function PrivateRoutePlus({ children, ...rest }) {
   const history = useHistory();
 
   useEffect(() => {
-    axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true })
+    axios.post("https://pigeon-messenger-server.herokuapp.com/refresh_token", {}, { withCredentials: true })
       .then(res => {
         if (res.data.ok) {
           if(res.data.user.username === res.data.user.email) {

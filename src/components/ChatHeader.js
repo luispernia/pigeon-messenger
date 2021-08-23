@@ -22,7 +22,7 @@ function ChatHeader() {
     const [width] = useWindowSize();
 
     const saveEdit = () => {
-        axios.put(`http://localhost:8080/room/${selected._id}/default`, { name: title }, { withCredentials: true })
+        axios.put(`https://pigeon-messenger-server.herokuapp.com/room/${selected._id}/default`, { name: title }, { withCredentials: true })
             .then((res) => {
                 roomSettings({ type: "title", value: title, room_id: selected.room_id ? selected.room_id : "", author: user }, (res) => {
 
@@ -70,7 +70,7 @@ function ChatHeader() {
                     <i onClick={() => setShowBar({ reverse: !showBar.reverse })} className="bi bi-back open-bar"></i>
                     {selected.contact_id ? (
                         <div className="contact_header">
-                            <img src={`http://localhost:8080/upload/user/${selected.contact_id.img}?token=${token}`} alt={`${selected.contact_id.username}`} />
+                            <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${selected.contact_id.img}?token=${token}`} alt={`${selected.contact_id.username}`} />
                             <div className="contact_text">
                                 <h3>{selected.contact_id.username}</h3>
                                 <p>{selected.contact_id.online ? "Online" : "Offline"}</p>
@@ -80,7 +80,7 @@ function ChatHeader() {
                         <>
                             <div className="chat-title">
                             <div className="chat-img">
-                                        <img src={`http://localhost:8080/upload/room/${selected.img}?token=${token}`} alt={`${selected.name} img`} />
+                                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/room/${selected.img}?token=${token}`} alt={`${selected.name} img`} />
                                     </div>
                                 <div onMouseLeave={() => { setOnMouse(false) }} onMouseOver={() => { setOnMouse(true) }} className="chat-name">
                                     <div className="title-content">
@@ -98,7 +98,7 @@ function ChatHeader() {
                                         ""
                                     ) : (<>
                                         {users.slice(0, 7).map((e, i) => {
-                                            return <img key={i} src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
+                                            return <img key={i} src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${e.img}?token=${token}`} alt={`${e.email}`} />
                                         })}
                                         <p>{users.length > 7 ? `and ${users.length - 7} members` : "Members"}</p>
                                     </>

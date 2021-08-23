@@ -23,12 +23,16 @@ function ProvideUser({ children }) {
     const signUpEmail = async ({ name, email, password }, cb) => {
         try {
             let data = { email, password, name };
-            let response = await axios.post("http://localhost:8080/user", data)
+            let response = await axios.post("https://pigeon-messenger-server.herokuapp.com/user", data)
+
             .catch(({response}) => {
+                console.log(response);
                 cb({ok: false, err: "Email already registered"});
             })
-            let login = await axios.post("http://localhost:8080/login", {email: response.data.user.email, password}, {withCredentials: true})
+
+            let login = await axios.post("https://pigeon-messenger-server.herokuapp.com/login", {email: response.data.user.email, password}, {withCredentials: true})
             .catch(({response}) =>{
+                console.log(response);
                 cb({ok: false, err: "Error"})
             })
 
@@ -42,7 +46,7 @@ function ProvideUser({ children }) {
     const signOut = async (cb) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.post("http://localhost:8080/signOut", {}, { withCredentials: true });
+            let res = await axios.post("https://pigeon-messenger-server.herokuapp.com/signOut", {}, { withCredentials: true });
             setTimeout(() => {
                 dispatch({ type: "SIGNOUT_USER", payload: null });
             }, 2000);
@@ -60,8 +64,7 @@ function ProvideUser({ children }) {
     const loginEmail = async ({ email, password }, cb) => {
         try {
             let data = { email, password };
-            console.log(email);
-            let response = await axios.post("http://localhost:8080/login", data, { withCredentials: true })
+            let response = await axios.post("https://pigeon-messenger-server.herokuapp.com/login", data, { withCredentials: true })
             .catch(({response}) => {
                 if(response.data.err) {
                     cb({ ok: false });
@@ -70,20 +73,20 @@ function ProvideUser({ children }) {
                 }
             })
 
-
-            let userDB = await axios.get("http://localhost:8080/user/one", { withCredentials: true });
+            let userDB = await axios.get("https://pigeon-messenger-server.herokuapp.com/user/one", { withCredentials: true });
             dispatch({ type: "LOGIN_USER", payload: { user: userDB.data.user, token: response.data.token } });
 
             cb({ ok: true });   
 
         } catch (err) {
             cb({ ok: false });
+            console.log(err);
         }
     }
 
     const googlelogin = async (data, cb) => {
         try {
-            let res = await axios.post(`http://localhost:8080/google`, {idtoken: data}, {withCredentials: true}).catch(err => console.log(err));
+            let res = await axios.post(`https://pigeon-messenger-server.herokuapp.com/google`, {idtoken: data}, {withCredentials: true}).catch(err => console.log(err));
             dispatch({type: "LOGIN_USER", payload: {user: res.data.user, token: res.data.token}});
             cb({ok: true, user: res.data.user});
         } catch(err) {
@@ -94,7 +97,7 @@ function ProvideUser({ children }) {
     const finishSettings = async (data,cb) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.put(`http://localhost:8080/user/${data.id}`, {username: data.username});
+            let res = await axios.put(`https://pigeon-messenger-server.herokuapp.com/user/${data.id}`, {username: data.username});
             cb({ok: true}) 
         } catch(err) {
             cb({ok: false})
@@ -103,7 +106,7 @@ function ProvideUser({ children }) {
 
     const refresh_token = async (data) => {
         try {
-            let res = await axios.post("http://localhost:8080/refresh_token", {}, { withCredentials: true });
+            let res = await axios.post("https://pigeon-messenger-server.herokuapp.com/refresh_token", {}, { withCredentials: true });
             if (data) {
                 updateUser({ user: data.user, token: res.data.token }, () => { })
             }

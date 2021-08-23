@@ -131,7 +131,7 @@ const CreateRoom = ({ chats }) => {
 
         formData.append("document", JSON.stringify({ name: title, members: user, admin: user, description, }));
 
-        let res = await axios.post("http://localhost:8080/room", formData, {
+        let res = await axios.post("https://pigeon-messenger-server.herokuapp.com/room", formData, {
             withCredentials: true, headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -200,7 +200,7 @@ const CreateRoom = ({ chats }) => {
                                 <animated.div style={show} className="create-room-head">
                                     <div onClick={() => {
                                         fileRef.current.click();
-                                    }} className="room-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `http://localhost:8080/upload/room/default.png?token=${token}`})`, backgroundSize: "cover" }}>
+                                    }} className="room-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `https://pigeon-messenger-server.herokuapp.com/upload/room/default.png?token=${token}`})`, backgroundSize: "cover" }}>
                                         <input style={{ display: "none" }} value={file} onChange={($event) => {
                                             if ($event.target.files.length >= 1) {
                                                 let src = URL.createObjectURL($event.target.files[0]);
@@ -234,7 +234,7 @@ const CreateRoom = ({ chats }) => {
                                         {membersView.map((e,i) => {
                                             return (
                                                     <animated.div key={i} className="members-list" >
-                                                        <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt={`${e.contact_id.username} img`} />
+                                                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${e.contact_id.img}?token=${token}`} alt={`${e.contact_id.username} img`} />
                                                     </animated.div>
                                             )
                                         })}
@@ -251,7 +251,7 @@ const CreateRoom = ({ chats }) => {
                                             return (
                                                 <li key={i} style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
                                                     <div style={{ background: "transparent" }}>
-                                                        <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
+                                                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
                                                         <div style={{ background: "transparent" }} className="add-info">
                                                             <p>{e.contact_id.username}</p>
                                                             <small>{e.contact_id.online ? "Online" : "Offline"}</small>
@@ -302,7 +302,8 @@ const RequestContact = () => {
     const handleRequest = () => {
         sendContact(user.username, message, username, user.img, token, (res) => {
             if (!res.ok) {
-                setAlert({ show: true, text: res.err });
+                setAlert({ show: true, text: "error" });
+                console.log(res.err);
                 return;
             } else {
                 setAlert({ show: true, text: `request sended to/`, resalt: username, type: "info" });
@@ -362,7 +363,7 @@ const Result = ({ username, state }) => {
 
     useEffect(() => {
         setLoaded(false);
-        axios.get(`http://localhost:8080/user/search/${username ? username : "xd"}`, { withCredentials: true })
+        axios.get(`https://pigeon-messenger-server.herokuapp.com/user/search/${username ? username : "xd"}`, { withCredentials: true })
             .then((res) => {
                 if (res.data.user) {
                     state(true);
@@ -392,7 +393,7 @@ const Result = ({ username, state }) => {
             (<div className="userResume">
                 <div className="image-resume">
                     {userData.img? (
-                        <img src={`http://localhost:8080/upload/user/${userData.img}?token=${token}`} alt="" />
+                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${userData.img}?token=${token}`} alt="" />
                     ) : ("")}
                 </div>
                 <div className="resume-body">
@@ -494,7 +495,7 @@ const AddMember = ({ chats }) => {
                         {selected.members.map((e, i) => {
                             return (
                                 <animated.div key={i} style={show} className="current-user">
-                                    <img src={`http://localhost:8080/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
+                                    <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${e.img}?token=${token}`} alt={`${e.username} img`} />
                                     <animated.div>
                                         <h4>{e.username}</h4>
                                         <p>{e._id === selected.admin ? `creator` : `member`}</p>
@@ -512,7 +513,7 @@ const AddMember = ({ chats }) => {
                                 return (
                                     <li key={i} style={e.toggle ? { background: "var(--dark-primary)" } : { background: "transparent" }}>
                                         <div style={{ background: "transparent" }}>
-                                            <img src={`http://localhost:8080/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
+                                            <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${e.contact_id.img}?token=${token}`} alt="" />
                                             <div style={{ background: "transparent" }} className="add-info">
                                                 <p>{e.contact_id.username}</p>
                                                 <small>{e.contact_id.online ? "Online" : "Offline"}</small>

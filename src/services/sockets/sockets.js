@@ -12,7 +12,7 @@ function handleRoomConnections(rooms, token) {
 }
 
 function sendContact(requester, text, to, img, token, cb) {
-    axios.post("http://localhost:8080/contact/on", { to }, { withCredentials: true })
+    axios.post("https://pigeon-messenger-server.herokuapp.com/contact/on", { to }, { withCredentials: true })
         .then(res => {
             if (!res.data.contact.length > 0) {
                 socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {

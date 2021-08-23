@@ -66,7 +66,7 @@ function PostRegister() {
     const fileRef = useRef("");
     
     const compare = async (value) => {
-        let res = axios.get(`http://localhost:8080/user/search/${value}`, {withCredentials: true});
+        let res = axios.get(`https://pigeon-messenger-server.herokuapp.com/user/search/${value}`, {withCredentials: true});
         return res;
     }
 
@@ -76,11 +76,10 @@ function PostRegister() {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`http://localhost:8080/user/upload/${user._id}`, formData, { withCredentials: true })
+            axios.post(`https://pigeon-messenger-server.herokuapp.com/user/upload/${user._id}`, formData, { withCredentials: true })
                 .then((res) => {
                     setEnded(canvas.toDataURL("image/png"));
                     setShowCropper(false);
-                    console.log(res);
                     refresh_token({ bool: true, user: res.data.user });
                 })
                 .catch(err => {
@@ -118,7 +117,7 @@ function PostRegister() {
                     <div className="finish-container">
                         <div onClick={() => {
                             fileRef.current.click();
-                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : user.img === "default.png"? "" : `http://localhost:8080/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : user.img === "default.png"? "" : `https://pigeon-messenger-server.herokuapp.com/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
                            
                             <div className="container-user">
                            <i class="bi bi-image"></i>  

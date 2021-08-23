@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useRef, useEffect } from 'react'
 import { useState } from 'react';
 import { useSpring, animated } from 'react-spring';

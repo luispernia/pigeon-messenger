@@ -17,7 +17,7 @@ function LoadMessages({ height }) {
     const scrollRef = useRef();
 
     const fetchMessages = (reset) => {
-        axios.get(`http://localhost:8080/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
+        axios.get(`https://pigeon-messenger-server.herokuapp.com/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
             .then((res) => {
 
                 const result = res.data;

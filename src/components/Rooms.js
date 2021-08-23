@@ -94,7 +94,7 @@ const ContactIcon = ({ data, peeks, chatRef }) => {
                         {peeks.bells}
                     </p>
                 )}
-                <img src={`http://localhost:8080/upload/user/${contact_id.img}?token=${token}`} alt={`${contact_id.name} img`} />
+                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${contact_id.img}?token=${token}`} alt={`${contact_id.name} img`} />
             </div>
             <div className="chat-icon-body">
                 <h4>{`${contact_id.username}`}</h4>
@@ -166,7 +166,7 @@ const RoomIcon = ({ data, peeks, chatRef }) => {
                         {peeks.bells}
                     </p>
                 )}
-                <img src={`http://localhost:8080/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
+                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
             </div>
             <animated.div className="chat-icon-body">
                 <h4>{`${data.name}`}</h4>
@@ -220,7 +220,6 @@ const Search = () => {
         <div className="center-bar">
             <div onClick={() => { search.current.focus()}} value={value} onChange={($event) => {
                 setValue($event.target.value);
-                console.log($event.target.value);
                 searchRoom($event.target.value);
             }} className="search-bar">
                 <i className="bi bi-search"></i>

@@ -1,5 +1,5 @@
 import openSocket from "socket.io-client"
 
-const socket = openSocket("http://localhost:8080");
+const socket = openSocket("https://pigeon-messenger-server.herokuapp.com");
 
 export default socket;

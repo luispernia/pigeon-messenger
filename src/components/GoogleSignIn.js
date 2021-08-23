@@ -35,7 +35,7 @@ function GoogleSignIn({history, type, loading}) {
     return (
         <> <div className="google-button">
             <GoogleLogin
-                clientId="1027404860731-ust4j779j69l1rhgtgjf37vj78rpour0.apps.googleusercontent.com"
+                clientId="713402564417-0s587tdom39v6vv0subq0erme0japsc6.apps.googleusercontent.com"
                 buttonText={type === "login"? "Login with google" : "Register with google"}
                 onSuccess={login}
                 onFailure={fail}

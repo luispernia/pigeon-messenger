@@ -11,7 +11,7 @@ import userContext from '../services/context/UserContext'
                 return (
                     <div className="photo">
                         <p>Author: {e.author.username}</p>
-                        <img src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt="" />
+                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/docs/${e.path}?token=${token}`} alt="" />
                     </div>
                 )
             })}

@@ -99,16 +99,14 @@ function BellComponent({ data, request, opts }) {
                 return;
             }
         })
-        console.log(data);
         roomSettings({type: "add_member", value: `${user.username} joins`, room_id: data.room_id? data.room_id : "", author: user }, (res) => {
-            console.log(res);
         })
 
     }
 
     useEffect(() => {
         if(img) {
-            let v = new Vibrant(`http://localhost:8080/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`, {});
+            let v = new Vibrant(`https://pigeon-messenger-server.herokuapp.com/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`, {});
             v.getPalette((err, palette) => {
                 if(err) {
                     console.log(err);
@@ -120,7 +118,7 @@ function BellComponent({ data, request, opts }) {
 
     return (
             <animated.div style={spring} className={`bell ${request.toLowerCase()}`}>
-                <img src={`http://localhost:8080/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
+                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
                 <div className="bell-body">
                     <h4 style={{...spring, color: `${color.light}`}}>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
                     <div className="bell-content">

@@ -16,7 +16,7 @@ function Message({ data }) {
             ) : (
                 <animated.div className={`message ${user.username === data.author.username ? "right" : ""}`}>
                     <div className="user">
-                        <img src={`http://localhost:8080/upload/user/${data.author.img}?token=${token}`} alt="" />
+                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${data.author.img}?token=${token}`} alt="" />
                         <p>{data.author.username}</p>
                     </div>
 
@@ -24,7 +24,7 @@ function Message({ data }) {
                         <>
                             <div className="image">
                                 {data.files.map((e, i) => {
-                                    return <img key={i} src={`http://localhost:8080/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
+                                    return <img key={i} src={`https://pigeon-messenger-server.herokuapp.com/upload/docs/${e.path}?token=${token}`} alt={`loading`} />
                                 })}
                             </div>
                             <div className="message-content">

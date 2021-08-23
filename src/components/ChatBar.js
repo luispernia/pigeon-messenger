@@ -28,7 +28,7 @@ const ChatBar = () => {
 
             formData.append("document", JSON.stringify({ author: user._id, msgDate: new Date(), room_id, text: message }));
 
-            axios.post("http://localhost:8080/message/docs", formData, {
+            axios.post("https://pigeon-messenger-server.herokuapp.com/message/docs", formData, {
                 withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data"
