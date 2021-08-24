@@ -8,8 +8,6 @@ function App() {
 
   useEffect(() => {
     console.log(cookie);
-    console.log(process.env.API);
-    console.log(process.env.CLIENT_ID);
   }, [])
 
   return <Routes />;
