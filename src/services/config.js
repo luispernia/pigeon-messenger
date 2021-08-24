@@ -1,3 +1,3 @@
 export const mode = process.env.NODE_ENV === "production"? "production" : "developement";
-console.log(process.env.API);
-console.log(process.env.CLIENT_ID);
+export const api = mode === "production"? "https://pigeon-messenger-server.herokuapp.com" : "http://localhost:8080";
+export const client = mode === "production"? "713402564417-trseu7jrr0re4ledfomoffchi6t324gb.apps.googleusercontent.com" : "713402564417-0s587tdom39v6vv0subq0erme0japsc6.apps.googleusercontent.com";
