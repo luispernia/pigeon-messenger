@@ -1,5 +1,6 @@
 import openSocket from "socket.io-client"
+import {api} from "../config";
 
-const socket = openSocket("https://pigeon-messenger-server.herokuapp.com");
+const socket = openSocket(api);
 
 export default socket;

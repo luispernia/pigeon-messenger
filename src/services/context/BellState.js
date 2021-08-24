@@ -3,6 +3,7 @@ import axios from "axios";
 import bellsContext from "./BellContext";
 import BellReducer from "./BellReducer";
 import roomsContext from "./RoomContext";
+import {api} from "../config";
 axios.defaults.withCredentials = true;
 
 function ProvideBell({ children }) {
@@ -18,7 +19,7 @@ function ProvideBell({ children }) {
     const refresh_bell = async () => {
         try {
 
-            let res = await axios.get("https://pigeon-messenger-server.herokuapp.com/bell", { withCredentials: true });
+            let res = await axios.get(`${api}/bell`, { withCredentials: true });
             dispatch({ type: "UPDATE_BELL", payload: res.data.bells });
 
         } catch (err) {
@@ -29,7 +30,7 @@ function ProvideBell({ children }) {
     const setBells = async () => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.put("https://pigeon-messenger-server.herokuapp.com/bell/readed", {}, { withCredentials: true })
+            let res = await axios.put(`${api}/bell/readed`, {}, { withCredentials: true })
             refresh_bell();
         } catch (err) {
             alert(err)

@@ -18,6 +18,7 @@ import ProviderRoom from "../services/context/RoomState";
 import ProviderMessages from "../services/context/MessagesState";
 import Loading from "./Loading";
 import PostRegister from "./PostRegister";
+import {api} from "../services/config";
 
 
 function Routes() {
@@ -67,7 +68,7 @@ function PrivateRoutePlus({ children, ...rest }) {
   const history = useHistory();
 
   useEffect(() => {
-    axios.post("https://pigeon-messenger-server.herokuapp.com/refresh_token", {}, { withCredentials: true })
+    axios.post(`${api}/refresh_token`, {}, { withCredentials: true })
       .then(res => {
         if (res.data.ok) {
           if(res.data.user.username === res.data.user.email) {

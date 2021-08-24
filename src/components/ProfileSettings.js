@@ -5,6 +5,7 @@ import userContext from '../services/context/UserContext';
 import { useHistory } from 'react-router';
 import axios from "axios";
 import Cropper from "react-cropper";
+import {api} from "../services/config";
 import "cropperjs/dist/cropper.css"
 
 const ProfileSettings = () => {
@@ -39,7 +40,7 @@ const ProfileSettings = () => {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`https://pigeon-messenger-server.herokuapp.com/user/upload/${user._id}`, formData, {withCredentials: true})
+            axios.post(`${api}/user/upload/${user._id}`, formData, {withCredentials: true})
             .then((res) => {
                 setEnded(canvas.toDataURL("image/png"));
                 setShowCropper(false);
@@ -79,7 +80,7 @@ const ProfileSettings = () => {
                         <animated.div className="profile-resume">
                             <div onClick={() => {
                                 fileRef.current.click();
-                            }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `https://pigeon-messenger-server.herokuapp.com/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                            }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : `${api}/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
                                 <input style={{ display: "none" }} value={file} onChange={($event) => {
                                     if ($event.target.files.length >= 1) {
                                         let src = URL.createObjectURL($event.target.files[0]);

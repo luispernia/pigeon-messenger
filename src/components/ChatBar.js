@@ -4,6 +4,7 @@ import { sendMessage } from "../services/sockets/sockets";
 import userContext from '../services/context/UserContext';
 import axios from "axios";
 import roomsContext from '../services/context/RoomContext';
+import {api} from "../services/config";
 import { useSpring, animated } from 'react-spring';
 
 const ChatBar = () => {
@@ -29,7 +30,7 @@ const ChatBar = () => {
 
             formData.append("document", JSON.stringify({ author: user._id, msgDate: new Date(), room_id, text: message }));
 
-            axios.post("https://pigeon-messenger-server.herokuapp.com/message/docs", formData, {
+            axios.post(`${api}/message/docs`, formData, {
                 withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data"

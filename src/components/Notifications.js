@@ -5,6 +5,7 @@ import userContext from "../services/context/UserContext";
 import { useSpring, animated } from 'react-spring';
 import { acceptContact, rejectContact, declined_room, acceptRoom, roomSettings } from "../services/sockets/sockets";
 import roomsContext from '../services/context/RoomContext';
+import {api} from "../services/config";
 
 import * as Vibrant from "node-vibrant/dist/vibrant";
 import useWindowSize from './useWindowSize';
@@ -106,7 +107,7 @@ function BellComponent({ data, request, opts }) {
 
     useEffect(() => {
         if(img) {
-            let v = new Vibrant(`https://pigeon-messenger-server.herokuapp.com/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`, {});
+            let v = new Vibrant(`${api}/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`, {});
             v.getPalette((err, palette) => {
                 if(err) {
                     console.log(err);
@@ -118,7 +119,7 @@ function BellComponent({ data, request, opts }) {
 
     return (
             <animated.div style={spring} className={`bell ${request.toLowerCase()}`}>
-                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
+                <img src={`${api}/upload/${data.room_id? "room" : "user"}/${img}?token=${token}`} alt={`${requesterFormatted} img`} />
                 <div className="bell-body">
                     <h4 style={{...spring, color: `${color.light}`}}>{ request !== "ADDED_TO_ROOM"? `${requesterFormatted}` : `${requester.split("/")[1]}`}</h4>
                     <div className="bell-content">

@@ -7,6 +7,7 @@ import { useSpring, animated } from "react-spring";
 import messagesContext from '../services/context/MessagesContext';
 import useWindowSize from './useWindowSize';
 import Profile from './Profile';
+import {api} from "../services/config";
 
 function Rooms() {
 
@@ -94,7 +95,7 @@ const ContactIcon = ({ data, peeks, chatRef }) => {
                         {peeks.bells}
                     </p>
                 )}
-                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${contact_id.img}?token=${token}`} alt={`${contact_id.name} img`} />
+                <img src={`${api}/upload/user/${contact_id.img}?token=${token}`} alt={`${contact_id.name} img`} />
             </div>
             <div className="chat-icon-body">
                 <h4>{`${contact_id.username}`}</h4>
@@ -166,7 +167,7 @@ const RoomIcon = ({ data, peeks, chatRef }) => {
                         {peeks.bells}
                     </p>
                 )}
-                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
+                <img src={`${api}/upload/room/${data.img}?token=${token}`} alt={`${data.name} img`} />
             </div>
             <animated.div className="chat-icon-body">
                 <h4>{`${data.name}`}</h4>

@@ -1,6 +1,7 @@
 import React, {useContext} from 'react'
 import GoogleLogin from 'react-google-login';
 import userContext from '../services/context/UserContext';
+import {client} from "../services/config";
 
 function GoogleSignIn({history, type, loading}) {
 
@@ -35,7 +36,7 @@ function GoogleSignIn({history, type, loading}) {
     return (
         <> <div className="google-button">
             <GoogleLogin
-                clientId="713402564417-0s587tdom39v6vv0subq0erme0japsc6.apps.googleusercontent.com"
+                clientId={client}
                 buttonText={type === "login"? "Login with google" : "Register with google"}
                 onSuccess={login}
                 onFailure={fail}

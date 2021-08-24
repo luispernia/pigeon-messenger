@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
+import {api} from "../services/config";
 
     function ChatPhotos({photos}) {
 
@@ -11,7 +12,7 @@ import userContext from '../services/context/UserContext'
                 return (
                     <div className="photo">
                         <p>Author: {e.author.username}</p>
-                        <img src={`https://pigeon-messenger-server.herokuapp.com/upload/docs/${e.path}?token=${token}`} alt="" />
+                        <img src={`${api}/upload/docs/${e.path}?token=${token}`} alt="" />
                     </div>
                 )
             })}

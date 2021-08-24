@@ -6,6 +6,7 @@ import Message from './Message';
 import roomsContext from '../services/context/RoomContext';
 import socket from '../services/sockets/socketConfig';
 import messagesContext from '../services/context/MessagesContext';
+import {api} from "../services/config";
 
 function LoadMessages({ height }) {
 
@@ -17,7 +18,7 @@ function LoadMessages({ height }) {
     const scrollRef = useRef();
 
     const fetchMessages = (reset) => {
-        axios.get(`https://pigeon-messenger-server.herokuapp.com/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
+        axios.get(`${api}/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
             .then((res) => {
 
                 const result = res.data;

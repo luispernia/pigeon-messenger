@@ -7,6 +7,7 @@ import Loading from './Loading';
 import Alert from "./Alert";
 import { useFormik } from "formik";
 import { useHistory } from 'react-router';
+import  {api} from "../services/config";
 import "cropperjs/dist/cropper.css"
 
 const validate = (values) => {  
@@ -66,7 +67,7 @@ function PostRegister() {
     const fileRef = useRef("");
     
     const compare = async (value) => {
-        let res = axios.get(`https://pigeon-messenger-server.herokuapp.com/user/search/${value}`, {withCredentials: true});
+        let res = axios.get(`${api}/user/search/${value}`, {withCredentials: true});
         return res;
     }
 
@@ -76,7 +77,7 @@ function PostRegister() {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`https://pigeon-messenger-server.herokuapp.com/user/upload/${user._id}`, formData, { withCredentials: true })
+            axios.post(`${api}/user/upload/${user._id}`, formData, { withCredentials: true })
                 .then((res) => {
                     setEnded(canvas.toDataURL("image/png"));
                     setShowCropper(false);
@@ -117,7 +118,7 @@ function PostRegister() {
                     <div className="finish-container">
                         <div onClick={() => {
                             fileRef.current.click();
-                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : user.img === "default.png"? "" : `https://pigeon-messenger-server.herokuapp.com/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
+                        }} className="user-image-icon" style={{ backgroundImage: ` url(${ended ? ended : user.img === "default.png"? "" : `${api}/upload/user/${user.img}?token=${token}`})`, backgroundSize: "cover" }}>
                            
                             <div className="container-user">
                            <i class="bi bi-image"></i>  

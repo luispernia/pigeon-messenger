@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import userContext from '../services/context/UserContext'
 import Notifications from './Notifications';
 import roomsContext from '../services/context/RoomContext';
+import {api} from "../services/config";
 
 
 function Profile() {
@@ -12,7 +13,7 @@ function Profile() {
     return (
         <div className="profile">
             <div className="profile-opts">
-                <img src={`https://pigeon-messenger-server.herokuapp.com/upload/user/${user.img}?token=${token}`} alt="" />
+                <img src={`${api}/upload/user/${user.img}?token=${token}`} alt="" />
                 <div>
                     <h3><span><i className="bi bi-at"></i></span>{user.username}</h3>
                     <p onClick={() => setFocus(true, "settings")} ><span><i className="bi bi-box"></i></span> Settings</p>
