@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext, useState, useEffect } from 'react'
 import { useHistory } from "react-router-dom";
 import userContext from "../services/context/UserContext";
 import GoogleSignIn from '../components/GoogleSignIn';
@@ -8,6 +9,7 @@ import ChatIcons from '../components/ChatIcons';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useSpring, animated } from 'react-spring';
+import {useCookies} from "react-cookie"
 
 const validate = (values) => {
     const errors = {};
@@ -30,6 +32,8 @@ const validate = (values) => {
 function Register() {
     const { signUpEmail, alerts, setAlert } = useContext(userContext);
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
+    const [cookies, setCookies] = useCookies(["token"]);
 
     const formik = useFormik({
         initialValues: {
@@ -57,6 +61,9 @@ function Register() {
     const displays1 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 400});
     const displays2 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 600});
 
+    useEffect(() => {
+        setCookies("token", null, {path: "/"});
+    }, [])
 
     return (
         <>

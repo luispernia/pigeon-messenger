@@ -3,6 +3,8 @@ import axios from "axios";
 import userContext from "./UserContext";
 import UserReducer from "./UserReducer";
 import {api} from "../config";
+import {useCookies} from "react-cookie";
+
 axios.defaults.withCredentials = true;
 
 function ProvideUser({ children }) {
@@ -15,6 +17,8 @@ function ProvideUser({ children }) {
     }
 
     const [state, dispatch] = useReducer(UserReducer, initialState);
+    // eslint-disable-next-line no-unused-vars
+    const [cookies, setCookie] = useCookies(["token"]);
 
     const setAlert = (data) => {
         dispatch({ type: "UPDATE_ALERT", payload: data });
@@ -24,20 +28,24 @@ function ProvideUser({ children }) {
     const signUpEmail = async ({ name, email, password }, cb) => {
         try {
             let data = { email, password, name };
-            let response = await axios.post(`${api}/user`, data)
 
+            let response = await axios.post(`${api}/user`, data)
             .catch(({response}) => {
                 console.log(response);
                 cb({ok: false, err: "Email already registered"});
             })
-
+            
             let login = await axios.post(`${api}/login`, {email: response.data.user.email, password}, {withCredentials: true})
-            .catch(({response}) =>{
+
+            .catch(({response}) => {
                 console.log(response);
-                cb({ok: false, err: "Error"})
+                cb({ok: false, err: "Error"});
             })
 
+            setCookie("token", login.data.token, {path: "/"});
+
             dispatch({ type: "REGISTER_USER", payload: {user: login.data.user, token: login.data.token}});
+
             cb({ok: true});
         } catch (err) {
             console.log(err);
@@ -47,7 +55,7 @@ function ProvideUser({ children }) {
     const signOut = async (cb) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.post(`${api}/signOut`, {}, { withCredentials: true });
+            setCookie("token", null, {path: "/"});
             setTimeout(() => {
                 dispatch({ type: "SIGNOUT_USER", payload: null });
             }, 2000);
@@ -74,7 +82,10 @@ function ProvideUser({ children }) {
                 }
             })
 
-            let userDB = await axios.get(`${api}/user/one`, { withCredentials: true });
+            setCookie("token", response.data.token, {path: "/"});
+
+            let userDB = await axios.get(`${api}/user/one`, { withCredentials: true, headers: {"Authorization": response.data.token}});
+            
             dispatch({ type: "LOGIN_USER", payload: { user: userDB.data.user, token: response.data.token } });
 
             cb({ ok: true });   
@@ -88,6 +99,13 @@ function ProvideUser({ children }) {
     const googlelogin = async (data, cb) => {
         try {
             let res = await axios.post(`${api}/google`, {idtoken: data}, {withCredentials: true}).catch(err => console.log(err));
+            if(!res.data.ok) {
+                cb({ok: false, err: res.err})
+                return;
+            }
+
+            setCookie("token", res.data.token, {path: "/"});
+
             dispatch({type: "LOGIN_USER", payload: {user: res.data.user, token: res.data.token}});
             cb({ok: true, user: res.data.user});
         } catch(err) {
@@ -98,7 +116,12 @@ function ProvideUser({ children }) {
     const finishSettings = async (data,cb) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.put(`${api}/user/${data.id}`, {username: data.username});
+            console.log(cookies);
+            let res = await axios.put(`${api}/user/${data.id}`, {username: data.username}, {withCredentials: true, headers: {"Authorization": cookies.token}});
+            if(!res.data.ok) {
+                cb({ok: false, err: res.err});
+                return;
+            }
             cb({ok: true}) 
         } catch(err) {
             cb({ok: false})
@@ -107,10 +130,14 @@ function ProvideUser({ children }) {
 
     const refresh_token = async (data) => {
         try {
-            let res = await axios.post(`${api}/refresh_token`, {}, { withCredentials: true });
+            let res = await axios.post(`${api}/refresh_token`, {}, { withCredentials: true, headers: {"Authorization": cookies.token} });
+            
             if (data) {
                 updateUser({ user: data.user, token: res.data.token }, () => { })
             }
+
+            setCookie("token", res.data.token, {path: "/"});
+
         } catch (err) {
             setAlert({ text: err });
         }

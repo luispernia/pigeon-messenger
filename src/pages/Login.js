@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useContext} from 'react'
 import {useHistory} from "react-router-dom";
 import GoogleSignIn from '../components/GoogleSignIn';
@@ -8,6 +9,8 @@ import ChatIcons from '../components/ChatIcons';
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
+import {useCookies} from "react-cookie";
+import { useEffect } from 'react';
 
 const validate = (values) => {
     const errors = {};
@@ -27,6 +30,8 @@ const validate = (values) => {
 function Login() {
 
     const { loginEmail, alerts } = useContext(userContext);
+    // eslint-disable-next-line no-unused-vars
+    const [cookies, setCookie] = useCookies(["token"]); 
 
     const history = useHistory();
 
@@ -56,7 +61,9 @@ function Login() {
     const displays1 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 400});
     const displays2 = useSpring({to: {opacity: 1, transform: "translate(0rem, 0rem)"}, from: {opacity: 0, transform: "translate(-1rem, 0rem)"}, delay: 600});
 
-
+    useEffect(() => {
+        setCookie("token", null, {path: "/"});
+    }, [])
 
     return (
 

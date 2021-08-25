@@ -19,6 +19,7 @@ import ProviderMessages from "../services/context/MessagesState";
 import Loading from "./Loading";
 import PostRegister from "./PostRegister";
 import {api} from "../services/config";
+import { useCookies } from "react-cookie";
 
 
 function Routes() {
@@ -66,9 +67,12 @@ function PrivateRoutePlus({ children, ...rest }) {
   let { updateUser } = useContext(userContext);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const [cookies, setCookie] = useCookies(["token"]);
 
   useEffect(() => {
-    axios.post(`${api}/refresh_token`, {}, { withCredentials: true })
+    console.log(cookies);
+
+    axios.post(`${api}/refresh_token`, {}, { withCredentials: true, headers: {"Authorization": cookies.token} })
       .then(res => {
         if (res.data.ok) {
           if(res.data.user.username === res.data.user.email) {
@@ -83,6 +87,7 @@ function PrivateRoutePlus({ children, ...rest }) {
             })
           }
         } else {
+          setCookie("token", null);
           history.replace("/login");
           setLoading(true);
         }
