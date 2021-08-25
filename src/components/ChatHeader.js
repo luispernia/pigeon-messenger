@@ -4,11 +4,13 @@ import roomsContext from '../services/context/RoomContext';
 import userContext from '../services/context/UserContext';
 import { roomSettings } from '../services/sockets/sockets';
 import useWindowSize from './useWindowSize';
+import { useCookies } from 'react-cookie';
 import {api} from "../services/config";
 
 function ChatHeader() {
 
     const [users, setUsers] = useState([]);
+    const [cookies] = useCookies(["token"]);
     const { selected, setFocus, showBar, setShowBar } = useContext(roomsContext)
     const { token, user, setAlert } = useContext(userContext);
     const [onMouse, setOnMouse] = useState(false);
@@ -23,7 +25,7 @@ function ChatHeader() {
     const [width] = useWindowSize();
 
     const saveEdit = () => {
-        axios.put(`${api}/room/${selected._id}/default`, { name: title }, { withCredentials: true })
+        axios.put(`${api}/room/${selected._id}/default`, { name: title }, { withCredentials: true, headers: {"Authorization": cookies.token} })
             .then((res) => {
                 roomSettings({ type: "title", value: title, room_id: selected.room_id ? selected.room_id : "", author: user }, (res) => {
 

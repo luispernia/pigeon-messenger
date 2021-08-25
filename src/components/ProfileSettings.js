@@ -6,11 +6,13 @@ import { useHistory } from 'react-router';
 import axios from "axios";
 import Cropper from "react-cropper";
 import {api} from "../services/config";
+import { useCookies } from 'react-cookie';
 import "cropperjs/dist/cropper.css"
 
 const ProfileSettings = () => {
 
     const { user, token, signOut, setAlert, refresh_token } = useContext(userContext);
+    const [cookies] = useCookies(["token"]);
     const { refresh_rooms, setFocus, chats } = useContext(roomsContext);
 
     const history = useHistory();
@@ -40,7 +42,7 @@ const ProfileSettings = () => {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`${api}/user/upload/${user._id}`, formData, {withCredentials: true})
+            axios.post(`${api}/user/upload/${user._id}`, formData, {withCredentials: true, headers: {"Authorization": cookies.token}})
             .then((res) => {
                 setEnded(canvas.toDataURL("image/png"));
                 setShowCropper(false);

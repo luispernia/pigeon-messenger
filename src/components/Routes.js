@@ -70,8 +70,6 @@ function PrivateRoutePlus({ children, ...rest }) {
   const [cookies, setCookie] = useCookies(["token"]);
 
   useEffect(() => {
-    console.log(cookies);
-
     axios.post(`${api}/refresh_token`, {}, { withCredentials: true, headers: {"Authorization": cookies.token} })
       .then(res => {
         if (res.data.ok) {

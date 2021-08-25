@@ -7,18 +7,20 @@ import roomsContext from '../services/context/RoomContext';
 import socket from '../services/sockets/socketConfig';
 import messagesContext from '../services/context/MessagesContext';
 import {api} from "../services/config";
+import {useCookies} from "react-cookie";
 
 function LoadMessages({ height }) {
 
+    const { selected } = useContext(roomsContext);
+    const [cookies] = useCookies(["token"]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(10);
     const [items, setItems] = useState([]);
-    const { selected } = useContext(roomsContext);
     const {messages, clear_queue} = useContext(messagesContext);
     const scrollRef = useRef();
 
     const fetchMessages = (reset) => {
-        axios.get(`${api}/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`)
+        axios.get(`${api}/message/${selected ? selected.room_id : ""}?from=${reset ? 0 : page - 10}&to=${reset ? 10 : page}`, {withCredentials: true,  headers: {"Authorization": cookies.token}})
             .then((res) => {
 
                 const result = res.data;

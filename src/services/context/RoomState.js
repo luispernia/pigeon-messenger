@@ -5,6 +5,7 @@ import RoomReducer from "./RoomsReducer";
 import { handleRoomConnections } from "../sockets/sockets";
 import userContext from "./UserContext";
 import {api} from "../config";
+import {useCookies} from "react-cookie";
 axios.defaults.withCredentials = true;
 
 function ProviderRoom({ children }) {
@@ -22,6 +23,8 @@ function ProviderRoom({ children }) {
     const [state, dispatch] = useReducer(RoomReducer, initialState);
     
     const {token} = useContext(userContext);
+    // eslint-disable-next-line no-unused-vars
+    const [cookies] = useCookies(["token"]);
 
     const setContacts = (contacts) => {
         dispatch({type: "UPDATE_CONTACT", payload: contacts})
@@ -30,7 +33,7 @@ function ProviderRoom({ children }) {
     const searchRoom = async (value) => {
         try {
 
-            const res = await axios.get(`${api}/room/search/${value}`, {withCredentials: true}).catch(err => console.log(err))   
+            const res = await axios.get(`${api}/room/search/${value}`, {withCredentials: true, headers: {"Authorization": cookies.token}}).catch(err => console.log(err))   
             if(value.length > 0) {
                 dispatch({type: "UPDATE_ROOMS", payload: res.data.rooms});
             } else {
@@ -44,8 +47,8 @@ function ProviderRoom({ children }) {
 
     const refresh_rooms = async (cb = () => {}, bool) => {
         try {
-            let resRooms = await axios.get(`${api}/user/one`, { withCredentials: true });
-            let resContacts = await axios.get(`${api}/contact`, { withCredentials: true });
+            let resRooms = await axios.get(`${api}/user/one`, { withCredentials: true, headers: {"Authorization": cookies.token} });
+            let resContacts = await axios.get(`${api}/contact`, { withCredentials: true, headers: {"Authorization": cookies.token} });
             let chats = [...resRooms.data.user.rooms, ...resContacts.data.contacts];
             let roomConnections = chats.map(e => e.room_id);
             handleRoomConnections(roomConnections, token);
@@ -53,14 +56,14 @@ function ProviderRoom({ children }) {
             let filter = [];
 
             for (let chat of chats) {
-                let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true, headers: {"Authorization": cookies.token}}).catch(err => alert(err));
                 filter.push({data, chat});
                 if(!bool) {
                     if (chat.contact_id) {
-                        let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                        let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true, headers: {"Authorization": cookies.token}}).catch(err => alert(err));
                         dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: chat.contact_id.online, bells: 0 } } })
                     } else {
-                        let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true}).catch(err => alert(err));
+                        let {data} = await axios.get(`${api}/message/last/${chat.room_id}`, {withCredentials: true, headers: {"Authorization": cookies.token}}).catch(err => alert(err));
                         dispatch({ type: "CHAT_PEEKS", payload: { prop: chat.room_id, content: { messages: data.messages? data.messages : [] , online: false, bells: 0 } } })
                     }
                 }
@@ -86,7 +89,7 @@ function ProviderRoom({ children }) {
 
     const chatPhotos = async ({ room_id }) => {
         try {
-            let photos = await axios.get(`${api}/upload/${room_id}`, { withCredentials: true });
+            let photos = await axios.get(`${api}/upload/${room_id}`, { withCredentials: true, headers: {"Authorization": cookies.token} });
             let formatted = photos.data.files.map(e => {
                 return { author: e.author, path: e.path }
             })
@@ -99,7 +102,7 @@ function ProviderRoom({ children }) {
     }
 
     const setPeekMessages = async (room_id) => {
-        let {data} = await axios.get(`${api}/message/last/${room_id}`, {withCredentials: true}).catch(err => alert(err));
+        let {data} = await axios.get(`${api}/message/last/${room_id}`, {withCredentials: true, headers: {"Authorization": cookies.token}}).catch(err => alert(err));
         if(data.messages) {
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "messages", value: data.messages}})
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "resetPeek", value: true}})
@@ -125,7 +128,7 @@ function ProviderRoom({ children }) {
 
     const unreaded = async (room_id, cb = () => {}) => {
         try {
-            let res = await axios.post(`${api}/message/unread`, { room_id }, { withCredentials: true });
+            let res = await axios.post(`${api}/message/unread`, { room_id }, { withCredentials: true, headers: {"Authorization": cookies.token} });
             updatePeek(room_id, "bells", res.data.count);
             cb({count: res.data.count})
         } catch (err) {
@@ -136,7 +139,7 @@ function ProviderRoom({ children }) {
     const setReaded = async (room_id) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            let res = await axios.put(`${api}/message/readed`, {room_id}, {withCredentials: true});
+            let res = await axios.put(`${api}/message/readed`, {room_id}, {withCredentials: true, headers: {"Authorization": cookies.token}});
             dispatch({type: "UPDATE_PEEK", payload: {room_id, prop: "bells", value: 0}})
         } catch(err) {
             alert(err)

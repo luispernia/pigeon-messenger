@@ -10,6 +10,7 @@ import Cropper from "react-cropper";
 import { useFormik } from "formik";
 import ProfileSettings from "./ProfileSettings";
 import {api} from "../services/config";
+import { useCookies } from 'react-cookie';
 import "cropperjs/dist/cropper.css"
 
 const validate = (values) => {
@@ -59,6 +60,7 @@ function FocusUI() {
 const CreateRoom = ({ chats }) => {
 
     const { token, user, setAlert } = useContext(userContext);
+    const [cookies] = useCookies(["token"]);
     const { refresh_rooms, setFocus, contacts, setContacts } = useContext(roomsContext);
 
     const spring_error = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
@@ -134,7 +136,8 @@ const CreateRoom = ({ chats }) => {
 
         let res = await axios.post(`${api}/room`, formData, {
             withCredentials: true, headers: {
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                "Authorization": cookies.token
             }
         }).catch(err => alert(err))
 
@@ -357,6 +360,7 @@ const Result = ({ username, state }) => {
 
     const [loaded, setLoaded] = useState(false);
     const [userData, setUserData] = useState({});
+    const [cookies] = useCookies(["token"]);
     const { token } = useContext(userContext);
 
     const circleLoad = useSpring({ to: { rotate: 190, borderRadius: 5 }, from: { rotate: 0, borderRadius: 10 }, loop: true })
@@ -364,7 +368,7 @@ const Result = ({ username, state }) => {
 
     useEffect(() => {
         setLoaded(false);
-        axios.get(`${api}/user/search/${username ? username : "xd"}`, { withCredentials: true })
+        axios.get(`${api}/user/search/${username ? username : "xd"}`, { withCredentials: true,  headers: {"Authorization": cookies.token} })
             .then((res) => {
                 if (res.data.user) {
                     state(true);

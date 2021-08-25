@@ -8,6 +8,7 @@ import Alert from "./Alert";
 import { useFormik } from "formik";
 import { useHistory } from 'react-router';
 import  {api} from "../services/config";
+import { useCookies } from 'react-cookie';
 import "cropperjs/dist/cropper.css"
 
 const validate = (values) => {  
@@ -35,6 +36,7 @@ function PostRegister() {
     
     const history = useHistory();
     const { user, refresh_token, token, finishSettings, setAlert, alerts } = useContext(userContext);
+    const [cookies] = useCookies(["token"]);
     const spring = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: 300 });
     const [loading, setLoading] = useState(false);
 
@@ -67,7 +69,7 @@ function PostRegister() {
     const fileRef = useRef("");
     
     const compare = async (value) => {
-        let res = axios.get(`${api}/user/search/${value}`, {withCredentials: true});
+        let res = axios.get(`${api}/user/search/${value}`, {withCredentials: true,  headers: {"Authorization": cookies.token}});
         return res;
     }
 
@@ -77,7 +79,7 @@ function PostRegister() {
         canvas.toBlob((blob) => {
             let formData = new FormData();
             formData.append("photo", blob, "user.png");
-            axios.post(`${api}/user/upload/${user._id}`, formData, { withCredentials: true })
+            axios.post(`${api}/user/upload/${user._id}`, formData, { withCredentials: true, headers: {"Authorization": cookies.token} })
                 .then((res) => {
                     setEnded(canvas.toDataURL("image/png"));
                     setShowCropper(false);

@@ -5,11 +5,13 @@ import userContext from '../services/context/UserContext';
 import axios from "axios";
 import roomsContext from '../services/context/RoomContext';
 import {api} from "../services/config";
+import {useCookies} from "react-cookie"
 import { useSpring, animated } from 'react-spring';
 
 const ChatBar = () => {
 
     const [message, setMessage] = useState("");
+    const [cookies] = useCookies(["token"]);
     const [doc, setFile] = useState({ docs: [] });
     const { user, setAlert } = useContext(userContext);
     const { selected } = useContext(roomsContext);
@@ -17,6 +19,7 @@ const ChatBar = () => {
     const fileRef = useRef(null);
     const [cursor, setCursor] = useState(false);
     const [photos, setPhotos] = useState([]);
+    
 
     const handleSubmit = async ($event) => {
         $event.preventDefault();
@@ -33,7 +36,8 @@ const ChatBar = () => {
             axios.post(`${api}/message/docs`, formData, {
                 withCredentials: true,
                 headers: {
-                    "Content-Type": "multipart/form-data"
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": cookies.token
                 }
             })
 

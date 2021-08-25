@@ -13,7 +13,7 @@ function handleRoomConnections(rooms, token) {
 }
 
 function sendContact(requester, text, to, img, token, cb) {
-    axios.post(`${api}/contact/on`, { to }, { withCredentials: true })
+    axios.post(`${api}/contact/on`, { to }, { withCredentials: true, headers: {"Authorization": token} })
         .then(res => {
             if (!res.data.contact.length > 0) {
                 socket.emit("contact-request", { requester: `${requester}/${to}`, text, to, img, token }, (res) => {
