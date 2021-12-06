@@ -224,7 +224,7 @@ const Search = () => {
                 searchRoom($event.target.value);
             }} className="search-bar">
                 <i className="bi bi-search"></i>
-                <input ref={search} type="text" placeholder="Search Pigeon" />
+                <input ref={search} type="text" placeholder="Search Pigeonsx" />
             </div>
         </div>
     )
