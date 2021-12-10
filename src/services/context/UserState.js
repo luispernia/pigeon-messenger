@@ -116,7 +116,6 @@ function ProvideUser({ children }) {
     const finishSettings = async (data,cb) => {
         try {
             // eslint-disable-next-line no-unused-vars
-            console.log(cookies);
             let res = await axios.put(`${api}/user/${data.id}`, {username: data.username}, {withCredentials: true, headers: {"Authorization": cookies.token}});
             if(!res.data.ok) {
                 cb({ok: false, err: res.err});

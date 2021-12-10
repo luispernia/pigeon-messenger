@@ -45,13 +45,17 @@ const ChatBar = () => {
                     sendMessage({ user, message: res.data.message, room: room_id, type: "docs" });
                     setFile({ docs: [] });
                     setPhotos([]);
-                })
+                    setMessage("");
+
+                })                
                 .catch(err => {
                     alert(err);
                 })
 
         } else {
             sendMessage({ user, message, room: room_id, type: "text" });
+            setMessage("");
+
         }
 
 

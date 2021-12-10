@@ -307,7 +307,7 @@ const RequestContact = () => {
         sendContact(user.username, message, username, user.img, token, (res) => {
             if (!res.ok) {
                 setAlert({ show: true, text: "error" });
-                console.log(res.err);
+                console.log("fuck");
                 return;
             } else {
                 setAlert({ show: true, text: `request sended to/`, resalt: username, type: "info" });

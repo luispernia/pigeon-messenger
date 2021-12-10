@@ -205,7 +205,6 @@ const PigeonLogo = () => {
     return (
         <div className="pigeon">
             <h1> <span>Pigeon</span> Messenger</h1>
-            <p> <span>Beta</span> v1.0.0</p>
         </div>
     )
 }
@@ -224,7 +223,7 @@ const Search = () => {
                 searchRoom($event.target.value);
             }} className="search-bar">
                 <i className="bi bi-search"></i>
-                <input ref={search} type="text" placeholder="Search Pigeonsx" />
+                <input ref={search} type="text" placeholder="Search Pigeon" />
             </div>
         </div>
     )

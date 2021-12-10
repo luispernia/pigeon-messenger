@@ -10,7 +10,7 @@ function handleClientId(token) {
 function handleRoomConnections(rooms, token) {
     socket.emit("start", { token, rooms, type: null }, (res) => {
     })
-}
+}   
 
 function sendContact(requester, text, to, img, token, cb) {
     axios.post(`${api}/contact/on`, { to }, { withCredentials: true, headers: {"Authorization": token} })
